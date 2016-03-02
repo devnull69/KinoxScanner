@@ -51,12 +51,17 @@ public class OverviewActivity extends AppCompatActivity {
                     ListAdapter adapter = new ArrayAdapter<CheckErgebnis>(me, android.R.layout.simple_list_item_1, result);
                     ListView lvDownload = (ListView) findViewById(R.id.lvDownloads);
                     lvDownload.setAdapter(adapter);
+
+                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putInt("alteAnzahl", result.size());
+                    editor.commit();
                 }
             }
         };
 
         CheckKinoxTask myTask = new CheckKinoxTask(ccl);
-        myTask.execute("test");
+        myTask.execute("FromActivity");
     }
 
     @Override
@@ -67,54 +72,17 @@ public class OverviewActivity extends AppCompatActivity {
         zeigeWerte();
 
 
-//        startService(new Intent(this, AlarmStarterService.class));
-//
-//        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-//
-//        // Density metrics merken für Large Icon der Notification
-//        DisplayMetrics metrics = this.getResources().getDisplayMetrics();
-//        float multiplier = metrics.density/3f;   // Bitmap liegt mit 480dpi vor (density Faktor 3), die Bildschirmauflösung kann aber geringer sein
-//
-//        SharedPreferences.Editor myEditor = settings.edit();
-//        myEditor.putFloat("multiplier", multiplier);
-//        myEditor.commit();
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        List<CheckErgebnis> ergebnisse = null;
-//        try {
-//            ergebnisse = mapper.readValue(settings.getString("ergebnisse", "[]"), new TypeReference<List<CheckErgebnis>>() {
-//            });
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        TextView txtAlarm = (TextView) findViewById(R.id.txtAlarm);
-//        PendingIntent pi = AlarmHelper.getPendingIntentFromAlarm(this, 141414);
-//        if(pi!=null) {
-//            txtAlarm.setText("Alarm ist gesetzt!");
-//        } else {
-//            txtAlarm.setText("Alarm ist nicht gesetzt!");
-//        }
-//
-//        TextView txtLastChecked = (TextView) findViewById(R.id.txtLastChecked);
-//        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-//        long lastChecked = settings.getLong("lastChecked", -1);
-//        String lastCheckedStr = "never";
-//        if(lastChecked != -1)
-//            lastCheckedStr = sdf.format(new Date(lastChecked));
-//
-//        txtLastChecked.setText(lastCheckedStr);
-//
-//        TextView txtNetworkAvailable = (TextView) findViewById(R.id.txtNetworkAvailable);
-//        txtNetworkAvailable.setText(String.valueOf(settings.getBoolean("networkAvailable", false)));
-//
-//        TextView txtErgebnisse = (TextView) findViewById(R.id.txtErgebnisse);
-//        txtErgebnisse.setText(String.valueOf(settings.getInt("ergebnisZahl", -1)));
-//
-//        ListAdapter adapter = new ArrayAdapter<CheckErgebnis>(this, android.R.layout.simple_list_item_1, ergebnisse);
-//        ListView lvDownload = (ListView) findViewById(R.id.lvDownloads);
-//        lvDownload.setAdapter(adapter);
-//
+        startService(new Intent(this, AlarmStarterService.class));
+
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+
+        // Density metrics merken für Large Icon der Notification
+        DisplayMetrics metrics = this.getResources().getDisplayMetrics();
+        float multiplier = metrics.density/3f;   // Bitmap liegt mit 480dpi vor (density Faktor 3), die Bildschirmauflösung kann aber geringer sein
+
+        SharedPreferences.Editor myEditor = settings.edit();
+        myEditor.putFloat("multiplier", multiplier);
+        myEditor.commit();
     }
 
     @Override

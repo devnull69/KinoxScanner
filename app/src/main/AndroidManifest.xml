@@ -27,6 +27,11 @@
         <service
             android:name=".services.AlarmStarterService" android:exported="false" >
         </service>
+        <receiver android:name=".receiver.MyBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -31,10 +31,8 @@ public class AlarmStarterService extends Service {
         // Falls er nicht schon läuft
         // Jede Stunde
         PendingIntent pi = AlarmHelper.getPendingIntentFromAlarm(this, ALARM_ID);
-        if(pi != null)
-            pi.cancel();
-
-        AlarmHelper.setAlarm(this, ALARM_ID, 1);
+        if(pi == null)
+           AlarmHelper.setAlarm(this, ALARM_ID, 1);
     }
 
     @Nullable

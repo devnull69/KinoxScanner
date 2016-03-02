@@ -193,7 +193,7 @@ public class KinoxHelper {
         bcs.setAddr("Better_Call_Saul");
         bcs.setSeriesID(54593);
         bcs.setSeason(2);
-        bcs.setEpisode(3);
+        bcs.setEpisode(4);
         result.add(bcs);
 
         Serie ol = new Serie();

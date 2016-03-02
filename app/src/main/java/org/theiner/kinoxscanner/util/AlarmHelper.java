@@ -24,8 +24,8 @@ public class AlarmHelper {
         PendingIntent pi = PendingIntent.getService(context, alarmId, serviceIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
-        //DateTime inHours = (new DateTime()).plusHours(hours);
-        DateTime inHours = (new DateTime()).plusMinutes(hours);
+        DateTime inHours = (new DateTime()).plusHours(hours);
+        //DateTime inHours = (new DateTime()).plusMinutes(hours);
 
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

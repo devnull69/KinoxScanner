@@ -16,28 +16,16 @@ import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.theiner.kinoxscanner.R;
 import org.theiner.kinoxscanner.activities.OverviewActivity;
+import org.theiner.kinoxscanner.async.CheckKinoxTask;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
 import org.theiner.kinoxscanner.util.AlarmHelper;
-import org.theiner.kinoxscanner.util.KinoxHelper;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by TTheiner on 26.02.2016.
@@ -48,50 +36,38 @@ public class CheckKinox extends Service {
     private final String CHECK_OP_NO_THROW = "checkOpNoThrow";
     private final String OP_POST_NOTIFICATION = "OP_POST_NOTIFICATION";
 
+    private void setNewCountInSettings(int neueAnzahl) {
+        SharedPreferences settings = getSharedPreferences(OverviewActivity.PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("alteAnzahl", neueAnzahl);
+        editor.commit();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
 
-        SharedPreferences settings = getSharedPreferences(OverviewActivity.PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-
-        editor.putLong("lastChecked", (new Date()).getTime());
-        // Netzwerkverbindung vorhanden?
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            // Bisher gespeichert
-            ObjectMapper mapper = new ObjectMapper();
-            List<CheckErgebnis> alteErgebnisse = null;
-            try {
-                alteErgebnisse = mapper.readValue(settings.getString("ergebnisse", "[]"), new TypeReference<List<CheckErgebnis>>() {
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            int alteAnzahl = (alteErgebnisse != null ? alteErgebnisse.size() : 0);
-            List<CheckErgebnis> ergebnisse = KinoxHelper.check();
+            SharedPreferences settings = getSharedPreferences(OverviewActivity.PREFS_NAME, MODE_PRIVATE);
+            final int alteAnzahl = settings.getInt("alteAnzahl", 0);
+            final float multiplier = settings.getFloat("multiplier", -1);
+            CheckKinoxTask.CheckCompleteListener ccl = new CheckKinoxTask.CheckCompleteListener() {
+                @Override
+                public void onCheckComplete(List<CheckErgebnis> result) {
 
-            // Speichern in SharedPreferences
-            String jsonString = "[]";
-            try {
-                jsonString = mapper.writeValueAsString(ergebnisse);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+                    if (result.size() > alteAnzahl) {
+                        sendNotification(result.size() + " Datei(en) stehen jetzt bereit.", multiplier);
+                        setNewCountInSettings(result.size());
+                    }
+                }
+            };
 
-            editor.putString("ergebnisse", jsonString);
-
-            // Evtl. Notification erzeugen
-            int anzahl = ergebnisse.size();
-            float multiplier = settings.getFloat("multiplier", -1);
-
-            if (anzahl > alteAnzahl)
-                sendNotification(anzahl + " Datei(en) stehen jetzt bereit.", multiplier);
+            CheckKinoxTask myTask = new CheckKinoxTask(ccl);
+            myTask.execute("FromService");
         }
-
-        editor.commit();
 
         // Set an alarm for the next time this service should run:
         setAlarm();
