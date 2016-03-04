@@ -22,12 +22,12 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".services.CheckKinox" android:exported="false" >
+            android:name=".services.CheckKinoxService" android:exported="false" >
         </service>
         <service
             android:name=".services.AlarmStarterService" android:exported="false" >
         </service>
-        <receiver android:name=".receiver.MyBroadcastReceiver" >
+        <receiver android:name=".receiver.BootBroadcastReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

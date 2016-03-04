@@ -19,7 +19,7 @@ public class AlarmStarterService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        // Set an alarm for the next time the CheckKinox service should run:
+        // Set an alarm for the next time the CheckKinoxService service should run:
         setAlarm();
 
         // end the service
@@ -32,7 +32,7 @@ public class AlarmStarterService extends Service {
         // Jede Stunde
         PendingIntent pi = AlarmHelper.getPendingIntentFromAlarm(this, ALARM_ID);
         if(pi == null)
-           AlarmHelper.setAlarm(this, ALARM_ID, 1);
+           AlarmHelper.setAlarm(this, ALARM_ID, 60);
     }
 
     @Nullable

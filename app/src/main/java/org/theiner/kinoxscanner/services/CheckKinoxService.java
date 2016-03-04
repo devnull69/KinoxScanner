@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Created by TTheiner on 26.02.2016.
  */
-public class CheckKinox extends Service {
+public class CheckKinoxService extends Service {
     private static int ALARM_ID = 141414;
 
     private final String CHECK_OP_NO_THROW = "checkOpNoThrow";
@@ -67,19 +67,23 @@ public class CheckKinox extends Service {
 
             CheckKinoxTask myTask = new CheckKinoxTask(ccl);
             myTask.execute("FromService");
+
+            // Set an alarm for the next time this service should run:
+            setAlarmInMinutes(60);
+        } else {
+            // Network was not available, try again in 10 minutes
+            setAlarmInMinutes(10);
         }
 
-        // Set an alarm for the next time this service should run:
-        setAlarm();
 
         // end the service
         stopSelf();
     }
 
-    public void setAlarm() {
+    public void setAlarmInMinutes(int minutes) {
 
         // Jede Stunde
-        AlarmHelper.setAlarm(this, ALARM_ID, 1);
+        AlarmHelper.setAlarm(this, ALARM_ID, minutes);
     }
 
     public void sendNotification(String notifyText, float multiplier) {
