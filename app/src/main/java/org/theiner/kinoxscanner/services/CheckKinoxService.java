@@ -67,8 +67,10 @@ public class CheckKinoxService extends Service {
 
                     if (result.size() > alteAnzahl) {
                         sendNotification(result.size() + " Datei(en) stehen jetzt bereit.", multiplier);
-                        setNewCountInSettings(result.size());
                     }
+                    setNewCountInSettings(result.size());
+                    // end the service
+                    stopSelf();
                 }
             };
 
@@ -80,11 +82,11 @@ public class CheckKinoxService extends Service {
         } else {
             // Network was not available, try again in 10 minutes
             setAlarmInMinutes(10);
+            // end the service
+            stopSelf();
         }
 
 
-        // end the service
-        stopSelf();
     }
 
     public void setAlarmInMinutes(int minutes) {
