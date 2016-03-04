@@ -1,14 +1,18 @@
 package org.theiner.kinoxscanner.data;
 
+import java.io.Serializable;
+
 /**
  * Created by TTheiner on 26.02.2016.
  */
-public class Serie {
+public class Serie implements KinoxElement, Serializable{
     private String name;
     private String addr;
     private int seriesID;
     private int season;
     private int episode;
+    private static final long serialVersionUID = 0L;
+
 
     public String getName() {
         return name;
@@ -50,6 +54,7 @@ public class Serie {
         this.episode = episode;
     }
 
+    @Override
     public String toQueryString() {
         return "Addr=" + addr + "&SeriesID=" + seriesID + "&Season=" + season + "&Episode=" + episode;
     }

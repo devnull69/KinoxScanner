@@ -7,6 +7,7 @@ public class CheckErgebnis {
     public String name;
     public String datum;
     public String videoLink;
+    public KinoxElement foundElement;
 
     @Override
     public String toString() {

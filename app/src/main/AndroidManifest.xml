@@ -6,14 +6,16 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".context.KinoxScannerApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.OverviewActivity"
-            android:label="@string/app_name"
+        <activity
+            android:name=".activities.OverviewActivity"
             android:configChanges="orientation"
+            android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,17 +23,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
-            android:name=".services.CheckKinoxService" android:exported="false" >
-        </service>
+            android:name=".services.CheckKinoxService"
+            android:exported="false" />
         <service
-            android:name=".services.AlarmStarterService" android:exported="false" >
-        </service>
-        <receiver android:name=".receiver.BootBroadcastReceiver" >
+            android:name=".services.AlarmStarterService"
+            android:exported="false" />
+
+        <receiver android:name=".receiver.BootBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".activities.UpdateSerieActivity"
+            android:label="@string/update_serie" />
+        <activity android:name=".activities.UpdateFilmActivity"
+            android:label="@string/update_film" />
     </application>
 
 </manifest>

@@ -1,7 +1,14 @@
 package org.theiner.kinoxscanner.util;
 
+import android.app.Application;
+import android.content.SharedPreferences;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.xalan.xsltc.trax.SAX2DOM;
 import org.ccil.cowan.tagsoup.Parser;
+import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
 import org.theiner.kinoxscanner.data.Film;
 import org.theiner.kinoxscanner.data.Serie;
@@ -31,15 +38,11 @@ import java.util.regex.Pattern;
 public class KinoxHelper {
     private static final String userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36";
 
-    public static List<CheckErgebnis> check() {
-
-        List<Film> filme = getFilme();
-        List<Serie> serien = getSerien();
+    public static List<CheckErgebnis> check(KinoxScannerApplication myApp) {
 
         List<CheckErgebnis> result = new ArrayList<CheckErgebnis>();
 
-
-        for(Film film : filme) {
+        for(Film film : myApp.getFilme()) {
             Document doc = getDocumentFromUrl("http://www.kinox.to/Stream/" + film.toQueryString());
             if(doc!=null) {
                 Element element = doc.getElementById("HosterList");
@@ -64,12 +67,13 @@ public class KinoxHelper {
                     ergebnis.name = film.getName();
                     ergebnis.datum = currentDateStr;
                     ergebnis.videoLink = "";
+                    ergebnis.foundElement = film;
                     result.add(ergebnis);
                 }
             }
         }
 
-        for(Serie serie : serien) {
+        for(Serie serie : myApp.getSerien()) {
             String queryString = serie.toQueryString();
 
             String HTML = getHtmlFromUrl("http://www.kinox.to/aGET/MirrorByEpisode/" + queryString);
@@ -86,6 +90,7 @@ public class KinoxHelper {
                 ergebnis.name = serie.toString();
                 ergebnis.datum = currentDateStr;
                 ergebnis.videoLink = "";
+                ergebnis.foundElement = serie;
                 result.add(ergebnis);
             }
         }
@@ -121,7 +126,7 @@ public class KinoxHelper {
         return sdf.format(currentDate);
     }
 
-    private static List<Serie> getSerien() {
+    public static List<Serie> getSerien() {
         List<Serie> result = new ArrayList<Serie>();
 
         Serie twd = new Serie();
@@ -145,7 +150,7 @@ public class KinoxHelper {
         sn_en.setAddr("Supernatural_german_subbed");
         sn_en.setSeriesID(27249);
         sn_en.setSeason(11);
-        sn_en.setEpisode(16);
+        sn_en.setEpisode(15);
         result.add(sn_en);
 
         Serie sn_de = new Serie();
@@ -223,7 +228,7 @@ public class KinoxHelper {
         return result;
     }
 
-    private static List<Film> getFilme() {
+    public static List<Film> getFilme() {
         List<Film> result = new ArrayList<Film>();
 
         Film gh = new Film();

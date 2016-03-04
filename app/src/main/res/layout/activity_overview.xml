@@ -19,6 +19,18 @@
         android:layout_height="wrap_content"
         android:id="@+id/lvDownloads"></ListView>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Alarm"
+        android:id="@+id/txtAlarmSet"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zuletzt"
+        android:id="@+id/txtLastChecked"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

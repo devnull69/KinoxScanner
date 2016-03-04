@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">KinoxScanner</string>
+    <string name="update_serie">Serie aktualisieren</string>
+    <string name="update_film">Film aktualisieren</string>
 </resources>

@@ -1,12 +1,16 @@
 package org.theiner.kinoxscanner.data;
 
+import java.io.Serializable;
+
 /**
  * Created by TTheiner on 26.02.2016.
  */
-public class Film {
+public class Film implements KinoxElement, Serializable{
     private String name;
     private String addr;
     private String lastDate;
+
+    private static final long serialVersionUID = 0L;
 
     public String getName() {
         return name;
@@ -32,6 +36,7 @@ public class Film {
         this.lastDate = lastDate;
     }
 
+    @Override
     public String toQueryString() {
         return addr + ".html";
     }

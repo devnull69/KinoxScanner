@@ -19,12 +19,14 @@ import android.support.annotation.Nullable;
 import org.theiner.kinoxscanner.R;
 import org.theiner.kinoxscanner.activities.OverviewActivity;
 import org.theiner.kinoxscanner.async.CheckKinoxTask;
+import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
 import org.theiner.kinoxscanner.util.AlarmHelper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,6 +42,7 @@ public class CheckKinoxService extends Service {
         SharedPreferences settings = getSharedPreferences(OverviewActivity.PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt("alteAnzahl", neueAnzahl);
+        editor.putLong("lastChecked", (new Date()).getTime());
         editor.commit();
     }
 
@@ -47,11 +50,15 @@ public class CheckKinoxService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        KinoxScannerApplication myApp = new KinoxScannerApplication();
+
+        final SharedPreferences settings = getSharedPreferences(OverviewActivity.PREFS_NAME, MODE_PRIVATE);
+        myApp.getObjectsFromSharedPreferences(settings);
+
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            SharedPreferences settings = getSharedPreferences(OverviewActivity.PREFS_NAME, MODE_PRIVATE);
             final int alteAnzahl = settings.getInt("alteAnzahl", 0);
             final float multiplier = settings.getFloat("multiplier", -1);
             CheckKinoxTask.CheckCompleteListener ccl = new CheckKinoxTask.CheckCompleteListener() {
@@ -66,7 +73,7 @@ public class CheckKinoxService extends Service {
             };
 
             CheckKinoxTask myTask = new CheckKinoxTask(ccl);
-            myTask.execute("FromService");
+            myTask.execute(myApp);
 
             // Set an alarm for the next time this service should run:
             setAlarmInMinutes(60);
