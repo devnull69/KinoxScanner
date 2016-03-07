@@ -213,8 +213,8 @@ public class KinoxHelper {
         ahs.setName("American Horror Story");
         ahs.setAddr("American_Horror_Story-Die_dunkle_Seite_in_dir-1");
         ahs.setSeriesID(37361);
-        ahs.setSeason(5);
-        ahs.setEpisode(13);
+        ahs.setSeason(6);
+        ahs.setEpisode(1);
         result.add(ahs);
 
         Serie tbbt = new Serie();
@@ -234,7 +234,7 @@ public class KinoxHelper {
         Film gh = new Film();
         gh.setName("Gänsehaut");
         gh.setAddr("Gaensehaut");
-        gh.setLastDate("12.02.2016");
+        gh.setLastDate("04.03.2016");
         result.add(gh);
 
         Film panem = new Film();
@@ -249,16 +249,10 @@ public class KinoxHelper {
         testament.setLastDate("25.02.2016");
         result.add(testament);
 
-        Film revenant = new Film();
-        revenant.setName("The Revenant");
-        revenant.setAddr("The_Revenant-Der_Rueckkehrer");
-        revenant.setLastDate("23.01.2016");
-        result.add(revenant);
-
         Film deadpool = new Film();
         deadpool.setName("Deadpool");
         deadpool.setAddr("Deadpool");
-        deadpool.setLastDate("28.02.2016");
+        deadpool.setLastDate("04.03.2016");
         result.add(deadpool);
 
         Film zoomania = new Film();

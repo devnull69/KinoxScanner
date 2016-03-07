@@ -40,4 +40,7 @@ public class Film implements KinoxElement, Serializable{
     public String toQueryString() {
         return addr + ".html";
     }
+
+    @Override
+    public String toString() {return name;}
 }

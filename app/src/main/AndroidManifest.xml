@@ -40,8 +40,21 @@
         <activity
             android:name=".activities.UpdateSerieActivity"
             android:label="@string/update_serie" />
-        <activity android:name=".activities.UpdateFilmActivity"
+        <activity
+            android:name=".activities.UpdateFilmActivity"
             android:label="@string/update_film" />
+        <activity
+            android:name=".activities.ManageSerienActivity"
+            android:label="Serien verwalten" />
+        <activity
+            android:name=".activities.ManageFilmeActivity"
+            android:label="Filme verwalten" />
+        <activity
+            android:name=".activities.EditSerieActivity"
+            android:label="Serie bearbeiten" />
+        <activity
+            android:name=".activities.EditFilmActivity"
+            android:label="Film bearbeiten"/>
     </application>
 
 </manifest>

@@ -52,6 +52,7 @@ public class OverviewActivity extends AppCompatActivity {
     private ListView lvDownload = null;
     private List<CheckErgebnis> ergebnisListe = null;
     private BaseAdapter adapter = null;
+    private TextView txtStatus = null;
 
     private int currentListIndex = -1;
 
@@ -63,14 +64,14 @@ public class OverviewActivity extends AppCompatActivity {
             public void onCheckComplete(List<CheckErgebnis> result) {
 
                 ergebnisListe = result;
-                TextView txtStatus = (TextView) findViewById(R.id.txtStatus);
+                txtStatus = (TextView) findViewById(R.id.txtStatus);
                 if(ergebnisListe.size()==0) {
                     txtStatus.setText("Keine Ergebnisse gefunden.");
                 } else {
                     txtStatus.setText("Folgende Downloads stehen bereit:");
                     adapter = new ArrayAdapter<CheckErgebnis>(me, android.R.layout.simple_list_item_1, ergebnisListe);
                     lvDownload = (ListView) findViewById(R.id.lvDownloads);
-                    lvDownload.setAdapter((ListAdapter)adapter);
+                    lvDownload.setAdapter(adapter);
 
                     lvDownload.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -166,7 +167,7 @@ public class OverviewActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        zeigeWerte();
+        //zeigeWerte();
     }
 
     @Override
@@ -178,6 +179,11 @@ public class OverviewActivity extends AppCompatActivity {
                     // change the List for the adapter and notify the adapter about it
                     ergebnisListe.remove(currentListIndex);
                     adapter.notifyDataSetChanged();
+
+                    // Evtl. Überschrift ändern
+                    if(ergebnisListe.size() == 0) {
+                        txtStatus.setText("Keine Ergebnisse gefunden.");
+                    }
                 }
             }
         }
@@ -186,5 +192,15 @@ public class OverviewActivity extends AppCompatActivity {
 
     public void onExit(View view) {
         System.exit(0);
+    }
+
+    public void onManageSerien(View view) {
+        Intent intent = new Intent(this, ManageSerienActivity.class);
+        startActivity(intent);
+    }
+
+    public void onManageFilme(View view) {
+        Intent intent = new Intent(this, ManageFilmeActivity.class);
+        startActivity(intent);
     }
 }

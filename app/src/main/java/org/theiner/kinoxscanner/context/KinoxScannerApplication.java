@@ -61,4 +61,11 @@ public class KinoxScannerApplication extends Application {
 
     }
 
+    public void addSerie(Serie neueSerie) {
+        serien.add(neueSerie);
+    }
+
+    public void addFilm(Film neuerFilm) {
+        filme.add(neuerFilm);
+    }
 }
