@@ -9,12 +9,15 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.theiner.kinoxscanner.R;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
+import org.theiner.kinoxscanner.data.SearchRequest;
+import org.theiner.kinoxscanner.data.SearchResult;
 import org.theiner.kinoxscanner.data.Serie;
 
 public class EditSerieActivity extends AppCompatActivity {
@@ -167,5 +170,30 @@ public class EditSerieActivity extends AppCompatActivity {
         resultIntent.putExtra("updateList", true);
         setResult(ManageSerienActivity.RESULT_UPDATE_LIST, resultIntent);
         finish();
+    }
+
+    public void onSearch(View view) {
+        SearchRequest suche = new SearchRequest();
+        suche.setSuchString(editName.getText().toString());
+        suche.setIsSerie(true);
+
+        Intent searchIntent = new Intent(this, SearchResultActivity.class);
+        searchIntent.putExtra(SearchResultActivity.EXTRA_MESSAGE, suche);
+        startActivityForResult(searchIntent, OverviewActivity.REQUEST_SEARCH);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == OverviewActivity.REQUEST_SEARCH) {
+            if(resultCode == OverviewActivity.RESULT_UPDATE_ELEMENTS) {
+                SearchResult suchErgebnis = (SearchResult) data.getSerializableExtra("suchErgebnis");
+                if(suchErgebnis == null) {
+                    Toast.makeText(this, "Keine Serie gefunden.", Toast.LENGTH_SHORT).show();
+                } else {
+                    editAddr.setText(suchErgebnis.getAddr());
+                    editSeriesID.setText(String.valueOf(suchErgebnis.getSeriesID()));
+                }
+            }
+        }
     }
 }

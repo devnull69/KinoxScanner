@@ -46,6 +46,8 @@ public class OverviewActivity extends AppCompatActivity {
 
     public static int REQUEST_DELETE_LINE = 100;
     public static int RESULT_IS_OK = 200;
+    public static int REQUEST_SEARCH = 103;
+    public static int RESULT_UPDATE_ELEMENTS = 203;
 
     private KinoxScannerApplication myApp;
 

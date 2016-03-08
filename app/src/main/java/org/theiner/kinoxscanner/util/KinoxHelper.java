@@ -11,9 +11,13 @@ import org.ccil.cowan.tagsoup.Parser;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
 import org.theiner.kinoxscanner.data.Film;
+import org.theiner.kinoxscanner.data.SearchRequest;
+import org.theiner.kinoxscanner.data.SearchResult;
 import org.theiner.kinoxscanner.data.Serie;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
@@ -355,4 +359,90 @@ public class KinoxHelper {
         return returnValue;
     }
 
+    public static List<SearchResult> search(SearchRequest suche) {
+        String suchString = suche.getSuchString().replaceAll(" ", "+");
+
+        Document doc = getDocumentFromUrl("http://www.kinox.to/Search.html?q=" + suchString);
+
+        List<SearchResult> result = new ArrayList<SearchResult>();
+
+        if(doc!=null) {
+            Element tbody = (Element) doc.getElementById("RsltTableStatic").getElementsByTagName("tbody").item(0);
+            NodeList trResults = tbody.getElementsByTagName("tr");
+
+            // Gibt es ein Suchergebnis?
+            if(trResults.getLength()>0) {
+                int tdAnzahl = ((Element) trResults.item(0)).getElementsByTagName("td").getLength();
+                if (tdAnzahl == 7) {
+                    for (int i = 0; i < trResults.getLength(); i++) {
+                        Element currentTR = (Element) trResults.item(i);
+
+                        // zweites TD enthält den Ergebnis-Typ als Attribut eines Images
+                        NamedNodeMap attrMap = ((Element) currentTR.getElementsByTagName("td").item(1)).getElementsByTagName("img").item(0).getAttributes();
+                        String typ = attrMap.getNamedItem("title").getNodeValue();
+
+                        // passt Ergebnis zum Suchtyp?
+                        if ((suche.getIsSerie() && typ.equals("series")) || (!suche.getIsSerie() && typ.equals("movie")) || (!suche.getIsSerie() && typ.equals("cinema"))) {
+                            // erstes TD enthält die Sprache als image-Namen
+                            attrMap = ((Element) currentTR.getElementsByTagName("td").item(0)).getElementsByTagName("img").item(0).getAttributes();
+                            String languageFilename = attrMap.getNamedItem("src").getNodeValue();
+                            int languageCode = -1;
+                            Pattern pattern = Pattern.compile("\\/(\\d+)\\.png");
+                            Matcher matcher = pattern.matcher(languageFilename);
+                            if (matcher.find()) {
+                                languageCode = Integer.parseInt(matcher.group(1));
+                            }
+
+                            // drittes TD enthält die Addr als Teil des Dateinamens eines Anchors
+                            attrMap = ((Element) currentTR.getElementsByTagName("td").item(2)).getElementsByTagName("a").item(0).getAttributes();
+                            String href = attrMap.getNamedItem("href").getNodeValue();
+                            pattern = Pattern.compile("\\/Stream\\/(.*)\\.html");
+                            matcher = pattern.matcher(href);
+                            String addr = "";
+                            if (matcher.find()) {
+                                addr = matcher.group(1);
+                            }
+
+                            // drittes TD enthält den Titel
+                            String titel = currentTR.getElementsByTagName("td").item(2).getTextContent();
+
+                            // hole SeriesID für Serien
+                            int seriesID = -1;
+                            if (typ.equals("series")) {
+                                seriesID = getSeriesID(addr);
+                            }
+
+                            SearchResult ergebnis = new SearchResult();
+                            ergebnis.setName(titel);
+                            ergebnis.setLanguageCode(languageCode);
+                            ergebnis.setAddr(addr);
+                            ergebnis.setSeriesID(seriesID);
+                            result.add(ergebnis);
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private static int getSeriesID(String addr) {
+        int result = -1;
+        Document doc = getDocumentFromUrl("http://www.kinox.to/Stream/" + addr + ".html");
+
+        // SeriesID ist Teil des rel-Attributs der id "SeasonSelection"
+        Element select = doc.getElementById("SeasonSelection");
+        if(select != null) {
+            NamedNodeMap attrMap = select.getAttributes();
+            String rel = attrMap.getNamedItem("rel").getNodeValue();
+
+            Pattern pattern = Pattern.compile("SeriesID=(\\d+)$");
+            Matcher matcher = pattern.matcher(rel);
+            if (matcher.find()) {
+                result = Integer.parseInt(matcher.group(1));
+            }
+        }
+
+        return result;
+    }
 }

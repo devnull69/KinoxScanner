@@ -54,7 +54,11 @@
             android:label="Serie bearbeiten" />
         <activity
             android:name=".activities.EditFilmActivity"
-            android:label="Film bearbeiten"/>
+            android:label="Film bearbeiten" />
+        <activity
+            android:name=".activities.SearchResultActivity"
+            android:label="Suchergebnisse"
+            />
     </application>
 
 </manifest>
