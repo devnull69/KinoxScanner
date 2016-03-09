@@ -2,12 +2,14 @@ package org.theiner.kinoxscanner.util;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.xalan.xsltc.trax.SAX2DOM;
 import org.ccil.cowan.tagsoup.Parser;
+import org.theiner.kinoxscanner.async.CheckKinoxTask;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
 import org.theiner.kinoxscanner.data.Film;
@@ -42,9 +44,12 @@ import java.util.regex.Pattern;
 public class KinoxHelper {
     private static final String userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36";
 
-    public static List<CheckErgebnis> check(KinoxScannerApplication myApp) {
+    public static List<CheckErgebnis> check(CheckKinoxTask task, KinoxScannerApplication myApp) {
 
         List<CheckErgebnis> result = new ArrayList<CheckErgebnis>();
+
+        int gesamtZahl = myApp.getFilme().size() + myApp.getSerien().size();
+        int counter = 0;
 
         for(Film film : myApp.getFilme()) {
             Document doc = getDocumentFromUrl("http://www.kinox.to/Stream/" + film.toQueryString());
@@ -75,6 +80,8 @@ public class KinoxHelper {
                     result.add(ergebnis);
                 }
             }
+            counter++;
+            task.doProgress((int) ((counter / (float) gesamtZahl) * 100));
         }
 
         for(Serie serie : myApp.getSerien()) {
@@ -97,6 +104,8 @@ public class KinoxHelper {
                 ergebnis.foundElement = serie;
                 result.add(ergebnis);
             }
+            counter++;
+            task.doProgress((int) ((counter / (float) gesamtZahl) * 100));
         }
         return result;
     }

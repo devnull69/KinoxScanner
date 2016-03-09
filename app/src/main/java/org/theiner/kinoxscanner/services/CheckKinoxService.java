@@ -72,6 +72,11 @@ public class CheckKinoxService extends Service {
                     // end the service
                     stopSelf();
                 }
+
+                @Override
+                public void onProgress(Integer progress) {
+
+                }
             };
 
             CheckKinoxTask myTask = new CheckKinoxTask(ccl);

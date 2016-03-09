@@ -10,12 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewManager;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -55,6 +57,7 @@ public class OverviewActivity extends AppCompatActivity {
     private List<CheckErgebnis> ergebnisListe = null;
     private BaseAdapter adapter = null;
     private TextView txtStatus = null;
+    private ProgressBar pbProgress = null;
 
     private int currentListIndex = -1;
 
@@ -67,6 +70,8 @@ public class OverviewActivity extends AppCompatActivity {
 
                 ergebnisListe = result;
                 txtStatus = (TextView) findViewById(R.id.txtStatus);
+                ((ViewManager) pbProgress.getParent()).removeView(pbProgress);
+                //pbProgress.setVisibility(View.INVISIBLE);
                 if(ergebnisListe.size()==0) {
                     txtStatus.setText("Keine Ergebnisse gefunden.");
                 } else {
@@ -101,6 +106,11 @@ public class OverviewActivity extends AppCompatActivity {
                     editor.putInt("alteAnzahl", result.size());
                     editor.commit();
                 }
+            }
+
+            @Override
+            public void onProgress(Integer progress) {
+                pbProgress.setProgress(progress);
             }
         };
 
@@ -142,6 +152,7 @@ public class OverviewActivity extends AppCompatActivity {
 
         myEditor.commit();
 
+        pbProgress = (ProgressBar) findViewById(R.id.pbProgress);
         zeigeWerte();
 
 
