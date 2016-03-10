@@ -33,6 +33,8 @@ public class EditSerieActivity extends AppCompatActivity {
     private int currentIndex = -1;
     private Serie aktuelleSerie = null;
 
+    private boolean isAddrLocked = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +80,8 @@ public class EditSerieActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                editAddr.setText(replaceAllSonderzeichen(editName.getText().toString()));
+                if(!isAddrLocked)
+                    editAddr.setText(replaceAllSonderzeichen(editName.getText().toString()));
             }
         });
     }
@@ -189,9 +192,11 @@ public class EditSerieActivity extends AppCompatActivity {
                 SearchResult suchErgebnis = (SearchResult) data.getSerializableExtra("suchErgebnis");
                 if(suchErgebnis == null) {
                     Toast.makeText(this, "Keine Serie gefunden.", Toast.LENGTH_SHORT).show();
+                    isAddrLocked = false;
                 } else {
                     editAddr.setText(suchErgebnis.getAddr());
                     editSeriesID.setText(String.valueOf(suchErgebnis.getSeriesID()));
+                    isAddrLocked = true;
                 }
             }
         }

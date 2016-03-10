@@ -32,6 +32,8 @@ public class EditFilmActivity extends AppCompatActivity {
     private int currentIndex = -1;
     private Film aktuellerFilm = null;
 
+    private boolean isAddrLocked = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +74,8 @@ public class EditFilmActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                editAddr.setText(replaceAllSonderzeichen(editName.getText().toString()));
+                if(!isAddrLocked)
+                    editAddr.setText(replaceAllSonderzeichen(editName.getText().toString()));
             }
         });
     }
@@ -179,8 +182,10 @@ public class EditFilmActivity extends AppCompatActivity {
                 SearchResult suchErgebnis = (SearchResult) data.getSerializableExtra("suchErgebnis");
                 if(suchErgebnis == null) {
                     Toast.makeText(this, "Kein Film gefunden.", Toast.LENGTH_SHORT).show();
+                    isAddrLocked = false;
                 } else {
                     editAddr.setText(suchErgebnis.getAddr());
+                    isAddrLocked = true;
                 }
             }
         }
