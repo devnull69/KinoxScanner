@@ -56,7 +56,12 @@ public class Serie implements KinoxElement, Serializable{
 
     @Override
     public String toQueryString() {
-        return "Addr=" + addr + "&SeriesID=" + seriesID + "&Season=" + season + "&Episode=" + episode;
+        return "?Addr=" + addr + "&SeriesID=" + seriesID + "&Season=" + season + "&Episode=" + episode;
+    }
+
+    @Override
+    public String toHosterRequestQueryString(int hoster, int mirror) {
+        return addr + "&Hoster=" + hoster + "&Mirror=" + mirror + "&Season=" + season + "&Episode=" + episode;
     }
 
     @Override

@@ -5,4 +5,5 @@ package org.theiner.kinoxscanner.data;
  */
 public interface KinoxElement {
     public String toQueryString();
+    public String toHosterRequestQueryString(int hoster, int mirror);
 }

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".activities.UpdateKinoxElementActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name:"
+        android:id="@+id/lblName"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="placeholder"
+        android:layout_marginLeft="100dp"
+        android:id="@+id/txtName"
+        android:textStyle="bold"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nächste Episode"
+        android:layout_marginTop="30dp"
+        android:id="@+id/btnSerie1"
+        android:onClick="onNextEpisode"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nächste Staffel"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="180dp"
+        android:id="@+id/btnSerie2"
+        android:onClick="onNextSeason"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Serie komplett entfernen"
+        android:layout_marginTop="100dp"
+        android:id="@+id/btnSerie3"
+        android:onClick="onRemoveSeries"/>
+
+    <!-- Buttons im Hintergrund -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Datum aktualisieren"
+        android:layout_marginTop="30dp"
+        android:id="@+id/btnFilm1"
+        android:onClick="onUpdateDate"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Film komplett entfernen"
+        android:layout_marginTop="100dp"
+        android:id="@+id/btnFilm2"
+        android:onClick="onRemoveFilm"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:text="Abbrechen"
+        android:onClick="onExit"/>
+
+</RelativeLayout>

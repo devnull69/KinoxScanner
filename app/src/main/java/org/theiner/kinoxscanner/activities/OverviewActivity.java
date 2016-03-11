@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -44,7 +45,8 @@ import java.util.Map;
 public class OverviewActivity extends AppCompatActivity {
 
     public static final String PREFS_NAME = "KinoxScannerFile";
-    public final static String EXTRA_MESSAGE = "org.theiner.kinoxscanner.MESSAGE";
+    public final static String EXTRA_MESSAGE_CHECKERGEBNIS = "org.theiner.kinoxscanner.MESSAGECHECKERGEBNIS";
+    public final static String EXTRA_MESSAGE_CURRENTINDEX = "org.theiner.kinoxscanner.MESSAGECURRENTINDEX";
 
     public static int REQUEST_DELETE_LINE = 100;
     public static int RESULT_IS_OK = 200;
@@ -85,19 +87,21 @@ public class OverviewActivity extends AppCompatActivity {
                         public void onItemClick(AdapterView<?> listview, View view, int position, long id) {
                             currentListIndex = position;
                             CheckErgebnis selected = (CheckErgebnis) listview.getItemAtPosition(position);
-                            if(selected.foundElement instanceof Serie) {
-                                Serie currentSerie = (Serie) selected.foundElement;
-                                int currentIndex = myApp.getSerien().indexOf(currentSerie);
-                                Intent intent = new Intent(me, UpdateSerieActivity.class);
-                                intent.putExtra(EXTRA_MESSAGE, currentIndex);
-                                startActivityForResult(intent, REQUEST_DELETE_LINE);
-                            } else {
-                                Film currentFilm = (Film) selected.foundElement;
-                                int currentIndex = myApp.getFilme().indexOf(currentFilm);
-                                Intent intent = new Intent(me, UpdateFilmActivity.class);
-                                intent.putExtra(EXTRA_MESSAGE, currentIndex);
-                                startActivityForResult(intent, REQUEST_DELETE_LINE);
-                            }
+                            int currentIndex = -1;
+                            if(selected.foundElement instanceof Serie)
+                                currentIndex = myApp.getSerien().indexOf(selected.foundElement);
+                            else
+                                currentIndex = myApp.getFilme().indexOf(selected.foundElement);
+
+                            Intent intent = new Intent(me, UpdateKinoxElementActivity.class);
+                            Bundle extras = new Bundle();
+                            extras.putSerializable(EXTRA_MESSAGE_CHECKERGEBNIS, selected);
+                            extras.putInt(EXTRA_MESSAGE_CURRENTINDEX, currentIndex);
+                            intent.putExtras(extras);
+                            startActivityForResult(intent, REQUEST_DELETE_LINE);
+//                                Intent intent = new Intent(Intent.ACTION_VIEW);
+//                                intent.setDataAndType(Uri.parse(selected.videoLink), "video/mp4");
+//                                startActivity(intent);
                         }
                     });
 

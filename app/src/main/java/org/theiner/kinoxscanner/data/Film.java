@@ -42,5 +42,10 @@ public class Film implements KinoxElement, Serializable{
     }
 
     @Override
+    public String toHosterRequestQueryString(int hoster, int mirror) {
+        return addr + "&Hoster=" + hoster + "&Mirror=" + mirror;
+    }
+
+    @Override
     public String toString() {return name;}
 }

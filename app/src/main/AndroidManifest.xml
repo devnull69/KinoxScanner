@@ -38,11 +38,8 @@
         </receiver>
 
         <activity
-            android:name=".activities.UpdateSerieActivity"
+            android:name=".activities.UpdateKinoxElementActivity"
             android:label="@string/update_serie" />
-        <activity
-            android:name=".activities.UpdateFilmActivity"
-            android:label="@string/update_film" />
         <activity
             android:name=".activities.ManageSerienActivity"
             android:label="Serien verwalten" />

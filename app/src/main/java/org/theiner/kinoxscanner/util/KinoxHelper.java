@@ -1,14 +1,8 @@
 package org.theiner.kinoxscanner.util;
 
-import android.app.Application;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.apache.xalan.xsltc.trax.SAX2DOM;
-import org.ccil.cowan.tagsoup.Parser;
 import org.theiner.kinoxscanner.async.CheckKinoxTask;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
@@ -16,20 +10,13 @@ import org.theiner.kinoxscanner.data.Film;
 import org.theiner.kinoxscanner.data.SearchRequest;
 import org.theiner.kinoxscanner.data.SearchResult;
 import org.theiner.kinoxscanner.data.Serie;
+import org.theiner.kinoxscanner.data.KinoxHosterResponse;
+import org.theiner.kinoxscanner.data.VideoLink;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,7 +29,6 @@ import java.util.regex.Pattern;
  * Created by TTheiner on 26.02.2016.
  */
 public class KinoxHelper {
-    private static final String userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36";
 
     public static List<CheckErgebnis> check(CheckKinoxTask task, KinoxScannerApplication myApp) {
 
@@ -52,13 +38,14 @@ public class KinoxHelper {
         int counter = 0;
 
         for(Film film : myApp.getFilme()) {
-            Document doc = getDocumentFromUrl("http://www.kinox.to/Stream/" + film.toQueryString());
+            Document doc = HTTPHelper.getDocumentFromUrl("http://www.kinox.to/Stream/" + film.toQueryString(), false);
             if(doc!=null) {
                 Element element = doc.getElementById("HosterList");
 
                 NodeList liElements = element.getElementsByTagName("li");
 
                 String currentDateStr = getMaxDateFromElements(liElements);
+                List<VideoLink> videoLinks = getVideoLinksFromElements(liElements);
 
                 // Vergleichen mit vorherigem Datum
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -75,7 +62,7 @@ public class KinoxHelper {
                     CheckErgebnis ergebnis = new CheckErgebnis();
                     ergebnis.name = film.getName();
                     ergebnis.datum = currentDateStr;
-                    ergebnis.videoLink = "";
+                    ergebnis.videoLinks = videoLinks;
                     ergebnis.foundElement = film;
                     result.add(ergebnis);
                 }
@@ -87,26 +74,66 @@ public class KinoxHelper {
         for(Serie serie : myApp.getSerien()) {
             String queryString = serie.toQueryString();
 
-            String HTML = getHtmlFromUrl("http://www.kinox.to/aGET/MirrorByEpisode/" + queryString);
-            Document serienDoc = getDocumentFromHTML("<html><body>" + HTML + "</body></html>");
+            String HTML = HTTPHelper.getHtmlFromUrl("http://www.kinox.to/aGET/MirrorByEpisode/" + queryString, false);
+            Document serienDoc = HTTPHelper.getDocumentFromHTML("<html><body>" + HTML + "</body></html>");
 
             Element element = serienDoc.getElementById("HosterList");
 
             if (element != null) {
                 NodeList liElements = element.getElementsByTagName("li");
 
-                String currentDateStr = getMaxDateFromElements(liElements);
+                List<VideoLink> videoLinks = getVideoLinksFromElements(liElements);
 
                 CheckErgebnis ergebnis = new CheckErgebnis();
                 ergebnis.name = serie.toString();
-                ergebnis.datum = currentDateStr;
-                ergebnis.videoLink = "";
+                ergebnis.datum = "";
+                ergebnis.videoLinks = videoLinks;
                 ergebnis.foundElement = serie;
                 result.add(ergebnis);
             }
             counter++;
             task.doProgress((int) ((counter / (float) gesamtZahl) * 100));
         }
+        return result;
+    }
+
+    private static List<VideoLink> getVideoLinksFromElements(NodeList liElements) {
+        List<VideoLink> result = new ArrayList<>();
+
+        for(int i=0; i < liElements.getLength(); i++) {
+            Element linode = (Element) liElements.item(i);
+
+            // Hosternummer bestimmen
+            NamedNodeMap attrMap = linode.getAttributes();
+            String idStr = attrMap.getNamedItem("id").getNodeValue();
+            Pattern pattern = Pattern.compile("(\\d+)");
+            Matcher matcher = pattern.matcher(idStr);
+            int id = 0;
+            if(matcher.find())
+                id = Integer.parseInt(matcher.group(1));
+
+            // Anzahl Mirrors bestimmen
+            String divContent = linode.getElementsByTagName("div").item(1).getTextContent();
+            pattern = Pattern.compile("\\/(\\d+)");
+            matcher = pattern.matcher(divContent);
+            int mirrorCount = 0;
+            if(matcher.find()) {
+                mirrorCount = Integer.parseInt(matcher.group(1));
+            }
+
+            switch(id) {
+                case 65:
+                    // VodLocker
+                    VideoLink videoLink = new VideoLink();
+                    videoLink.setHosterName("VodLocker.com");
+                    videoLink.setHosterNummer(id);
+                    videoLink.setMirrorCount(mirrorCount);
+                    result.add(videoLink);
+
+                    break;
+            }
+        }
+
         return result;
     }
 
@@ -139,239 +166,55 @@ public class KinoxHelper {
         return sdf.format(currentDate);
     }
 
-    public static List<Serie> getSerien() {
-        List<Serie> result = new ArrayList<Serie>();
+    private static String getVideoStreamLinkFromUrl(String strUrl) {
+        String json = HTTPHelper.getHtmlFromUrl(strUrl, false);
+        String response = "";
 
-        Serie twd = new Serie();
-        twd.setName("The Walking Dead");
-        twd.setAddr("The_Walking_Dead-1");
-        twd.setSeriesID(10437);
-        twd.setSeason(6);
-        twd.setEpisode(12);
-        result.add(twd);
-
-        Serie shameless = new Serie();
-        shameless.setName("Shameless");
-        shameless.setAddr("Shameless-2");
-        shameless.setSeriesID(39278);
-        shameless.setSeason(6);
-        shameless.setEpisode(1);
-        result.add(shameless);
-
-        Serie sn_en = new Serie();
-        sn_en.setName("Supernatural (en)");
-        sn_en.setAddr("Supernatural_german_subbed");
-        sn_en.setSeriesID(27249);
-        sn_en.setSeason(11);
-        sn_en.setEpisode(15);
-        result.add(sn_en);
-
-        Serie sn_de = new Serie();
-        sn_de.setName("Supernatural (de)");
-        sn_de.setAddr("Supernatural");
-        sn_de.setSeriesID(2375);
-        sn_de.setSeason(11);
-        sn_de.setEpisode(1);
-        result.add(sn_de);
-
-        Serie vikings = new Serie();
-        vikings.setName("Vikings");
-        vikings.setAddr("Vikings-1");
-        vikings.setSeriesID(46277);
-        vikings.setSeason(4);
-        vikings.setEpisode(1);
-        result.add(vikings);
-
-        Serie devious = new Serie();
-        devious.setName("Devious Maids");
-        devious.setAddr("Devious_Maids-1");
-        devious.setSeriesID(47777);
-        devious.setSeason(4);
-        devious.setEpisode(1);
-        result.add(devious);
-
-        Serie feartwd = new Serie();
-        feartwd.setName("Fear The Walking Dead");
-        feartwd.setAddr("Fear_the_Walking_Dead-1");
-        feartwd.setSeriesID(55976);
-        feartwd.setSeason(2);
-        feartwd.setEpisode(1);
-        result.add(feartwd);
-
-        Serie tmithc = new Serie();
-        tmithc.setName("The Man in the High Castle");
-        tmithc.setAddr("The_Man_in_the_High_Castle");
-        tmithc.setSeriesID(64040);
-        tmithc.setSeason(2);
-        tmithc.setEpisode(1);
-        result.add(tmithc);
-
-        Serie bcs = new Serie();
-        bcs.setName("Better Call Saul");
-        bcs.setAddr("Better_Call_Saul");
-        bcs.setSeriesID(54593);
-        bcs.setSeason(2);
-        bcs.setEpisode(4);
-        result.add(bcs);
-
-        Serie ol = new Serie();
-        ol.setName("Outlander");
-        ol.setAddr("Outlander-3");
-        ol.setSeriesID(54425);
-        ol.setSeason(2);
-        ol.setEpisode(1);
-        result.add(ol);
-
-        Serie ahs = new Serie();
-        ahs.setName("American Horror Story");
-        ahs.setAddr("American_Horror_Story-Die_dunkle_Seite_in_dir-1");
-        ahs.setSeriesID(37361);
-        ahs.setSeason(6);
-        ahs.setEpisode(1);
-        result.add(ahs);
-
-        Serie tbbt = new Serie();
-        tbbt.setName("The Big Bang Theory");
-        tbbt.setAddr("The_Big_Bang_Theory_german_subbed");
-        tbbt.setSeriesID(27242);
-        tbbt.setSeason(9);
-        tbbt.setEpisode(18);
-        result.add(tbbt);
-
-        return result;
-    }
-
-    public static List<Film> getFilme() {
-        List<Film> result = new ArrayList<Film>();
-
-        Film gh = new Film();
-        gh.setName("Gänsehaut");
-        gh.setAddr("Gaensehaut");
-        gh.setLastDate("04.03.2016");
-        result.add(gh);
-
-        Film panem = new Film();
-        panem.setName("Tribute von Panem 4 Teil 2");
-        panem.setAddr("Die_Tribute_von_Panem-Mockingjay_Teil_2");
-        panem.setLastDate("12.01.2016");
-        result.add(panem);
-
-        Film testament = new Film();
-        testament.setName("Das brandneue Testament");
-        testament.setAddr("Das_brandneue_Testament");
-        testament.setLastDate("25.02.2016");
-        result.add(testament);
-
-        Film deadpool = new Film();
-        deadpool.setName("Deadpool");
-        deadpool.setAddr("Deadpool");
-        deadpool.setLastDate("04.03.2016");
-        result.add(deadpool);
-
-        Film zoomania = new Film();
-        zoomania.setName("Zoomania");
-        zoomania.setAddr("Zoomania");
-        zoomania.setLastDate("25.02.2016");
-        result.add(zoomania);
-
-        return result;
-    }
-
-    private static Document getDocumentFromHTML(String html) {
-        Parser p = new Parser();
-        SAX2DOM sax2dom = null;
-        Document doc  = null;
-
-        try {
-
-            p.setFeature(Parser.namespacesFeature, false);
-            p.setFeature(Parser.namespacePrefixesFeature, false);
-            sax2dom = new SAX2DOM();
-            p.setContentHandler(sax2dom);
-            p.parse(new InputSource(new InputStreamReader(new ByteArrayInputStream(html.getBytes(Charset.defaultCharset())))));
-
-            doc = (Document) sax2dom.getDOM();
-        } catch (Exception e) {
-            // TODO handle exception
-        }
-
-
-        return doc;
-    }
-
-    private static Document getDocumentFromUrl(String strUrl) {
-        Parser p = new Parser();
-        SAX2DOM sax2dom = null;
-        Document doc  = null;
-
-        try {
-
-            URL url = new URL(strUrl);
-            URLConnection con = url.openConnection();
-
-            // force server to mimic specific Browser
-            con.setRequestProperty("User-Agent", userAgent);
-
-            con.setReadTimeout(15000);
-            con.connect();
-
-            p.setFeature(Parser.namespacesFeature, false);
-            p.setFeature(Parser.namespacePrefixesFeature, false);
-            sax2dom = new SAX2DOM();
-            p.setContentHandler(sax2dom);
-            p.parse(new InputSource(new InputStreamReader(con.getInputStream())));
-
-            doc = (Document) sax2dom.getDOM();
-        } catch (Exception e) {
-            // TODO handle exception
-        }
-
-
-        return doc;
-    }
-
-    private static String getHtmlFromUrl(String strUrl) {
-        URL url = null;
-        BufferedReader reader = null;
-        StringBuilder sb = null;
-        String returnValue = "";
-
-        try {
-            url = new URL(strUrl);
-            URLConnection con = url.openConnection();
-
-            // force server to mimic specific Browser
-            con.setRequestProperty("User-Agent", userAgent);
-
-            con.setReadTimeout(15000);
-            con.connect();
-
-            reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            sb = new StringBuilder();
-
-            String line = null;
-            while((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
+        KinoxHosterResponse kinoxHosterResponse = null;
+        if(!"".equals(json)) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                kinoxHosterResponse = mapper.readValue(json, new TypeReference<KinoxHosterResponse>() {
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            returnValue = sb.toString();
-        } catch(Exception e) {
-            e.printStackTrace();
-        } finally {
-            if(reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+        }
+
+        if(kinoxHosterResponse != null) {
+            String hosterURL = "";
+            // parse Link from HTML
+            String stream = kinoxHosterResponse.getStream();
+            Pattern pattern = Pattern.compile("href=\"(.*)\"\\starget=\"_blank\">");
+            Matcher matcher = pattern.matcher(stream);
+            if(matcher.find()) {
+                hosterURL = matcher.group(1);
+            }
+
+            if(!"".equals(hosterURL)) {
+                // get MP4 file link directly (with mobile browser setup)
+                Document vodLockerDocument = HTTPHelper.getDocumentFromUrl(hosterURL, true);
+
+                NodeList sources = vodLockerDocument.getElementsByTagName("source");
+                if(sources.getLength()>0) {
+                    Element source = (Element) sources.item(0);
+
+                    NamedNodeMap attrMap = source.getAttributes();
+                    response = attrMap.getNamedItem("src").getNodeValue();
+
                 }
+
             }
         }
-        return returnValue;
+
+        return response;
     }
 
     public static List<SearchResult> search(SearchRequest suche) {
         String suchString = suche.getSuchString().replaceAll(" ", "+");
 
-        Document doc = getDocumentFromUrl("http://www.kinox.to/Search.html?q=" + suchString);
+        Document doc = HTTPHelper.getDocumentFromUrl("http://www.kinox.to/Search.html?q=" + suchString, false);
 
         List<SearchResult> result = new ArrayList<SearchResult>();
 
@@ -437,7 +280,7 @@ public class KinoxHelper {
 
     private static int getSeriesID(String addr) {
         int result = -1;
-        Document doc = getDocumentFromUrl("http://www.kinox.to/Stream/" + addr + ".html");
+        Document doc = HTTPHelper.getDocumentFromUrl("http://www.kinox.to/Stream/" + addr + ".html", false);
 
         // SeriesID ist Teil des rel-Attributs der id "SeasonSelection"
         Element select = doc.getElementById("SeasonSelection");
