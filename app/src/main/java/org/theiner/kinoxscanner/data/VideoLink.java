@@ -3,12 +3,11 @@ package org.theiner.kinoxscanner.data;
 import java.io.Serializable;
 
 /**
- * Created by TTheiner on 10.03.2016.
+ * Created by TTheiner on 21.03.2016.
  */
 public class VideoLink implements Serializable{
     private String hosterName;
-    private int hosterNummer;
-    private int mirrorCount;
+    private String videoURL;
 
     private static final long serialVersionUID = 0L;
 
@@ -20,19 +19,16 @@ public class VideoLink implements Serializable{
         this.hosterName = hosterName;
     }
 
-    public int getHosterNummer() {
-        return hosterNummer;
+    public String getVideoURL() {
+        return videoURL;
     }
 
-    public void setHosterNummer(int hosterNummer) {
-        this.hosterNummer = hosterNummer;
+    public void setVideoURL(String videoURL) {
+        this.videoURL = videoURL;
     }
 
-    public int getMirrorCount() {
-        return mirrorCount;
-    }
-
-    public void setMirrorCount(int mirrorCount) {
-        this.mirrorCount = mirrorCount;
+    @Override
+    public String toString() {
+        return videoURL;
     }
 }

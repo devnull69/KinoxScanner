@@ -4,14 +4,18 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.theiner.kinoxscanner.async.CheckKinoxTask;
+import org.theiner.kinoxscanner.async.CollectVideoLinksTask;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
 import org.theiner.kinoxscanner.data.Film;
+import org.theiner.kinoxscanner.data.KinoxElement;
 import org.theiner.kinoxscanner.data.SearchRequest;
 import org.theiner.kinoxscanner.data.SearchResult;
 import org.theiner.kinoxscanner.data.Serie;
 import org.theiner.kinoxscanner.data.KinoxHosterResponse;
+import org.theiner.kinoxscanner.data.HosterMirror;
 import org.theiner.kinoxscanner.data.VideoLink;
+import org.theiner.kinoxscanner.strategien.VodLockerStrategie;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -45,7 +49,7 @@ public class KinoxHelper {
                 NodeList liElements = element.getElementsByTagName("li");
 
                 String currentDateStr = getMaxDateFromElements(liElements);
-                List<VideoLink> videoLinks = getVideoLinksFromElements(liElements);
+                List<HosterMirror> hosterMirrors = getVideoLinksFromElements(liElements);
 
                 // Vergleichen mit vorherigem Datum
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -62,7 +66,7 @@ public class KinoxHelper {
                     CheckErgebnis ergebnis = new CheckErgebnis();
                     ergebnis.name = film.getName();
                     ergebnis.datum = currentDateStr;
-                    ergebnis.videoLinks = videoLinks;
+                    ergebnis.hosterMirrors = hosterMirrors;
                     ergebnis.foundElement = film;
                     result.add(ergebnis);
                 }
@@ -82,12 +86,12 @@ public class KinoxHelper {
             if (element != null) {
                 NodeList liElements = element.getElementsByTagName("li");
 
-                List<VideoLink> videoLinks = getVideoLinksFromElements(liElements);
+                List<HosterMirror> hosterMirrors = getVideoLinksFromElements(liElements);
 
                 CheckErgebnis ergebnis = new CheckErgebnis();
                 ergebnis.name = serie.toString();
                 ergebnis.datum = "";
-                ergebnis.videoLinks = videoLinks;
+                ergebnis.hosterMirrors = hosterMirrors;
                 ergebnis.foundElement = serie;
                 result.add(ergebnis);
             }
@@ -97,8 +101,8 @@ public class KinoxHelper {
         return result;
     }
 
-    private static List<VideoLink> getVideoLinksFromElements(NodeList liElements) {
-        List<VideoLink> result = new ArrayList<>();
+    private static List<HosterMirror> getVideoLinksFromElements(NodeList liElements) {
+        List<HosterMirror> result = new ArrayList<>();
 
         for(int i=0; i < liElements.getLength(); i++) {
             Element linode = (Element) liElements.item(i);
@@ -124,11 +128,10 @@ public class KinoxHelper {
             switch(id) {
                 case 65:
                     // VodLocker
-                    VideoLink videoLink = new VideoLink();
-                    videoLink.setHosterName("VodLocker.com");
-                    videoLink.setHosterNummer(id);
-                    videoLink.setMirrorCount(mirrorCount);
-                    result.add(videoLink);
+                    HosterMirror hosterMirror = new HosterMirror();
+                    hosterMirror.setMirrorCount(mirrorCount);
+                    hosterMirror.setStrategie(new VodLockerStrategie());
+                    result.add(hosterMirror);
 
                     break;
             }
@@ -166,7 +169,7 @@ public class KinoxHelper {
         return sdf.format(currentDate);
     }
 
-    private static String getVideoStreamLinkFromUrl(String strUrl) {
+    private static String getHosterURL(String strUrl) {
         String json = HTTPHelper.getHtmlFromUrl(strUrl, false);
         String response = "";
 
@@ -183,28 +186,12 @@ public class KinoxHelper {
         }
 
         if(kinoxHosterResponse != null) {
-            String hosterURL = "";
             // parse Link from HTML
             String stream = kinoxHosterResponse.getStream();
             Pattern pattern = Pattern.compile("href=\"(.*)\"\\starget=\"_blank\">");
             Matcher matcher = pattern.matcher(stream);
             if(matcher.find()) {
-                hosterURL = matcher.group(1);
-            }
-
-            if(!"".equals(hosterURL)) {
-                // get MP4 file link directly (with mobile browser setup)
-                Document vodLockerDocument = HTTPHelper.getDocumentFromUrl(hosterURL, true);
-
-                NodeList sources = vodLockerDocument.getElementsByTagName("source");
-                if(sources.getLength()>0) {
-                    Element source = (Element) sources.item(0);
-
-                    NamedNodeMap attrMap = source.getAttributes();
-                    response = attrMap.getNamedItem("src").getNodeValue();
-
-                }
-
+                response = matcher.group(1);
             }
         }
 
@@ -295,6 +282,45 @@ public class KinoxHelper {
             }
         }
 
+        return result;
+    }
+
+    public static List<VideoLink> collectVideoLinks(CollectVideoLinksTask task, CheckErgebnis currentErgebnis) {
+        List<VideoLink> result = new ArrayList<>();
+        for(int hosterIdx=0; hosterIdx<currentErgebnis.hosterMirrors.size(); hosterIdx++) {
+            HosterMirror currentHoster = currentErgebnis.hosterMirrors.get(hosterIdx);
+            for(int mirror=1; mirror<=currentHoster.getMirrorCount(); mirror++) {
+                String url = "";
+                if(currentErgebnis.foundElement instanceof Serie) {
+                    Serie currentSerie = (Serie) currentErgebnis.foundElement;
+                    url = "http://www.kinox.to/aGET/Mirror/" + currentSerie.getAddr() + "&Hoster=" + currentHoster.getStrategie().hosterNummer + "&Mirror=" + mirror + "&Season=" + currentSerie.getSeason() + "&Episode=" + currentSerie.getEpisode();
+                    String hosterURL = getHosterURL(url);
+
+                    String videoStreamURL = currentHoster.getStrategie().getVideoURL(hosterURL);
+
+                    if(!"".equals(videoStreamURL)) {
+                        VideoLink neuerLink = new VideoLink();
+                        neuerLink.setHosterName(currentHoster.getStrategie().hosterName);
+                        neuerLink.setVideoURL(videoStreamURL);
+                        result.add(neuerLink);
+                    }
+                } else {
+                    Film currentFilm = (Film) currentErgebnis.foundElement;
+                    url = "http://www.kinox.to/aGET/Mirror/" + currentFilm.getAddr() + "&Hoster=" + currentHoster.getStrategie().hosterNummer + "&Mirror=" + mirror;
+                    String hosterURL = getHosterURL(url);
+
+                    String videoStreamURL = currentHoster.getStrategie().getVideoURL(hosterURL);
+
+                    if(!"".equals(videoStreamURL)) {
+                        VideoLink neuerLink = new VideoLink();
+                        neuerLink.setHosterName(currentHoster.getStrategie().hosterName);
+                        neuerLink.setVideoURL(videoStreamURL);
+                        result.add(neuerLink);
+                    }
+                }
+                task.doProgress((int) ((mirror / (float) currentHoster.getMirrorCount()) * 100));
+            }
+        }
         return result;
     }
 }

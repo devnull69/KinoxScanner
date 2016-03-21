@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Serie komplett entfernen"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="90dp"
         android:id="@+id/btnSerie3"
         android:onClick="onRemoveSeries"/>
 
@@ -61,15 +61,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Film komplett entfernen"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="90dp"
         android:id="@+id/btnFilm2"
         android:onClick="onRemoveFilm"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="90dp"
+        android:layout_marginLeft="223dp"
         android:text="Abbrechen"
         android:onClick="onExit"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="160dp"
+        android:id="@+id/lvVideoLinks"></ListView>
 
 </RelativeLayout>

@@ -10,8 +10,9 @@ import java.util.List;
 public class CheckErgebnis implements Serializable{
     public String name;
     public String datum;
-    public List<VideoLink> videoLinks = new ArrayList<>();
+    public List<HosterMirror> hosterMirrors = new ArrayList<>();
     public KinoxElement foundElement;
+    public List<VideoLink> videoLinks = null;
 
     private static final long serialVersionUID = 0L;
 

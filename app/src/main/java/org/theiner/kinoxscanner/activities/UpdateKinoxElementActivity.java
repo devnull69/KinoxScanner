@@ -2,21 +2,29 @@ package org.theiner.kinoxscanner.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.theiner.kinoxscanner.R;
+import org.theiner.kinoxscanner.adapter.SearchAdapter;
+import org.theiner.kinoxscanner.adapter.VideoLinkAdapter;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
 import org.theiner.kinoxscanner.data.Film;
 import org.theiner.kinoxscanner.data.KinoxElement;
 import org.theiner.kinoxscanner.data.Serie;
+import org.theiner.kinoxscanner.data.VideoLink;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,6 +35,9 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
     private KinoxScannerApplication myApp;
     private CheckErgebnis currentErgebnis;
     private int currentIndex;
+
+    private BaseAdapter adapter = null;
+    private ListView lvVideoLinks = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +83,22 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
 
             setTitle("Film aktualisieren");
         }
+
+        // Video-Links in Listview anzeigen
+        adapter = new VideoLinkAdapter(this, currentErgebnis.videoLinks);
+        lvVideoLinks = (ListView) findViewById(R.id.lvVideoLinks);
+        lvVideoLinks.setAdapter(adapter);
+
+        // Bei Click => Video abspielen
+        lvVideoLinks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> listview, View view, int position, long id) {
+                VideoLink selected = (VideoLink) listview.getItemAtPosition(position);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.parse(selected.getVideoURL()), "video/mp4");
+                startActivity(intent);
+            }
+        });
     }
 
     public void onExit(View view) {

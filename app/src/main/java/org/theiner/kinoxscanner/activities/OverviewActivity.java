@@ -1,46 +1,33 @@
 package org.theiner.kinoxscanner.activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewManager;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.theiner.kinoxscanner.R;
 import org.theiner.kinoxscanner.async.CheckKinoxTask;
+import org.theiner.kinoxscanner.async.CollectVideoLinksTask;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
-import org.theiner.kinoxscanner.data.Film;
 import org.theiner.kinoxscanner.data.Serie;
 import org.theiner.kinoxscanner.services.AlarmStarterService;
 import org.theiner.kinoxscanner.util.AlarmHelper;
-import org.theiner.kinoxscanner.util.KinoxHelper;
 
-import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class OverviewActivity extends AppCompatActivity {
 
@@ -72,43 +59,61 @@ public class OverviewActivity extends AppCompatActivity {
 
                 ergebnisListe = result;
                 txtStatus = (TextView) findViewById(R.id.txtStatus);
-                ((ViewManager) pbProgress.getParent()).removeView(pbProgress);
-                //pbProgress.setVisibility(View.INVISIBLE);
                 if(ergebnisListe.size()==0) {
                     txtStatus.setText("Keine Ergebnisse gefunden.");
+                    // Progress-Bar verstecken
+                    ((ViewManager) pbProgress.getParent()).removeView(pbProgress);
                 } else {
-                    txtStatus.setText("Folgende Downloads stehen bereit:");
-                    adapter = new ArrayAdapter<CheckErgebnis>(me, android.R.layout.simple_list_item_1, ergebnisListe);
-                    lvDownload = (ListView) findViewById(R.id.lvDownloads);
-                    lvDownload.setAdapter(adapter);
-
-                    lvDownload.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    txtStatus.setText("Video-Links werden gesammelt ...");
+                    // Video-Links sammeln
+                    pbProgress.setProgress(0);
+                    final int alteAnzahl = result.size();
+                    CollectVideoLinksTask.CheckCompleteListener ccl2 = new CollectVideoLinksTask.CheckCompleteListener() {
                         @Override
-                        public void onItemClick(AdapterView<?> listview, View view, int position, long id) {
-                            currentListIndex = position;
-                            CheckErgebnis selected = (CheckErgebnis) listview.getItemAtPosition(position);
-                            int currentIndex = -1;
-                            if(selected.foundElement instanceof Serie)
-                                currentIndex = myApp.getSerien().indexOf(selected.foundElement);
-                            else
-                                currentIndex = myApp.getFilme().indexOf(selected.foundElement);
+                        public void onCheckComplete(String result) {
+                            // Progress-Bar verstecken
+                            ((ViewManager) pbProgress.getParent()).removeView(pbProgress);
+                            txtStatus.setText("Folgende Downloads stehen bereit:");
+                            adapter = new ArrayAdapter<CheckErgebnis>(me, android.R.layout.simple_list_item_1, ergebnisListe);
+                            lvDownload = (ListView) findViewById(R.id.lvDownloads);
+                            lvDownload.setAdapter(adapter);
 
-                            Intent intent = new Intent(me, UpdateKinoxElementActivity.class);
-                            Bundle extras = new Bundle();
-                            extras.putSerializable(EXTRA_MESSAGE_CHECKERGEBNIS, selected);
-                            extras.putInt(EXTRA_MESSAGE_CURRENTINDEX, currentIndex);
-                            intent.putExtras(extras);
-                            startActivityForResult(intent, REQUEST_DELETE_LINE);
-//                                Intent intent = new Intent(Intent.ACTION_VIEW);
-//                                intent.setDataAndType(Uri.parse(selected.videoLink), "video/mp4");
-//                                startActivity(intent);
+                            lvDownload.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> listview, View view, int position, long id) {
+                                    currentListIndex = position;
+                                    CheckErgebnis selected = (CheckErgebnis) listview.getItemAtPosition(position);
+                                    int currentIndex = -1;
+                                    if(selected.foundElement instanceof Serie)
+                                        currentIndex = myApp.getSerien().indexOf(selected.foundElement);
+                                    else
+                                        currentIndex = myApp.getFilme().indexOf(selected.foundElement);
+
+                                    Intent intent = new Intent(me, UpdateKinoxElementActivity.class);
+                                    Bundle extras = new Bundle();
+                                    extras.putSerializable(EXTRA_MESSAGE_CHECKERGEBNIS, selected);
+                                    extras.putInt(EXTRA_MESSAGE_CURRENTINDEX, currentIndex);
+                                    intent.putExtras(extras);
+                                    startActivityForResult(intent, REQUEST_DELETE_LINE);
+                                }
+                            });
+
+                            SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putInt("alteAnzahl", alteAnzahl);
+                            editor.commit();
                         }
-                    });
 
-                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putInt("alteAnzahl", result.size());
-                    editor.commit();
+                        @Override
+                        public void onProgress(Integer progress) {
+                            pbProgress.setProgress(progress);
+                        }
+                    };
+
+                    CollectVideoLinksTask myVideoTask = new CollectVideoLinksTask(ccl2);
+                    CheckErgebnis[] ergArray = new CheckErgebnis[result.size()];
+                    ergArray = result.toArray(ergArray);
+                    myVideoTask.execute(ergArray);
                 }
             }
 
