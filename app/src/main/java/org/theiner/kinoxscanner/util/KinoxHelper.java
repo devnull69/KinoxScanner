@@ -8,7 +8,6 @@ import org.theiner.kinoxscanner.async.CollectVideoLinksTask;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
 import org.theiner.kinoxscanner.data.Film;
-import org.theiner.kinoxscanner.data.KinoxElement;
 import org.theiner.kinoxscanner.data.SearchRequest;
 import org.theiner.kinoxscanner.data.SearchResult;
 import org.theiner.kinoxscanner.data.Serie;
@@ -16,6 +15,7 @@ import org.theiner.kinoxscanner.data.KinoxHosterResponse;
 import org.theiner.kinoxscanner.data.HosterMirror;
 import org.theiner.kinoxscanner.data.VideoLink;
 import org.theiner.kinoxscanner.strategien.VidBullStrategie;
+import org.theiner.kinoxscanner.strategien.VidziStrategie;
 import org.theiner.kinoxscanner.strategien.VodLockerStrategie;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -141,6 +141,14 @@ public class KinoxHelper {
                     hosterMirror = new HosterMirror();
                     hosterMirror.setMirrorCount(mirrorCount);
                     hosterMirror.setStrategie(new VodLockerStrategie());
+                    result.add(hosterMirror);
+
+                    break;
+                case 68:
+                    // Vidzi
+                    hosterMirror = new HosterMirror();
+                    hosterMirror.setMirrorCount(mirrorCount);
+                    hosterMirror.setStrategie(new VidziStrategie());
                     result.add(hosterMirror);
 
                     break;
