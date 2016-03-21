@@ -15,6 +15,7 @@ import org.theiner.kinoxscanner.data.Serie;
 import org.theiner.kinoxscanner.data.KinoxHosterResponse;
 import org.theiner.kinoxscanner.data.HosterMirror;
 import org.theiner.kinoxscanner.data.VideoLink;
+import org.theiner.kinoxscanner.strategien.VidBullStrategie;
 import org.theiner.kinoxscanner.strategien.VodLockerStrategie;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -125,10 +126,19 @@ public class KinoxHelper {
                 mirrorCount = Integer.parseInt(matcher.group(1));
             }
 
+            HosterMirror hosterMirror;
             switch(id) {
+                case 50:
+                    // VidBull
+                    hosterMirror = new HosterMirror();
+                    hosterMirror.setMirrorCount(mirrorCount);
+                    hosterMirror.setStrategie(new VidBullStrategie());
+                    result.add(hosterMirror);
+
+                    break;
                 case 65:
                     // VodLocker
-                    HosterMirror hosterMirror = new HosterMirror();
+                    hosterMirror = new HosterMirror();
                     hosterMirror.setMirrorCount(mirrorCount);
                     hosterMirror.setStrategie(new VodLockerStrategie());
                     result.add(hosterMirror);
