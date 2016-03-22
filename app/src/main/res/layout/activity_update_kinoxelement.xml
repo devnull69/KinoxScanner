@@ -73,6 +73,13 @@
         android:text="Abbrechen"
         android:onClick="onExit"/>
 
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/pbProgress"
+        android:layout_marginTop="140dp"
+        style="@android:style/Widget.ProgressBar.Horizontal"/>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

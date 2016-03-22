@@ -32,12 +32,9 @@ public class CollectVideoLinksTask extends AsyncTask<CheckErgebnis, Integer, Str
 
     @Override
     protected String doInBackground(CheckErgebnis... checkErgebnisse) {
-        for(int ergebnisIdx=0; ergebnisIdx<checkErgebnisse.length; ergebnisIdx++) {
-            doProgress(0);
-            CheckErgebnis currentErgebnis = checkErgebnisse[ergebnisIdx];
-            List<VideoLink> videoLinks = KinoxHelper.collectVideoLinks(this, currentErgebnis);
-            currentErgebnis.videoLinks = videoLinks;
-        }
+        CheckErgebnis currentErgebnis = checkErgebnisse[0];
+        List<VideoLink> videoLinks = KinoxHelper.collectVideoLinks(this, currentErgebnis);
+        currentErgebnis.videoLinks = videoLinks;
         return "ok";
     }
 

@@ -64,56 +64,37 @@ public class OverviewActivity extends AppCompatActivity {
                     // Progress-Bar verstecken
                     ((ViewManager) pbProgress.getParent()).removeView(pbProgress);
                 } else {
-                    txtStatus.setText("Video-Links werden gesammelt ...");
-                    // Video-Links sammeln
-                    pbProgress.setProgress(0);
-                    final int alteAnzahl = result.size();
-                    CollectVideoLinksTask.CheckCompleteListener ccl2 = new CollectVideoLinksTask.CheckCompleteListener() {
+                    // Progress-Bar verstecken
+                    ((ViewManager) pbProgress.getParent()).removeView(pbProgress);
+                    txtStatus.setText("Folgende Downloads stehen bereit:");
+                    adapter = new ArrayAdapter<CheckErgebnis>(me, android.R.layout.simple_list_item_1, ergebnisListe);
+                    lvDownload = (ListView) findViewById(R.id.lvDownloads);
+                    lvDownload.setAdapter(adapter);
+
+                    lvDownload.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
-                        public void onCheckComplete(String result) {
-                            // Progress-Bar verstecken
-                            ((ViewManager) pbProgress.getParent()).removeView(pbProgress);
-                            txtStatus.setText("Folgende Downloads stehen bereit:");
-                            adapter = new ArrayAdapter<CheckErgebnis>(me, android.R.layout.simple_list_item_1, ergebnisListe);
-                            lvDownload = (ListView) findViewById(R.id.lvDownloads);
-                            lvDownload.setAdapter(adapter);
+                        public void onItemClick(AdapterView<?> listview, View view, int position, long id) {
+                            currentListIndex = position;
+                            CheckErgebnis selected = (CheckErgebnis) listview.getItemAtPosition(position);
+                            int currentIndex = -1;
+                            if(selected.foundElement instanceof Serie)
+                                currentIndex = myApp.getSerien().indexOf(selected.foundElement);
+                            else
+                                currentIndex = myApp.getFilme().indexOf(selected.foundElement);
 
-                            lvDownload.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> listview, View view, int position, long id) {
-                                    currentListIndex = position;
-                                    CheckErgebnis selected = (CheckErgebnis) listview.getItemAtPosition(position);
-                                    int currentIndex = -1;
-                                    if(selected.foundElement instanceof Serie)
-                                        currentIndex = myApp.getSerien().indexOf(selected.foundElement);
-                                    else
-                                        currentIndex = myApp.getFilme().indexOf(selected.foundElement);
-
-                                    Intent intent = new Intent(me, UpdateKinoxElementActivity.class);
-                                    Bundle extras = new Bundle();
-                                    extras.putSerializable(EXTRA_MESSAGE_CHECKERGEBNIS, selected);
-                                    extras.putInt(EXTRA_MESSAGE_CURRENTINDEX, currentIndex);
-                                    intent.putExtras(extras);
-                                    startActivityForResult(intent, REQUEST_DELETE_LINE);
-                                }
-                            });
-
-                            SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-                            SharedPreferences.Editor editor = settings.edit();
-                            editor.putInt("alteAnzahl", alteAnzahl);
-                            editor.commit();
+                            Intent intent = new Intent(me, UpdateKinoxElementActivity.class);
+                            Bundle extras = new Bundle();
+                            extras.putSerializable(EXTRA_MESSAGE_CHECKERGEBNIS, selected);
+                            extras.putInt(EXTRA_MESSAGE_CURRENTINDEX, currentIndex);
+                            intent.putExtras(extras);
+                            startActivityForResult(intent, REQUEST_DELETE_LINE);
                         }
+                    });
 
-                        @Override
-                        public void onProgress(Integer progress) {
-                            pbProgress.setProgress(progress);
-                        }
-                    };
-
-                    CollectVideoLinksTask myVideoTask = new CollectVideoLinksTask(ccl2);
-                    CheckErgebnis[] ergArray = new CheckErgebnis[result.size()];
-                    ergArray = result.toArray(ergArray);
-                    myVideoTask.execute(ergArray);
+                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putInt("alteAnzahl", result.size());
+                    editor.commit();
                 }
             }
 

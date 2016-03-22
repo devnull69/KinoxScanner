@@ -304,7 +304,12 @@ public class KinoxHelper {
     }
 
     public static List<VideoLink> collectVideoLinks(CollectVideoLinksTask task, CheckErgebnis currentErgebnis) {
-        List<VideoLink> result = new ArrayList<>();
+        List<VideoLink> result;
+        if(currentErgebnis.videoLinks == null) {
+            result = new ArrayList<>();
+        } else {
+            result = currentErgebnis.videoLinks;
+        }
         for(int hosterIdx=0; hosterIdx<currentErgebnis.hosterMirrors.size(); hosterIdx++) {
             HosterMirror currentHoster = currentErgebnis.hosterMirrors.get(hosterIdx);
             for(int mirror=1; mirror<=currentHoster.getMirrorCount(); mirror++) {

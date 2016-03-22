@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.theiner.kinoxscanner.R;
 import org.theiner.kinoxscanner.adapter.SearchAdapter;
 import org.theiner.kinoxscanner.adapter.VideoLinkAdapter;
+import org.theiner.kinoxscanner.async.CollectVideoLinksTask;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
 import org.theiner.kinoxscanner.data.Film;
@@ -27,6 +29,7 @@ import org.theiner.kinoxscanner.data.Serie;
 import org.theiner.kinoxscanner.data.VideoLink;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class UpdateKinoxElementActivity extends AppCompatActivity {
@@ -84,7 +87,11 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
             setTitle("Film aktualisieren");
         }
 
+        final ProgressBar pbProgress = (ProgressBar) findViewById(R.id.pbProgress);
+
         // Video-Links in Listview anzeigen
+        if(currentErgebnis.videoLinks == null)
+            currentErgebnis.videoLinks = new ArrayList<VideoLink>();
         adapter = new VideoLinkAdapter(this, currentErgebnis.videoLinks);
         lvVideoLinks = (ListView) findViewById(R.id.lvVideoLinks);
         lvVideoLinks.setAdapter(adapter);
@@ -99,6 +106,23 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // Video-Links sammeln für currentErgebnis
+        CollectVideoLinksTask.CheckCompleteListener ccl = new CollectVideoLinksTask.CheckCompleteListener() {
+            @Override
+            public void onCheckComplete(String result) {
+                ((ViewManager) pbProgress.getParent()).removeView(pbProgress);
+            }
+
+            @Override
+            public void onProgress(Integer progress) {
+                pbProgress.setProgress(progress);
+                adapter.notifyDataSetChanged();
+            }
+        };
+
+        CollectVideoLinksTask myTask = new CollectVideoLinksTask(ccl);
+        myTask.execute(currentErgebnis);
     }
 
     public void onExit(View view) {
