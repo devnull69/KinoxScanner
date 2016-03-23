@@ -130,18 +130,6 @@ public class OverviewActivity extends AppCompatActivity {
 
         SharedPreferences.Editor myEditor = settings.edit();
 
-        // TODO:Entfernen
-//        ObjectMapper mapper = new ObjectMapper();
-//        List<Film> filme = KinoxHelper.getFilme();
-//        String jsonFilme = "[]";
-//        try {
-//            jsonFilme = mapper.writeValueAsString(filme);
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
-//        myEditor.putString("filme", jsonFilme);
-        // TODO: END
-
         myEditor.putFloat("multiplier", multiplier);
 
         myEditor.commit();
