@@ -68,6 +68,8 @@ public class OverviewActivity extends AppCompatActivity {
                 ergebnisListe = result;
                 txtStatus = (TextView) findViewById(R.id.txtStatus);
                 if(ergebnisListe.size()==0) {
+                    txtStatus.setTypeface(Typeface.DEFAULT);
+
                     txtStatus.setText("Keine Ergebnisse gefunden.");
                     // Progress-Bar verstecken
                     //((ViewManager) pbProgress.getParent()).removeView(pbProgress);
@@ -76,6 +78,7 @@ public class OverviewActivity extends AppCompatActivity {
                     // Progress-Bar verstecken
                     //((ViewManager) pbProgress.getParent()).removeView(pbProgress);
                     pbProgress.setVisibility(View.GONE);
+                    txtStatus.setTypeface(Typeface.DEFAULT);
                     txtStatus.setText("Folgende Downloads stehen bereit:");
                     adapter = new ArrayAdapter<CheckErgebnis>(me, android.R.layout.simple_list_item_1, ergebnisListe);
                     lvDownload = (ListView) findViewById(R.id.lvDownloads);
@@ -201,6 +204,7 @@ public class OverviewActivity extends AppCompatActivity {
 
                     // Evtl. Überschrift ändern
                     if(ergebnisListe.size() == 0) {
+                        txtStatus.setTypeface(Typeface.DEFAULT);
                         txtStatus.setText("Keine Ergebnisse gefunden.");
                     }
                 }
