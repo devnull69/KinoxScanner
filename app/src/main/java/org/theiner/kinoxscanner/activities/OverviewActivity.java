@@ -2,8 +2,12 @@ package org.theiner.kinoxscanner.activities;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -143,7 +147,20 @@ public class OverviewActivity extends AppCompatActivity {
         myEditor.commit();
 
         pbProgress = (ProgressBar) findViewById(R.id.pbProgress);
-        zeigeWerte();
+
+        // Bei bestehender Netzwerkverbindung:
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected())
+            zeigeWerte();
+        else {
+            ((ViewManager) pbProgress.getParent()).removeView(pbProgress);
+            txtStatus = (TextView) findViewById(R.id.txtStatus);
+            txtStatus.setTypeface(Typeface.DEFAULT_BOLD);
+            txtStatus.setText("Es besteht derzeit keine Netzwerkverbindung!");
+        }
+
 
 
         startService(new Intent(this, AlarmStarterService.class));
