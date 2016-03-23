@@ -39,7 +39,8 @@
 
         <activity
             android:name=".activities.UpdateKinoxElementActivity"
-            android:label="@string/update_serie" />
+            android:label="@string/update_serie"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity
             android:name=".activities.ManageSerienActivity"
             android:label="Serien verwalten" />
