@@ -16,6 +16,7 @@ import android.view.ViewManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -51,6 +52,7 @@ public class OverviewActivity extends AppCompatActivity {
     private BaseAdapter adapter = null;
     private TextView txtStatus = null;
     private ProgressBar pbProgress = null;
+    private Button btnScanAgain = null;
 
     private int currentListIndex = -1;
 
@@ -61,15 +63,19 @@ public class OverviewActivity extends AppCompatActivity {
             @Override
             public void onCheckComplete(List<CheckErgebnis> result) {
 
+                btnScanAgain.setEnabled(true);
+
                 ergebnisListe = result;
                 txtStatus = (TextView) findViewById(R.id.txtStatus);
                 if(ergebnisListe.size()==0) {
                     txtStatus.setText("Keine Ergebnisse gefunden.");
                     // Progress-Bar verstecken
-                    ((ViewManager) pbProgress.getParent()).removeView(pbProgress);
+                    //((ViewManager) pbProgress.getParent()).removeView(pbProgress);
+                    pbProgress.setVisibility(View.GONE);
                 } else {
                     // Progress-Bar verstecken
-                    ((ViewManager) pbProgress.getParent()).removeView(pbProgress);
+                    //((ViewManager) pbProgress.getParent()).removeView(pbProgress);
+                    pbProgress.setVisibility(View.GONE);
                     txtStatus.setText("Folgende Downloads stehen bereit:");
                     adapter = new ArrayAdapter<CheckErgebnis>(me, android.R.layout.simple_list_item_1, ergebnisListe);
                     lvDownload = (ListView) findViewById(R.id.lvDownloads);
@@ -135,6 +141,7 @@ public class OverviewActivity extends AppCompatActivity {
         myEditor.commit();
 
         pbProgress = (ProgressBar) findViewById(R.id.pbProgress);
+        btnScanAgain = (Button) findViewById(R.id.btnScanAgain);
 
         // Bei bestehender Netzwerkverbindung:
         ConnectivityManager connMgr = (ConnectivityManager)
@@ -143,7 +150,11 @@ public class OverviewActivity extends AppCompatActivity {
         if (networkInfo != null && networkInfo.isConnected())
             zeigeWerte();
         else {
-            ((ViewManager) pbProgress.getParent()).removeView(pbProgress);
+            //((ViewManager) pbProgress.getParent()).removeView(pbProgress);
+
+            btnScanAgain.setEnabled(true);
+
+            pbProgress.setVisibility(View.GONE);
             txtStatus = (TextView) findViewById(R.id.txtStatus);
             txtStatus.setTypeface(Typeface.DEFAULT_BOLD);
             txtStatus.setText("Es besteht derzeit keine Netzwerkverbindung!");
@@ -210,5 +221,43 @@ public class OverviewActivity extends AppCompatActivity {
     public void onManageFilme(View view) {
         Intent intent = new Intent(this, ManageFilmeActivity.class);
         startActivity(intent);
+    }
+
+    public void onScanAgain(View view) {
+        // Ursprungszustand herstellen und dann Werte zeigen, falls Internetverbindung besteht
+
+        // Progressbar einschalten und auf 0 setzen
+        pbProgress.setVisibility(View.VISIBLE);
+        pbProgress.setProgress(0);
+
+        //Button "Erneut scannen" disabled
+        btnScanAgain.setEnabled(false);
+
+        //Statustext löschen
+        txtStatus.setText("");
+
+        // ListView leeren falls nötig
+        if(adapter!= null) {
+            ergebnisListe.clear();
+            adapter.notifyDataSetChanged();
+        }
+
+        // Bei bestehender Netzwerkverbindung:
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected())
+            zeigeWerte();
+        else {
+
+            btnScanAgain.setEnabled(true);
+
+            //((ViewManager) pbProgress.getParent()).removeView(pbProgress);
+            pbProgress.setVisibility(View.GONE);
+            txtStatus = (TextView) findViewById(R.id.txtStatus);
+            txtStatus.setTypeface(Typeface.DEFAULT_BOLD);
+            txtStatus.setText("Es besteht derzeit keine Netzwerkverbindung!");
+        }
+
     }
 }

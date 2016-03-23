@@ -111,7 +111,8 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
         CollectVideoLinksTask.CheckCompleteListener ccl = new CollectVideoLinksTask.CheckCompleteListener() {
             @Override
             public void onCheckComplete(String result) {
-                ((ViewManager) pbProgress.getParent()).removeView(pbProgress);
+                //((ViewManager) pbProgress.getParent()).removeView(pbProgress);
+                pbProgress.setVisibility(View.GONE);
             }
 
             @Override
