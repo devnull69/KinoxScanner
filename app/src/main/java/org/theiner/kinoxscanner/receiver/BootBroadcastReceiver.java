@@ -3,6 +3,7 @@ package org.theiner.kinoxscanner.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.theiner.kinoxscanner.services.CheckKinoxService;
@@ -17,5 +18,6 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
         context.startService(serviceIntent);
 
         Toast.makeText(context, "Kinoxscanner: BOOT received.", Toast.LENGTH_SHORT).show();
+        Log.d("KINOXSCANNER", "Boot received.");
     }
 }

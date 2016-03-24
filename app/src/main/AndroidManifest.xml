@@ -51,10 +51,12 @@
             android:label="Filme verwalten" />
         <activity
             android:name=".activities.EditSerieActivity"
-            android:label="Serie bearbeiten" />
+            android:label="Serie bearbeiten"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.EditFilmActivity"
-            android:label="Film bearbeiten" />
+            android:label="Film bearbeiten"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.SearchResultActivity"
             android:label="Suchergebnisse"
