@@ -80,6 +80,7 @@ public class OverviewActivity extends AppCompatActivity {
                     pbProgress.setVisibility(View.GONE);
                     txtStatus.setTypeface(Typeface.DEFAULT);
                     txtStatus.setText("Folgende Downloads stehen bereit:");
+
                     adapter = new ArrayAdapter<CheckErgebnis>(me, android.R.layout.simple_list_item_1, ergebnisListe);
                     lvDownload = (ListView) findViewById(R.id.lvDownloads);
                     lvDownload.setAdapter(adapter);
@@ -87,20 +88,20 @@ public class OverviewActivity extends AppCompatActivity {
                     lvDownload.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> listview, View view, int position, long id) {
-                            currentListIndex = position;
-                            CheckErgebnis selected = (CheckErgebnis) listview.getItemAtPosition(position);
-                            int currentIndex = -1;
-                            if(selected.foundElement instanceof Serie)
-                                currentIndex = myApp.getSerien().indexOf(selected.foundElement);
-                            else
-                                currentIndex = myApp.getFilme().indexOf(selected.foundElement);
+                        currentListIndex = position;
+                        CheckErgebnis selected = (CheckErgebnis) listview.getItemAtPosition(position);
+                        int currentIndex = -1;
+                        if(selected.foundElement instanceof Serie)
+                            currentIndex = myApp.getSerien().indexOf(selected.foundElement);
+                        else
+                            currentIndex = myApp.getFilme().indexOf(selected.foundElement);
 
-                            Intent intent = new Intent(me, UpdateKinoxElementActivity.class);
-                            Bundle extras = new Bundle();
-                            extras.putSerializable(EXTRA_MESSAGE_CHECKERGEBNIS, selected);
-                            extras.putInt(EXTRA_MESSAGE_CURRENTINDEX, currentIndex);
-                            intent.putExtras(extras);
-                            startActivityForResult(intent, REQUEST_DELETE_LINE);
+                        Intent intent = new Intent(me, UpdateKinoxElementActivity.class);
+                        Bundle extras = new Bundle();
+                        extras.putSerializable(EXTRA_MESSAGE_CHECKERGEBNIS, selected);
+                        extras.putInt(EXTRA_MESSAGE_CURRENTINDEX, currentIndex);
+                        intent.putExtras(extras);
+                        startActivityForResult(intent, REQUEST_DELETE_LINE);
                         }
                     });
 
