@@ -116,4 +116,35 @@ public class HTTPHelper {
         return returnValue;
     }
 
+    public static String unPACKED(String[] k, String p, int a) {
+        int c = k.length;
+
+        while(c > 0) {
+            c--;
+            if(!"".equals(k[c]))
+                p = p.replaceAll("\\b" + getIntToBase(c, a) + "\\b", k[c]);
+        }
+
+        return p;
+    }
+
+    private static String getIntToBase(int c, int base) {
+        int first = c / base;
+        int remainder = c - first * base;
+
+        String result = "";
+        if(first>0)
+            if(first>9) {
+                result = Character.toString((char) (first + 87));
+            } else {
+                result = String.valueOf(first);
+            }
+
+        if(remainder>9) {
+            result += Character.toString((char) (remainder + 87));
+        } else {
+            result += String.valueOf(remainder);
+        }
+        return result;
+    }
 }
