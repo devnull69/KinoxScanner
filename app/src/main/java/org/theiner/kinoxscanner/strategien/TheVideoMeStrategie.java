@@ -36,40 +36,43 @@ public class TheVideoMeStrategie extends HosterStrategie {
 
         String theName = "_vhash";
         int startpos = theVideoMeHtml.indexOf(theName) + 33;
-        int endpos = startpos + 10;
-        String theValue = Uri.encode(theVideoMeHtml.substring(startpos, endpos));
-        postString = theName + "=" + theValue;
 
-        theName = "gfk";
-        startpos = theVideoMeHtml.indexOf(theName) + 27;
-        endpos = startpos + 10;
-        theValue = Uri.encode(theVideoMeHtml.substring(startpos, endpos));
-        postString += "&" + theName + "=" + theValue;
+        if(startpos>32) {
+            int endpos = startpos + 10;
+            String theValue = Uri.encode(theVideoMeHtml.substring(startpos, endpos));
+            postString = theName + "=" + theValue;
 
-        Element theForm = theVideoMeDoc.getElementById("veriform");
-        NodeList theInputs = theForm.getElementsByTagName("input");
-
-        for(int input=0; input<theInputs.getLength(); input++) {
-            Element currentInput = (Element) theInputs.item(input);
-
-            NamedNodeMap theAttributes = currentInput.getAttributes();
-            theName = theAttributes.getNamedItem("name").getNodeValue();
-            theValue = Uri.encode(theAttributes.getNamedItem("value").getNodeValue());
+            theName = "gfk";
+            startpos = theVideoMeHtml.indexOf(theName) + 27;
+            endpos = startpos + 10;
+            theValue = Uri.encode(theVideoMeHtml.substring(startpos, endpos));
             postString += "&" + theName + "=" + theValue;
-        }
 
-        postString += "&imhuman=";
+            Element theForm = theVideoMeDoc.getElementById("veriform");
+            NodeList theInputs = theForm.getElementsByTagName("input");
 
-        try {
-            String response = HTTPHelper.getHtmlFromPOST(hosterURL, postString, false);
-            int sourcesPos = response.indexOf("sources:");
-            int fileStartPos = response.indexOf("file:", sourcesPos) + 7;
-            int fileEndPos = fileStartPos;
-            while(response.charAt(fileEndPos) != '\'')
-                fileEndPos++;
-            result = response.substring(fileStartPos, fileEndPos);
-        } catch (Exception e) {
-            e.printStackTrace();
+            for (int input = 0; input < theInputs.getLength(); input++) {
+                Element currentInput = (Element) theInputs.item(input);
+
+                NamedNodeMap theAttributes = currentInput.getAttributes();
+                theName = theAttributes.getNamedItem("name").getNodeValue();
+                theValue = Uri.encode(theAttributes.getNamedItem("value").getNodeValue());
+                postString += "&" + theName + "=" + theValue;
+            }
+
+            postString += "&imhuman=";
+
+            try {
+                String response = HTTPHelper.getHtmlFromPOST(hosterURL, postString, false);
+                int sourcesPos = response.indexOf("sources:");
+                int fileStartPos = response.indexOf("file:", sourcesPos) + 7;
+                int fileEndPos = fileStartPos;
+                while (response.charAt(fileEndPos) != '\'')
+                    fileEndPos++;
+                result = response.substring(fileStartPos, fileEndPos);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return result;
