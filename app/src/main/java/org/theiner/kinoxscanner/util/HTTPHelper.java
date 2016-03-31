@@ -7,8 +7,10 @@ import org.xml.sax.InputSource;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
@@ -21,7 +23,7 @@ public class HTTPHelper {
     private static final String userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36";
     private static final String userAgentMobile = "Mozilla/5.0 (Linux; Android 5.0.1; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19";
 
-    public static Document getDocumentFromUrl(String strUrl, boolean isMobile) {
+    public static Document getDocumentFromUrl(String strUrl, String referer, boolean isMobile) {
         Parser p = new Parser();
         SAX2DOM sax2dom = null;
         Document doc  = null;
@@ -35,6 +37,8 @@ public class HTTPHelper {
             con.setRequestProperty("User-Agent", userAgent);
             if(isMobile)
                 con.setRequestProperty("User-Agent", userAgentMobile);
+
+            con.setRequestProperty("Referer", referer);
 
             con.setReadTimeout(15000);
             con.connect();
@@ -76,7 +80,7 @@ public class HTTPHelper {
         return doc;
     }
 
-    public static String getHtmlFromUrl(String strUrl, boolean isMobile) {
+    public static String getHtmlFromUrl(String strUrl, String referer, boolean isMobile) {
         URL url = null;
         BufferedReader reader = null;
         StringBuilder sb = null;
@@ -90,6 +94,8 @@ public class HTTPHelper {
             con.setRequestProperty("User-Agent", userAgent);
             if(isMobile)
                 con.setRequestProperty("User-Agent", userAgentMobile);
+
+            con.setRequestProperty("Referer", referer);
 
             con.setReadTimeout(15000);
             con.connect();
@@ -145,6 +151,47 @@ public class HTTPHelper {
         } else {
             result += String.valueOf(remainder);
         }
+        return result;
+    }
+
+    public static String getHtmlFromPOST(String hosterURL, String postString, boolean isMobile) throws Exception {
+        String result = "";
+
+        URL theURL = new URL(hosterURL);
+        HttpURLConnection con = (HttpURLConnection) theURL.openConnection();
+
+        //add reuqest header
+        con.setRequestMethod("POST");
+        if(isMobile)
+            con.setRequestProperty("User-Agent", userAgentMobile);
+        else
+            con.setRequestProperty("User-Agent", userAgent);
+
+        con.setRequestProperty("Accept-Language", "de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4");
+        con.setRequestProperty("Accept-Encoding", "deflate");
+        con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        con.setRequestProperty("Referer", hosterURL);
+
+        // Send post request
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(postString);
+        wr.flush();
+        wr.close();
+
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+            response.append("\n");
+        }
+        in.close();
+
+        result = response.toString();
+
         return result;
     }
 }

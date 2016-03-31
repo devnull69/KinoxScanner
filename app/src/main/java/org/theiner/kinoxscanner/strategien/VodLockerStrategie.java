@@ -20,7 +20,7 @@ public class VodLockerStrategie extends HosterStrategie {
     public String getVideoURL(String hosterURL) {
         String response = "";
         // get MP4 file link directly (with mobile browser setup)
-        Document vodLockerDocument = HTTPHelper.getDocumentFromUrl(hosterURL, true);
+        Document vodLockerDocument = HTTPHelper.getDocumentFromUrl(hosterURL, "", true);
 
         NodeList sources = vodLockerDocument.getElementsByTagName("source");
         if(sources.getLength()>0) {

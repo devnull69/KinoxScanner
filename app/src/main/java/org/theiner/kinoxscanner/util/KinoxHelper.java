@@ -14,6 +14,7 @@ import org.theiner.kinoxscanner.data.Serie;
 import org.theiner.kinoxscanner.data.KinoxHosterResponse;
 import org.theiner.kinoxscanner.data.HosterMirror;
 import org.theiner.kinoxscanner.data.VideoLink;
+import org.theiner.kinoxscanner.strategien.TheVideoMeStrategie;
 import org.theiner.kinoxscanner.strategien.VidBullStrategie;
 import org.theiner.kinoxscanner.strategien.VidziStrategie;
 import org.theiner.kinoxscanner.strategien.VodLockerStrategie;
@@ -43,14 +44,14 @@ public class KinoxHelper {
         int counter = 0;
 
         for(Film film : myApp.getFilme()) {
-            Document doc = HTTPHelper.getDocumentFromUrl("http://www.kinox.to/Stream/" + film.toQueryString(), false);
+            Document doc = HTTPHelper.getDocumentFromUrl("http://www.kinox.to/Stream/" + film.toQueryString(), "", false);
             if(doc!=null) {
                 Element element = doc.getElementById("HosterList");
 
                 NodeList liElements = element.getElementsByTagName("li");
 
                 String currentDateStr = getMaxDateFromElements(liElements);
-                List<HosterMirror> hosterMirrors = getVideoLinksFromElements(liElements);
+                List<HosterMirror> hosterMirrors = getVideoLinksFromElements(liElements, "http://www.kinox.to/Stream/" + film.getAddr() + ".html");
 
                 // Vergleichen mit vorherigem Datum
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -79,7 +80,7 @@ public class KinoxHelper {
         for(Serie serie : myApp.getSerien()) {
             String queryString = serie.toQueryString();
 
-            String HTML = HTTPHelper.getHtmlFromUrl("http://www.kinox.to/aGET/MirrorByEpisode/" + queryString, false);
+            String HTML = HTTPHelper.getHtmlFromUrl("http://www.kinox.to/aGET/MirrorByEpisode/" + queryString, "", false);
             Document serienDoc = HTTPHelper.getDocumentFromHTML("<html><body>" + HTML + "</body></html>");
 
             Element element = serienDoc.getElementById("HosterList");
@@ -87,7 +88,7 @@ public class KinoxHelper {
             if (element != null) {
                 NodeList liElements = element.getElementsByTagName("li");
 
-                List<HosterMirror> hosterMirrors = getVideoLinksFromElements(liElements);
+                List<HosterMirror> hosterMirrors = getVideoLinksFromElements(liElements, "http://www.kinox.to/Stream/" + serie.getAddr() + ".html");
 
                 CheckErgebnis ergebnis = new CheckErgebnis();
                 ergebnis.name = serie.toString();
@@ -102,7 +103,7 @@ public class KinoxHelper {
         return result;
     }
 
-    private static List<HosterMirror> getVideoLinksFromElements(NodeList liElements) {
+    private static List<HosterMirror> getVideoLinksFromElements(NodeList liElements, String referer) {
         List<HosterMirror> result = new ArrayList<>();
 
         for(int i=0; i < liElements.getLength(); i++) {
@@ -133,6 +134,14 @@ public class KinoxHelper {
                     hosterMirror = new HosterMirror();
                     hosterMirror.setMirrorCount(mirrorCount);
                     hosterMirror.setStrategie(new VidBullStrategie());
+                    result.add(hosterMirror);
+
+                    break;
+                case 58:
+                    // TheVideo.me
+                    hosterMirror = new HosterMirror();
+                    hosterMirror.setMirrorCount(mirrorCount);
+                    hosterMirror.setStrategie(new TheVideoMeStrategie(referer));
                     result.add(hosterMirror);
 
                     break;
@@ -188,7 +197,7 @@ public class KinoxHelper {
     }
 
     private static String getHosterURL(String strUrl) {
-        String json = HTTPHelper.getHtmlFromUrl(strUrl, false);
+        String json = HTTPHelper.getHtmlFromUrl(strUrl, "", false);
         String response = "";
 
         KinoxHosterResponse kinoxHosterResponse = null;
@@ -219,7 +228,7 @@ public class KinoxHelper {
     public static List<SearchResult> search(SearchRequest suche) {
         String suchString = suche.getSuchString().replaceAll(" ", "+");
 
-        Document doc = HTTPHelper.getDocumentFromUrl("http://www.kinox.to/Search.html?q=" + suchString, false);
+        Document doc = HTTPHelper.getDocumentFromUrl("http://www.kinox.to/Search.html?q=" + suchString, "", false);
 
         List<SearchResult> result = new ArrayList<SearchResult>();
 
@@ -285,7 +294,7 @@ public class KinoxHelper {
 
     private static int getSeriesID(String addr) {
         int result = -1;
-        Document doc = HTTPHelper.getDocumentFromUrl("http://www.kinox.to/Stream/" + addr + ".html", false);
+        Document doc = HTTPHelper.getDocumentFromUrl("http://www.kinox.to/Stream/" + addr + ".html", "", false);
 
         // SeriesID ist Teil des rel-Attributs der id "SeasonSelection"
         Element select = doc.getElementById("SeasonSelection");

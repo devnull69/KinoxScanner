@@ -23,7 +23,7 @@ public class VidziStrategie extends HosterStrategie {
     public String getVideoURL(String hosterURL) {
         String response = "";
         // get MP4 filename from p.a.c.k.e.d javascript
-        String vidziHTML = HTTPHelper.getHtmlFromUrl(hosterURL, true);
+        String vidziHTML = HTTPHelper.getHtmlFromUrl(hosterURL, "", true);
 
         Pattern pattern = Pattern.compile("(" + Pattern.quote("||http") + "[^']*)'");
         Matcher matcher = pattern.matcher(vidziHTML);

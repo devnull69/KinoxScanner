@@ -20,7 +20,7 @@ public class VidBullStrategie extends HosterStrategie {
     public String getVideoURL(String hosterURL) {
         String response = "";
         // get MP4 file link directly (with mobile browser setup)
-        Document vidBullDocument = HTTPHelper.getDocumentFromUrl(hosterURL, true);
+        Document vidBullDocument = HTTPHelper.getDocumentFromUrl(hosterURL, "", true);
 
         NodeList sources = vidBullDocument.getElementsByTagName("source");
         if(sources.getLength()>0) {
