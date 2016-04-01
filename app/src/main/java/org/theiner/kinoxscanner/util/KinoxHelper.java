@@ -14,6 +14,7 @@ import org.theiner.kinoxscanner.data.Serie;
 import org.theiner.kinoxscanner.data.KinoxHosterResponse;
 import org.theiner.kinoxscanner.data.HosterMirror;
 import org.theiner.kinoxscanner.data.VideoLink;
+import org.theiner.kinoxscanner.strategien.StreamCloudStrategie;
 import org.theiner.kinoxscanner.strategien.TheVideoMeStrategie;
 import org.theiner.kinoxscanner.strategien.VidBullStrategie;
 import org.theiner.kinoxscanner.strategien.VidziStrategie;
@@ -129,6 +130,14 @@ public class KinoxHelper {
 
             HosterMirror hosterMirror;
             switch(id) {
+                case 30:
+                    // StreamCloud
+                    hosterMirror = new HosterMirror();
+                    hosterMirror.setMirrorCount(mirrorCount);
+                    hosterMirror.setStrategie(new StreamCloudStrategie(referer));
+                    result.add(hosterMirror);
+
+                    break;
                 case 33:
                     // FlashX
 //                    hosterMirror = new HosterMirror();
