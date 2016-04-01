@@ -168,7 +168,7 @@ public class HTTPHelper {
             con.setRequestProperty("User-Agent", userAgent);
 
         con.setRequestProperty("Accept-Language", "de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4");
-        con.setRequestProperty("Accept-Encoding", "deflate");
+        //con.setRequestProperty("Accept-Encoding", "deflate");
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         con.setRequestProperty("Referer", hosterURL);
 

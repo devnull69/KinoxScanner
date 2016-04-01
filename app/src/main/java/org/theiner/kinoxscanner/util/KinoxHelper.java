@@ -14,7 +14,6 @@ import org.theiner.kinoxscanner.data.Serie;
 import org.theiner.kinoxscanner.data.KinoxHosterResponse;
 import org.theiner.kinoxscanner.data.HosterMirror;
 import org.theiner.kinoxscanner.data.VideoLink;
-import org.theiner.kinoxscanner.strategien.FlashXStrategie;
 import org.theiner.kinoxscanner.strategien.TheVideoMeStrategie;
 import org.theiner.kinoxscanner.strategien.VidBullStrategie;
 import org.theiner.kinoxscanner.strategien.VidziStrategie;
@@ -132,10 +131,10 @@ public class KinoxHelper {
             switch(id) {
                 case 33:
                     // FlashX
-                    hosterMirror = new HosterMirror();
-                    hosterMirror.setMirrorCount(mirrorCount);
-                    hosterMirror.setStrategie(new FlashXStrategie(referer));
-                    result.add(hosterMirror);
+//                    hosterMirror = new HosterMirror();
+//                    hosterMirror.setMirrorCount(mirrorCount);
+//                    hosterMirror.setStrategie(new FlashXStrategie(referer));
+//                    result.add(hosterMirror);
 
                     break;
                 case 50:
@@ -229,6 +228,9 @@ public class KinoxHelper {
             if(matcher.find()) {
                 response = matcher.group(1);
             }
+
+            // Falls response nicht mit http anfängt, dann filtern
+            response = response.substring(response.indexOf("http"));
         }
 
         return response;
