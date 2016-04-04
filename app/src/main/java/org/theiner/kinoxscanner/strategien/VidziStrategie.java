@@ -20,7 +20,7 @@ public class VidziStrategie extends HosterStrategie {
     }
 
     @Override
-    public String getVideoURL(String hosterURL) {
+    public String getVideoURL(String hosterURL) throws InterruptedException{
         String response = "";
         // get MP4 filename from p.a.c.k.e.d javascript
         String vidziHTML = HTTPHelper.getHtmlFromUrl(hosterURL, "", true);

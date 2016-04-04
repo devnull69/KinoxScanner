@@ -25,7 +25,7 @@ public class FlashXStrategie extends HosterStrategie {
     }
 
     @Override
-    public String getVideoURL(String hosterURL) {
+    public String getVideoURL(String hosterURL) throws InterruptedException{
         String result = "";
 
         String flashXHtml = HTTPHelper.getHtmlFromUrl(hosterURL, referer, false);
@@ -49,32 +49,40 @@ public class FlashXStrategie extends HosterStrategie {
             postString += (input>0?"&":"") + theName + "=" + theValue;
         }
 
-        try {
-
+        if(!"".equals(postString)) {
             // hart verdrahtet: FlashX misst 15 Sekunden zwischen beiden Seitenaufrufen
             Thread.sleep(16000);
 
             String response = HTTPHelper.getHtmlFromPOST(destURL, postString, false);
-            // PACKED
-            int schemeStartPos = response.indexOf("2://");
-            if(schemeStartPos != -1) {
-                int schemeEndPos = schemeStartPos;
-                while (response.charAt(schemeEndPos) != '"')
-                    schemeEndPos++;
-
-                String scheme = response.substring(schemeStartPos, schemeEndPos);
-
-                Pattern pattern = Pattern.compile("(" + Pattern.quote("||http") + "[^']*)'");
-                Matcher matcher = pattern.matcher(response);
-
-                if(matcher.find()) {
-                    String[] matches = matcher.group(1).split("\\|");
-
-                    result = HTTPHelper.unPACKED(matches, scheme, 36);
+            int packedStartPos = response.indexOf("return p") + 11;
+            if (packedStartPos > 10) {
+                int packedEndPos = packedStartPos;
+                int prevPos = packedEndPos - 1;
+                while (response.charAt(packedEndPos) != '\'' || response.charAt(prevPos) == '\\') {
+                    packedEndPos++;
+                    prevPos++;
                 }
+
+                String packed = response.substring(packedStartPos, packedEndPos);
+
+                int keysStartPos = response.indexOf("'||") + 1;
+                int keysEndPos = keysStartPos;
+                while (response.charAt(keysEndPos) != '\'')
+                    keysEndPos++;
+
+                String keys = response.substring(keysStartPos, keysEndPos);
+
+                String[] matches = keys.split("\\|");
+
+                String unpacked = HTTPHelper.unPACKED(matches, packed, 36);
+
+                int responseStartPos = unpacked.indexOf("file") + 6;
+                int responseEndPos = responseStartPos;
+                while (unpacked.charAt(responseEndPos) != '"')
+                    responseEndPos++;
+
+                result = unpacked.substring(responseStartPos, responseEndPos);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         return result;

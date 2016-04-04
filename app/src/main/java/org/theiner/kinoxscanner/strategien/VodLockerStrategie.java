@@ -17,7 +17,7 @@ public class VodLockerStrategie extends HosterStrategie {
     }
 
     @Override
-    public String getVideoURL(String hosterURL) {
+    public String getVideoURL(String hosterURL) throws InterruptedException{
         String response = "";
         // get MP4 file link directly (with mobile browser setup)
         Document vodLockerDocument = HTTPHelper.getDocumentFromUrl(hosterURL, "", true);

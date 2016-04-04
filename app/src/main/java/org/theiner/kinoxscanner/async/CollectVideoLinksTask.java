@@ -3,6 +3,7 @@ package org.theiner.kinoxscanner.async;
 import android.os.AsyncTask;
 
 import org.theiner.kinoxscanner.data.CheckErgebnis;
+import org.theiner.kinoxscanner.data.KinoxElementHoster;
 import org.theiner.kinoxscanner.data.SearchRequest;
 import org.theiner.kinoxscanner.data.SearchResult;
 import org.theiner.kinoxscanner.data.VideoLink;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * Created by TTheiner on 07.03.2016.
  */
-public class CollectVideoLinksTask extends AsyncTask<CheckErgebnis, Integer, String> {
+public class CollectVideoLinksTask extends AsyncTask<KinoxElementHoster, Integer, String> {
 
     public static interface CheckCompleteListener {
         void onCheckComplete(String result);
@@ -31,10 +32,14 @@ public class CollectVideoLinksTask extends AsyncTask<CheckErgebnis, Integer, Str
     }
 
     @Override
-    protected String doInBackground(CheckErgebnis... checkErgebnisse) {
-        CheckErgebnis currentErgebnis = checkErgebnisse[0];
-        List<VideoLink> videoLinks = KinoxHelper.collectVideoLinks(this, currentErgebnis);
-        currentErgebnis.videoLinks = videoLinks;
+    protected String doInBackground(KinoxElementHoster... checkHoster) {
+        KinoxElementHoster currentHoster = checkHoster[0];
+        try {
+            List<VideoLink> videoLinks = KinoxHelper.collectVideoLinks(this, currentHoster);
+            currentHoster.setVideoLinks(videoLinks);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return "ok";
     }
 

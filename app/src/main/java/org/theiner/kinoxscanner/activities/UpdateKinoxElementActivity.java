@@ -1,5 +1,6 @@
 package org.theiner.kinoxscanner.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -8,23 +9,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.theiner.kinoxscanner.R;
-import org.theiner.kinoxscanner.adapter.SearchAdapter;
-import org.theiner.kinoxscanner.adapter.VideoLinkAdapter;
-import org.theiner.kinoxscanner.async.CollectVideoLinksTask;
+import org.theiner.kinoxscanner.adapter.HosterAdapter;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
 import org.theiner.kinoxscanner.data.Film;
+import org.theiner.kinoxscanner.data.HosterMirror;
 import org.theiner.kinoxscanner.data.KinoxElement;
+import org.theiner.kinoxscanner.data.KinoxElementHoster;
 import org.theiner.kinoxscanner.data.Serie;
 import org.theiner.kinoxscanner.data.VideoLink;
 
@@ -40,7 +39,9 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
     private int currentIndex;
 
     private BaseAdapter adapter = null;
-    private ListView lvVideoLinks = null;
+    private ListView lvHosterMirrors = null;
+
+    public static String EXTRA_MESSAGE = "org.theiner.kinoxscanner.SHOWVIDEOURLS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,43 +88,27 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
             setTitle("Film aktualisieren");
         }
 
-        final ProgressBar pbProgress = (ProgressBar) findViewById(R.id.pbProgress);
+        // Hoster-Mirrors in Listview anzeigen
+        adapter = new HosterAdapter(this, currentErgebnis.hosterMirrors);
+        lvHosterMirrors = (ListView) findViewById(R.id.lvHosterMirrors);
+        lvHosterMirrors.setAdapter(adapter);
 
-        // Video-Links in Listview anzeigen
-        if(currentErgebnis.videoLinks == null)
-            currentErgebnis.videoLinks = new ArrayList<VideoLink>();
-        adapter = new VideoLinkAdapter(this, currentErgebnis.videoLinks);
-        lvVideoLinks = (ListView) findViewById(R.id.lvVideoLinks);
-        lvVideoLinks.setAdapter(adapter);
+        final Activity me = this;
 
-        // Bei Click => Video abspielen
-        lvVideoLinks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // Bei Click => Zur Videoübersicht des Hosters
+        lvHosterMirrors.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> listview, View view, int position, long id) {
-                VideoLink selected = (VideoLink) listview.getItemAtPosition(position);
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.parse(selected.getVideoURL()), "video/mp4");
+                HosterMirror selected = (HosterMirror) listview.getItemAtPosition(position);
+
+                KinoxElementHoster currentHoster = new KinoxElementHoster();
+                currentHoster.setHosterMirror(selected);
+                currentHoster.setFoundElement(currentKinoxElement);
+                Intent intent = new Intent(me, ShowHosterVideosActivity.class);
+                intent.putExtra(EXTRA_MESSAGE, currentHoster);
                 startActivity(intent);
             }
         });
-
-        // Video-Links sammeln für currentErgebnis
-        CollectVideoLinksTask.CheckCompleteListener ccl = new CollectVideoLinksTask.CheckCompleteListener() {
-            @Override
-            public void onCheckComplete(String result) {
-                //((ViewManager) pbProgress.getParent()).removeView(pbProgress);
-                pbProgress.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onProgress(Integer progress) {
-                pbProgress.setProgress(progress);
-                adapter.notifyDataSetChanged();
-            }
-        };
-
-        CollectVideoLinksTask myTask = new CollectVideoLinksTask(ccl);
-        myTask.execute(currentErgebnis);
     }
 
     public void onExit(View view) {

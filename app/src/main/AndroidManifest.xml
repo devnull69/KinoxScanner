@@ -61,6 +61,10 @@
             android:name=".activities.SearchResultActivity"
             android:label="Suchergebnisse"
             />
+        <activity
+            android:name=".activities.ShowHosterVideosActivity"
+            android:label="Video-Server auswählen"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
     </application>
 
 </manifest>

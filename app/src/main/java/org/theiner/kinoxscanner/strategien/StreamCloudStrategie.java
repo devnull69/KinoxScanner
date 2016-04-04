@@ -23,7 +23,7 @@ public class StreamCloudStrategie extends HosterStrategie {
     }
 
     @Override
-    public String getVideoURL(String hosterURL) {
+    public String getVideoURL(String hosterURL) throws InterruptedException{
         String response = "";
 
         Document streamCloudDoc = HTTPHelper.getDocumentFromUrl(hosterURL, referer, false);
@@ -51,21 +51,17 @@ public class StreamCloudStrategie extends HosterStrategie {
                 }
             }
 
-            try {
-                Thread.sleep(11000);
-                String videoHtml = HTTPHelper.getHtmlFromPOST(hosterURL, postString, false);
+            Thread.sleep(11000);
+            String videoHtml = HTTPHelper.getHtmlFromPOST(hosterURL, postString, false);
 
-                int startpos = videoHtml.indexOf("file:") + 7;
-                if (startpos > 6) {
-                    int endpos = startpos;
-                    while (videoHtml.charAt(endpos) != '"')
-                        endpos++;
-                    response = videoHtml.substring(startpos, endpos);
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
+            int startpos = videoHtml.indexOf("file:") + 7;
+            if (startpos > 6) {
+                int endpos = startpos;
+                while (videoHtml.charAt(endpos) != '"')
+                    endpos++;
+                response = videoHtml.substring(startpos, endpos);
             }
+
         }
 
         return response;

@@ -154,43 +154,47 @@ public class HTTPHelper {
         return result;
     }
 
-    public static String getHtmlFromPOST(String hosterURL, String postString, boolean isMobile) throws Exception {
+    public static String getHtmlFromPOST(String hosterURL, String postString, boolean isMobile) {
         String result = "";
 
-        URL theURL = new URL(hosterURL);
-        HttpURLConnection con = (HttpURLConnection) theURL.openConnection();
+        try {
+            URL theURL = new URL(hosterURL);
+            HttpURLConnection con = (HttpURLConnection) theURL.openConnection();
 
-        //add reuqest header
-        con.setRequestMethod("POST");
-        if(isMobile)
-            con.setRequestProperty("User-Agent", userAgentMobile);
-        else
-            con.setRequestProperty("User-Agent", userAgent);
+            //add reuqest header
+            con.setRequestMethod("POST");
+            if(isMobile)
+                con.setRequestProperty("User-Agent", userAgentMobile);
+            else
+                con.setRequestProperty("User-Agent", userAgent);
 
-        con.setRequestProperty("Accept-Language", "de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4");
-        //con.setRequestProperty("Accept-Encoding", "deflate");
-        con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        con.setRequestProperty("Referer", hosterURL);
+            con.setRequestProperty("Accept-Language", "de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4");
+            //con.setRequestProperty("Accept-Encoding", "deflate");
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            con.setRequestProperty("Referer", hosterURL);
 
-        // Send post request
-        con.setDoOutput(true);
-        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-        wr.writeBytes(postString);
-        wr.flush();
-        wr.close();
+            // Send post request
+            con.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            wr.writeBytes(postString);
+            wr.flush();
+            wr.close();
 
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
 
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-            response.append("\n");
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+                response.append("\n");
+            }
+            in.close();
+
+            result = response.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        in.close();
-
-        result = response.toString();
 
         return result;
     }

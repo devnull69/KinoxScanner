@@ -26,7 +26,7 @@ public class TheVideoMeStrategie extends HosterStrategie {
     }
 
     @Override
-    public String getVideoURL(String hosterURL) {
+    public String getVideoURL(String hosterURL) throws InterruptedException{
         String result = "";
 
         String theVideoMeHtml = HTTPHelper.getHtmlFromUrl(hosterURL, referer, false);

@@ -11,5 +11,5 @@ public abstract class HosterStrategie implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
-    public abstract String getVideoURL(String hosterURL);
+    public abstract String getVideoURL(String hosterURL) throws InterruptedException;
 }
