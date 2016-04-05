@@ -40,6 +40,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".receiver.DownloadReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".activities.UpdateKinoxElementActivity"
             android:label="@string/update_serie"
