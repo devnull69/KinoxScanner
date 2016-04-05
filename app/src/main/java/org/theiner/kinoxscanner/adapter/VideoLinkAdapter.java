@@ -61,6 +61,7 @@ public class VideoLinkAdapter extends ArrayAdapter<VideoLink> {
                     .setAllowedOverRoaming(false)
                     .setTitle("Kinoxscanner Download")
                     .setDescription(currentLink.getFilename())
+                    .setMimeType("video/mp4")
                     .setDestinationInExternalPublicDir(Environment.DIRECTORY_MOVIES, filename));
 
                 Toast.makeText(me, "Download gestartet: " + filename, Toast.LENGTH_SHORT).show();
