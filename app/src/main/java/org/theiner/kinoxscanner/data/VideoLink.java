@@ -8,6 +8,15 @@ import java.io.Serializable;
 public class VideoLink implements Serializable{
     private String hosterName;
     private String videoURL;
+    private String filename;
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
 
     private static final long serialVersionUID = 0L;
 
