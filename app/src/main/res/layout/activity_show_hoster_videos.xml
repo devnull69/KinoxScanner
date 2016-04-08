@@ -23,10 +23,18 @@
         android:id="@+id/txtName"
         android:textStyle="bold"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="placeholder"
+        android:layout_marginTop="82dp"
+        android:id="@+id/txtDelayInSec"
+        android:textStyle="bold"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="25dp"
         android:text="Zurück"
         android:onClick="onExit"/>
 
@@ -34,13 +42,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/pbProgressBar"
-        android:layout_marginTop="82dp"
+        android:layout_marginTop="100dp"
         style="@android:style/Widget.ProgressBar.Horizontal"/>
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="118dp"
         android:id="@+id/lvVideoUrls"></ListView>
 
 </RelativeLayout>

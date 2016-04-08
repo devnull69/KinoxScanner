@@ -8,6 +8,7 @@ import java.io.Serializable;
 public abstract class HosterStrategie implements Serializable {
     public String hosterName;
     public int hosterNummer;
+    public int delayInSec;
 
     private static final long serialVersionUID = 0L;
 

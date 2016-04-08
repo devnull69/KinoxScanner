@@ -17,6 +17,7 @@ public class VidziStrategie extends HosterStrategie {
     public VidziStrategie() {
         this.hosterName = "Vidzi";
         this.hosterNummer = 68;
+        this.delayInSec = 0;
     }
 
     @Override

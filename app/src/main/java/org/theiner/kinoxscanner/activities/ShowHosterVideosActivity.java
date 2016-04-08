@@ -55,6 +55,16 @@ public class ShowHosterVideosActivity extends AppCompatActivity {
         TextView txtName = (TextView) findViewById(R.id.txtName);
         txtName.setText(currentHoster.getFoundElement().toString());
 
+        TextView txtDelayInSec = (TextView) findViewById(R.id.txtDelayInSec);
+
+        int delayInSec = currentHoster.getHosterMirror().getStrategie().delayInSec;
+
+        if(delayInSec > 0) {
+            txtDelayInSec.setText(delayInSec + " Sekunden Wartezeit pro Server");
+        } else {
+            txtDelayInSec.setVisibility(View.GONE);
+        }
+
         // Video-Urls in Listview anzeigen
         if(currentHoster.getVideoLinks() == null)
             currentHoster.setVideoLinks(new ArrayList<VideoLink>());

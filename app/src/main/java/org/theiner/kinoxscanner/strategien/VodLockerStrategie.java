@@ -14,6 +14,7 @@ public class VodLockerStrategie extends HosterStrategie {
     public VodLockerStrategie() {
         this.hosterName = "VodLocker";
         this.hosterNummer = 65;
+        this.delayInSec = 0;
     }
 
     @Override

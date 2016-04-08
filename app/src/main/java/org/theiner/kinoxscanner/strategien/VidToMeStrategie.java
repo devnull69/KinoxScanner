@@ -22,6 +22,7 @@ public class VidToMeStrategie extends HosterStrategie {
     public VidToMeStrategie(String referer) {
         this.hosterName = "VidToMe";
         this.hosterNummer = 51;
+        this.delayInSec = 7;
         this.referer = referer;
     }
 
@@ -54,7 +55,7 @@ public class VidToMeStrategie extends HosterStrategie {
                 }
             }
 
-                Thread.sleep(7000);
+                Thread.sleep(delayInSec * 1000);
                 String videoHtml = HTTPHelper.getHtmlFromPOST(hosterURL, postString, false);
 
                 int packedStartPos = videoHtml.indexOf("return p") + 11;

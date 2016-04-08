@@ -19,6 +19,7 @@ public class StreamCloudStrategie extends HosterStrategie {
     public StreamCloudStrategie(String referer) {
         this.hosterName = "StreamCloud";
         this.hosterNummer = 30;
+        this.delayInSec = 11;
         this.referer = referer;
     }
 
@@ -51,7 +52,7 @@ public class StreamCloudStrategie extends HosterStrategie {
                 }
             }
 
-            Thread.sleep(11000);
+            Thread.sleep(delayInSec * 1000);
             String videoHtml = HTTPHelper.getHtmlFromPOST(hosterURL, postString, false);
 
             int startpos = videoHtml.indexOf("file:") + 7;

@@ -14,6 +14,7 @@ public class VidBullStrategie extends HosterStrategie {
     public VidBullStrategie() {
         this.hosterName = "VidBull";
         this.hosterNummer = 50;
+        this.delayInSec = 0;
     }
 
     @Override

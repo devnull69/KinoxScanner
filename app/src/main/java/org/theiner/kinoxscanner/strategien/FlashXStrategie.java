@@ -21,6 +21,7 @@ public class FlashXStrategie extends HosterStrategie {
     public FlashXStrategie(String referer) {
         this.hosterName = "FlashX";
         this.hosterNummer = 33;
+        this.delayInSec = 16;
         this.referer = referer;
     }
 
@@ -51,7 +52,7 @@ public class FlashXStrategie extends HosterStrategie {
 
         if(!"".equals(postString)) {
             // hart verdrahtet: FlashX misst 15 Sekunden zwischen beiden Seitenaufrufen
-            Thread.sleep(16000);
+            Thread.sleep(delayInSec * 1000);
 
             String response = HTTPHelper.getHtmlFromPOST(destURL, postString, false);
             int packedStartPos = response.indexOf("return p") + 11;

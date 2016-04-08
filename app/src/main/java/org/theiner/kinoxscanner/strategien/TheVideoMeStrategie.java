@@ -22,6 +22,7 @@ public class TheVideoMeStrategie extends HosterStrategie {
     public TheVideoMeStrategie(String referer) {
         this.hosterName = "TheVideo.me";
         this.hosterNummer = 58;
+        this.delayInSec = 0;
         this.referer = referer;
     }
 
