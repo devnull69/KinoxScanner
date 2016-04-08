@@ -2,4 +2,5 @@
     <string name="app_name">KinoxScanner</string>
     <string name="update_serie">Serie aktualisieren</string>
     <string name="update_film">Film aktualisieren</string>
+    <string name="title_activity_view_pager">ViewPagerActivity</string>
 </resources>

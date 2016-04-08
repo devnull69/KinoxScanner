@@ -4,8 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".context.KinoxScannerApplication"
@@ -35,11 +35,10 @@
 
         <receiver android:name=".receiver.BootBroadcastReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".receiver.DownloadReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
@@ -48,8 +47,8 @@
 
         <activity
             android:name=".activities.UpdateKinoxElementActivity"
-            android:label="@string/update_serie"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/update_serie" />
         <activity
             android:name=".activities.ManageSerienActivity"
             android:label="Serien verwalten" />
@@ -66,12 +65,11 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.SearchResultActivity"
-            android:label="Suchergebnisse"
-            />
+            android:label="Suchergebnisse" />
         <activity
             android:name=".activities.ShowHosterVideosActivity"
-            android:label="Video-Server auswählen"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Video-Server auswählen" />
     </application>
 
 </manifest>
