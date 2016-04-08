@@ -1,15 +1,26 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="org.theiner.kinoxscanner.activities.ManageFilmeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/manage_filme"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="50dp"/>
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="Filme verwalten"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Neuer Film"
+        android:layout_marginTop="40dp"
+        android:id="@+id/btnNewMovie"/>
 
-</FrameLayout>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        android:id="@+id/lvFilme"></ListView>
+
+</RelativeLayout>
