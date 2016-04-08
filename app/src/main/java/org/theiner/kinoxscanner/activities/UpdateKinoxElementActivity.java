@@ -52,8 +52,8 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        currentErgebnis = (CheckErgebnis) extras.getSerializable(OverviewActivity.EXTRA_MESSAGE_CHECKERGEBNIS);
-        currentIndex = extras.getInt(OverviewActivity.EXTRA_MESSAGE_CURRENTINDEX);
+        currentErgebnis = (CheckErgebnis) extras.getSerializable(OverviewFragment.EXTRA_MESSAGE_CHECKERGEBNIS);
+        currentIndex = extras.getInt(OverviewFragment.EXTRA_MESSAGE_CURRENTINDEX);
         currentKinoxElement = currentErgebnis.foundElement;
 
         // currentKinoxElement ist eine Kopie (wegen Serialisierung). Über den Index erhalte ich das korrekte
@@ -114,7 +114,7 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
     public void onExit(View view) {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("deleteLine", false);
-        setResult(OverviewActivity.RESULT_IS_OK, resultIntent);
+        setResult(OverviewFragment.RESULT_IS_OK, resultIntent);
 
         finish();
     }
@@ -143,7 +143,7 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
 
     private void updateSerienInSharedPreferences() {
         // Update serien
-        SharedPreferences settings = getSharedPreferences(OverviewActivity.PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
 
         ObjectMapper mapper = new ObjectMapper();
@@ -163,7 +163,7 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
 
         Intent resultIntent = new Intent();
         resultIntent.putExtra("deleteLine", true);
-        setResult(OverviewActivity.RESULT_IS_OK, resultIntent);
+        setResult(OverviewFragment.RESULT_IS_OK, resultIntent);
 
         finish();
     }
@@ -185,7 +185,7 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
 
     private void updateFilmeInSharedPreferences() {
         // Update filme
-        SharedPreferences settings = getSharedPreferences(OverviewActivity.PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
 
         ObjectMapper mapper = new ObjectMapper();
@@ -205,7 +205,7 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
 
         Intent resultIntent = new Intent();
         resultIntent.putExtra("deleteLine", true);
-        setResult(OverviewActivity.RESULT_IS_OK, resultIntent);
+        setResult(OverviewFragment.RESULT_IS_OK, resultIntent);
 
         finish();
     }

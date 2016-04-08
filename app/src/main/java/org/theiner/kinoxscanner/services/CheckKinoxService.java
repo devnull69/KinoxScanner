@@ -17,7 +17,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import org.theiner.kinoxscanner.R;
-import org.theiner.kinoxscanner.activities.OverviewActivity;
+import org.theiner.kinoxscanner.activities.OverviewFragment;
+import org.theiner.kinoxscanner.activities.ViewPagerActivity;
 import org.theiner.kinoxscanner.async.CheckKinoxTask;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
@@ -39,7 +40,7 @@ public class CheckKinoxService extends Service {
     private final String OP_POST_NOTIFICATION = "OP_POST_NOTIFICATION";
 
     private void setNewCountInSettings(int neueAnzahl) {
-        SharedPreferences settings = getSharedPreferences(OverviewActivity.PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt("alteAnzahl", neueAnzahl);
         editor.putLong("lastChecked", (new Date()).getTime());
@@ -52,7 +53,7 @@ public class CheckKinoxService extends Service {
 
         KinoxScannerApplication myApp = new KinoxScannerApplication();
 
-        final SharedPreferences settings = getSharedPreferences(OverviewActivity.PREFS_NAME, MODE_PRIVATE);
+        final SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
         myApp.getObjectsFromSharedPreferences(settings);
 
         ConnectivityManager connMgr = (ConnectivityManager)
@@ -107,7 +108,7 @@ public class CheckKinoxService extends Service {
 
             myLargeIcon = Bitmap.createScaledBitmap(myLargeIcon, (int)(myLargeIcon.getWidth()*multiplier), (int)(myLargeIcon.getHeight()*multiplier), false);
 
-            Intent mainIntent = new Intent(this, OverviewActivity.class);
+            Intent mainIntent = new Intent(this, ViewPagerActivity.class);
             @SuppressWarnings("deprecation")
             Notification noti = new Notification.Builder(this)
                     .setAutoCancel(true)

@@ -42,7 +42,7 @@ public class EditFilmActivity extends AppCompatActivity {
         myApp = (KinoxScannerApplication) getApplicationContext();
 
         Intent intent = getIntent();
-        currentIndex = intent.getIntExtra(ManageFilmeActivity.EXTRA_MESSAGE, -1);
+        currentIndex = intent.getIntExtra(ManageFilmeFragment.EXTRA_MESSAGE, -1);
 
         editName = (EditText) findViewById(R.id.editName);
         editAddr = (EditText) findViewById(R.id.editAddr);
@@ -87,7 +87,7 @@ public class EditFilmActivity extends AppCompatActivity {
     public void onExit(View view) {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("updateList", false);
-        setResult(ManageFilmeActivity.RESULT_UPDATE_LIST, resultIntent);
+        setResult(ManageFilmeFragment.RESULT_UPDATE_LIST, resultIntent);
         finish();
     }
 
@@ -107,7 +107,7 @@ public class EditFilmActivity extends AppCompatActivity {
         }
 
         // In Preferences ablegen
-        SharedPreferences settings = getSharedPreferences(OverviewActivity.PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
 
         ObjectMapper mapper = new ObjectMapper();
@@ -129,7 +129,7 @@ public class EditFilmActivity extends AppCompatActivity {
         // Zurück und Manage-Liste aktualisieren!
         Intent resultIntent = new Intent();
         resultIntent.putExtra("updateList", true);
-        setResult(ManageFilmeActivity.RESULT_UPDATE_LIST, resultIntent);
+        setResult(ManageFilmeFragment.RESULT_UPDATE_LIST, resultIntent);
         finish();
     }
 
@@ -139,7 +139,7 @@ public class EditFilmActivity extends AppCompatActivity {
             myApp.removeFilmAt(currentIndex);
 
             // In Preferences ablegen
-            SharedPreferences settings = getSharedPreferences(OverviewActivity.PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
             SharedPreferences.Editor editor = settings.edit();
 
             ObjectMapper mapper = new ObjectMapper();
@@ -161,7 +161,7 @@ public class EditFilmActivity extends AppCompatActivity {
         // Zurück und Manage-Liste aktualisieren!
         Intent resultIntent = new Intent();
         resultIntent.putExtra("updateList", true);
-        setResult(ManageFilmeActivity.RESULT_UPDATE_LIST, resultIntent);
+        setResult(ManageFilmeFragment.RESULT_UPDATE_LIST, resultIntent);
         finish();
     }
 
@@ -172,13 +172,13 @@ public class EditFilmActivity extends AppCompatActivity {
 
         Intent searchIntent = new Intent(this, SearchResultActivity.class);
         searchIntent.putExtra(SearchResultActivity.EXTRA_MESSAGE, suche);
-        startActivityForResult(searchIntent, OverviewActivity.REQUEST_SEARCH);
+        startActivityForResult(searchIntent, OverviewFragment.REQUEST_SEARCH);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == OverviewActivity.REQUEST_SEARCH) {
-            if(resultCode == OverviewActivity.RESULT_UPDATE_ELEMENTS) {
+        if(requestCode == OverviewFragment.REQUEST_SEARCH) {
+            if(resultCode == OverviewFragment.RESULT_UPDATE_ELEMENTS) {
                 SearchResult suchErgebnis = (SearchResult) data.getSerializableExtra("suchErgebnis");
                 if(suchErgebnis == null) {
                     Toast.makeText(this, "Kein Film gefunden.", Toast.LENGTH_SHORT).show();

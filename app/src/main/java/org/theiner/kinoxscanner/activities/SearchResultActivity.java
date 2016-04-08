@@ -48,7 +48,7 @@ public class SearchResultActivity extends AppCompatActivity {
 
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("suchErgebnis", selected);
-                setResult(OverviewActivity.RESULT_UPDATE_ELEMENTS, resultIntent);
+                setResult(OverviewFragment.RESULT_UPDATE_ELEMENTS, resultIntent);
                 finish();
             }
         });
@@ -66,7 +66,7 @@ public class SearchResultActivity extends AppCompatActivity {
                 } else {
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("suchErgebnis", (Serializable) null);
-                    setResult(OverviewActivity.RESULT_UPDATE_ELEMENTS, resultIntent);
+                    setResult(OverviewFragment.RESULT_UPDATE_ELEMENTS, resultIntent);
                     finish();
                 }
             }
