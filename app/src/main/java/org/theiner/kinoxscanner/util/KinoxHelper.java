@@ -63,12 +63,13 @@ public class KinoxHelper {
                 Date lastDate = null;
                 try {
                     currentDate = sdf.parse(currentDateStr);
-                    lastDate = sdf.parse(film.getLastDate());
+                    if(!film.getLastDate().equals(""))
+                        lastDate = sdf.parse(film.getLastDate());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-                if(currentDate.after(lastDate)) {
+                if(lastDate == null || currentDate.after(lastDate)) {
                     CheckErgebnis ergebnis = new CheckErgebnis();
                     ergebnis.name = film.getName();
                     ergebnis.datum = currentDateStr;

@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class Film implements KinoxElement, Serializable{
     private String name;
     private String addr;
-    private String lastDate;
+    private String lastDate = "";  // Leerstring ist erlaubt
 
     private static final long serialVersionUID = 0L;
 
