@@ -45,7 +45,7 @@ public class ManageSerienFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_manage_serien, null);
         Log.d("kinoxscanner", "ManageSerienFragment onCreateView");
 
-        adapter = new ArrayAdapter<Serie>(me, android.R.layout.simple_list_item_1, myApp.getSerien());
+        adapter = new ArrayAdapter<Serie>(me, R.layout.my_simple_list_item_1, myApp.getSerien());
         lvSerien = (ListView) layout.findViewById(R.id.lvSerien);
         lvSerien.setAdapter(adapter);
 

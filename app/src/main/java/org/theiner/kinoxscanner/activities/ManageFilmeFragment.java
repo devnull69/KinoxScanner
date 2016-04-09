@@ -44,7 +44,7 @@ public class ManageFilmeFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_manage_filme, null);
         Log.d("kinoxscanner", "ManageFilmeFragment onCreateView");
 
-        adapter = new ArrayAdapter<Film>(me, android.R.layout.simple_list_item_1, myApp.getFilme());
+        adapter = new ArrayAdapter<Film>(me, R.layout.my_simple_list_item_1, myApp.getFilme());
         lvFilme = (ListView) layout.findViewById(R.id.lvFilme);
         lvFilme.setAdapter(adapter);
 

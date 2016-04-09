@@ -91,7 +91,7 @@ public class OverviewFragment extends Fragment {
                     txtStatus.setTypeface(Typeface.DEFAULT);
                     txtStatus.setText("Folgende Downloads stehen bereit:");
 
-                    adapter = new ArrayAdapter<CheckErgebnis>(me, android.R.layout.simple_list_item_1, ergebnisListe);
+                    adapter = new ArrayAdapter<CheckErgebnis>(me, R.layout.my_simple_list_item_1, ergebnisListe);
                     lvDownload.setAdapter(adapter);
 
                     lvDownload.setOnItemClickListener(new AdapterView.OnItemClickListener() {
