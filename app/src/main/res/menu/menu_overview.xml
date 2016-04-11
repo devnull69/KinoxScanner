@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.ViewPagerActivity">
     <item
+        android:id="@+id/action_options"
+        android:orderInCategory="100"
+        android:title="@string/action_options"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_close"
         android:orderInCategory="200"
         android:title="@string/action_close"

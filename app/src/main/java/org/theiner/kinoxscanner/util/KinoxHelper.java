@@ -1,5 +1,9 @@
 package org.theiner.kinoxscanner.util;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -420,4 +424,11 @@ public class KinoxHelper {
         }
         return result;
     }
+
+    public static boolean isConnectedViaWifi(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return mWifi.isConnected();
+    }
+
 }

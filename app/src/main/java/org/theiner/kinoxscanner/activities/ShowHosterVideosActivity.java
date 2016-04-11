@@ -1,8 +1,11 @@
 package org.theiner.kinoxscanner.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +31,7 @@ import org.theiner.kinoxscanner.data.Film;
 import org.theiner.kinoxscanner.data.KinoxElementHoster;
 import org.theiner.kinoxscanner.data.Serie;
 import org.theiner.kinoxscanner.data.VideoLink;
+import org.theiner.kinoxscanner.util.KinoxHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,10 +39,14 @@ import java.util.Date;
 
 public class ShowHosterVideosActivity extends AppCompatActivity {
 
+    public static final String PREFS_NAME = "KinoxScannerFile";
+
     private KinoxElementHoster currentHoster;
 
     private BaseAdapter adapter = null;
     private ListView lvVideoUrls = null;
+
+    private boolean isWifiOnly;
 
     private CollectVideoLinksTask myTask = null;
 
@@ -49,6 +57,9 @@ public class ShowHosterVideosActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         currentHoster = (KinoxElementHoster) intent.getSerializableExtra(UpdateKinoxElementActivity.EXTRA_MESSAGE);
+
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        isWifiOnly = settings.getBoolean("wifionly", true);
 
         final ProgressBar pbProgress = (ProgressBar) findViewById(R.id.pbProgressBar);
 
@@ -68,18 +79,24 @@ public class ShowHosterVideosActivity extends AppCompatActivity {
         // Video-Urls in Listview anzeigen
         if(currentHoster.getVideoLinks() == null)
             currentHoster.setVideoLinks(new ArrayList<VideoLink>());
-        adapter = new VideoLinkAdapter(this, currentHoster.getVideoLinks());
+        adapter = new VideoLinkAdapter(this, currentHoster.getVideoLinks(), isWifiOnly);
         lvVideoUrls = (ListView) findViewById(R.id.lvVideoUrls);
         lvVideoUrls.setAdapter(adapter);
+
+        final Activity me = this;
 
         // Bei Click => Video abspielen
         lvVideoUrls.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> listview, View view, int position, long id) {
-                VideoLink selected = (VideoLink) listview.getItemAtPosition(position);
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.parse(selected.getVideoURL()), "video/mp4");
-                startActivity(intent);
+                if(!isWifiOnly || KinoxHelper.isConnectedViaWifi(me)) {
+                    VideoLink selected = (VideoLink) listview.getItemAtPosition(position);
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.parse(selected.getVideoURL()), "video/mp4");
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(me, "Sie sind nicht mit W-Lan verbunden!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

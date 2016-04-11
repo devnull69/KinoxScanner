@@ -10,4 +10,6 @@
     <string name="manage_serien">Serien verwalten</string>
     <string name="overview">Übersicht</string>
     <string name="action_close">App beenden</string>
+    <string name="title_activity_options">OptionsActivity</string>
+    <string name="action_options">Optionen</string>
 </resources>

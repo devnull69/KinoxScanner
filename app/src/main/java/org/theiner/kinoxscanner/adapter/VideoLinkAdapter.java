@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import org.theiner.kinoxscanner.R;
 import org.theiner.kinoxscanner.data.VideoLink;
+import org.theiner.kinoxscanner.util.KinoxHelper;
 
 import java.util.Date;
 import java.util.List;
@@ -26,8 +27,11 @@ public class VideoLinkAdapter extends ArrayAdapter<VideoLink> {
 
     private int[] colors = new int[] { 0x50424242, 0x50212121 };
 
-    public VideoLinkAdapter(Context context, List<VideoLink> videoLinks) {
+    private boolean isWifiOnly = true;
+
+    public VideoLinkAdapter(Context context, List<VideoLink> videoLinks, boolean isWifiOnly) {
         super(context, R.layout.videolink_row_layout, videoLinks);
+        this.isWifiOnly = isWifiOnly;
     }
 
     @Override
@@ -50,23 +54,31 @@ public class VideoLinkAdapter extends ArrayAdapter<VideoLink> {
         imgDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String filename = currentLink.getFilename() + " " + (new Date()).getTime() + ".mp4";
+                if(!isWifiOnly || KinoxHelper.isConnectedViaWifi(me)) {
+                    String filename = currentLink.getFilename() + " " + (new Date()).getTime() + ".mp4";
 
-                Uri uri = Uri.parse(currentLink.getVideoURL());
+                    Uri uri = Uri.parse(currentLink.getVideoURL());
 
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).mkdirs();
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).mkdirs();
 
-                DownloadManager mgr = (DownloadManager) me.getSystemService(Context.DOWNLOAD_SERVICE);
+                    DownloadManager mgr = (DownloadManager) me.getSystemService(Context.DOWNLOAD_SERVICE);
 
-                mgr.enqueue(new DownloadManager.Request(uri)
-                    .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                    .setAllowedOverRoaming(false)
-                    .setTitle("Kinoxscanner Download")
-                    .setDescription(currentLink.getFilename())
-                    .setMimeType("video/mp4")
-                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_MOVIES, filename));
+                    int flags = DownloadManager.Request.NETWORK_WIFI;
+                    if(!isWifiOnly)
+                        flags |= DownloadManager.Request.NETWORK_MOBILE;
 
-                Toast.makeText(me, "Download gestartet: " + filename, Toast.LENGTH_SHORT).show();
+                    mgr.enqueue(new DownloadManager.Request(uri)
+                            .setAllowedNetworkTypes(flags)
+                            .setAllowedOverRoaming(false)
+                            .setTitle("Kinoxscanner Download")
+                            .setDescription(currentLink.getFilename())
+                            .setMimeType("video/mp4")
+                            .setDestinationInExternalPublicDir(Environment.DIRECTORY_MOVIES, filename));
+
+                    Toast.makeText(me, "Download gestartet: " + filename, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(me, "Sie sind nicht mit W-Lan verbunden!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
