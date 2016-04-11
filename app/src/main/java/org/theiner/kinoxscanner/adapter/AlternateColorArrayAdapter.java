@@ -15,27 +15,24 @@ import java.util.List;
 /**
  * Created by TTheiner on 08.03.2016.
  */
-public class HosterAdapter extends ArrayAdapter<HosterMirror> {
+public class AlternateColorArrayAdapter<T> extends ArrayAdapter<T> {
 
     private int[] colors = new int[] { 0x50424242, 0x50212121 };
 
-    public HosterAdapter(Context context, List<HosterMirror> hosterMirrors) {
-        super(context, R.layout.hostermirror_row_layout, hosterMirrors);
+    public AlternateColorArrayAdapter(Context context, List<T> content) {
+        super(context, R.layout.my_simple_list_item_1, content);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
 
-        View myView = inflater.inflate(R.layout.hostermirror_row_layout, parent, false);
+        View myView = inflater.inflate(R.layout.my_simple_list_item_1, parent, false);
 
-        HosterMirror currentHoster = getItem(position);
+        String currentContent = getItem(position).toString();
 
-        TextView txtHosterName = (TextView) myView.findViewById(R.id.txtHosterName);
-        txtHosterName.setText(currentHoster.getStrategie().hosterName);
-
-        TextView txtMirrorCount = (TextView) myView.findViewById(R.id.txtMirrorCount);
-        txtMirrorCount.setText(currentHoster.getMirrorCount() + " Server");
+        TextView txtContent = (TextView) myView.findViewById(android.R.id.text1);
+        txtContent.setText(currentContent);
 
         int colorPos = position % colors.length;
         myView.setBackgroundColor(colors[colorPos]);

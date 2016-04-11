@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import org.theiner.kinoxscanner.R;
+import org.theiner.kinoxscanner.adapter.AlternateColorArrayAdapter;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.Serie;
 
@@ -45,7 +46,7 @@ public class ManageSerienFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_manage_serien, null);
         Log.d("kinoxscanner", "ManageSerienFragment onCreateView");
 
-        adapter = new ArrayAdapter<Serie>(me, R.layout.my_simple_list_item_1, myApp.getSerien());
+        adapter = new AlternateColorArrayAdapter<Serie>(me, myApp.getSerien());
         lvSerien = (ListView) layout.findViewById(R.id.lvSerien);
         lvSerien.setAdapter(adapter);
 

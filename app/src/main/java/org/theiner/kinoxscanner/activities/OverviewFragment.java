@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.theiner.kinoxscanner.R;
+import org.theiner.kinoxscanner.adapter.AlternateColorArrayAdapter;
 import org.theiner.kinoxscanner.async.CheckKinoxTask;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
@@ -91,7 +92,7 @@ public class OverviewFragment extends Fragment {
                     txtStatus.setTypeface(Typeface.DEFAULT);
                     txtStatus.setText("Folgende Downloads stehen bereit:");
 
-                    adapter = new ArrayAdapter<CheckErgebnis>(me, R.layout.my_simple_list_item_1, ergebnisListe);
+                    adapter = new AlternateColorArrayAdapter<CheckErgebnis>(me, ergebnisListe);
                     lvDownload.setAdapter(adapter);
 
                     lvDownload.setOnItemClickListener(new AdapterView.OnItemClickListener() {

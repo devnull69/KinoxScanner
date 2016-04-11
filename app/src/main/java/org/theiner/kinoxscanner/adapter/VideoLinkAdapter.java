@@ -24,6 +24,8 @@ import java.util.List;
  */
 public class VideoLinkAdapter extends ArrayAdapter<VideoLink> {
 
+    private int[] colors = new int[] { 0x50424242, 0x50212121 };
+
     public VideoLinkAdapter(Context context, List<VideoLink> videoLinks) {
         super(context, R.layout.videolink_row_layout, videoLinks);
     }
@@ -67,6 +69,10 @@ public class VideoLinkAdapter extends ArrayAdapter<VideoLink> {
                 Toast.makeText(me, "Download gestartet: " + filename, Toast.LENGTH_SHORT).show();
             }
         });
+
+        int colorPos = position % colors.length;
+        myView.setBackgroundColor(colors[colorPos]);
+
         return myView;
     }
 }
