@@ -156,7 +156,8 @@ public class OverviewFragment extends Fragment {
 
         settings = me.getSharedPreferences(PREFS_NAME, me.MODE_PRIVATE);
 
-        myApp.getObjectsFromSharedPreferences(settings);
+        if(myApp.getSerien() == null)
+            myApp.getObjectsFromSharedPreferences(settings);
 
         // Density metrics merken für Large Icon der Notification
         DisplayMetrics metrics = this.getResources().getDisplayMetrics();
