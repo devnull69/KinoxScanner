@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import org.theiner.kinoxscanner.R;
 
@@ -24,6 +25,7 @@ public class OptionsActivity extends AppCompatActivity {
         swWifiOnly = (Switch) findViewById(R.id.swWifiOnly);
 
         final SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        final Activity me = this;
 
         boolean isWifiOnly = settings.getBoolean("wifionly", true);
 
@@ -38,6 +40,10 @@ public class OptionsActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putBoolean("wifionly", isChecked);
                 editor.commit();
+
+                if(!isChecked) {
+                    Toast.makeText(me, "Beim Download und Streamen von Videos fallen große Datenmengen an, die über Ihren Mobilfunkprovider Kosten für Sie verursachen können!", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
