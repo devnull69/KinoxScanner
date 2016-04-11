@@ -73,11 +73,13 @@ public class ViewPagerActivity extends AppCompatActivity{
 
         if(id == R.id.action_close) {
             System.exit(0);
+            return true;
         }
 
         if(id == R.id.action_options) {
             Intent intent = new Intent(this, OptionsActivity.class);
             startActivity(intent);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
