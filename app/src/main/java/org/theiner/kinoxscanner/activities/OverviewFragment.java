@@ -71,65 +71,78 @@ public class OverviewFragment extends Fragment {
     private void zeigeWerte() {
         final Activity me = this.getActivity();
 
-        CheckKinoxTask.CheckCompleteListener ccl = new CheckKinoxTask.CheckCompleteListener() {
-            @Override
-            public void onCheckComplete(List<CheckErgebnis> result) {
+        ergebnisListe = myApp.getErgebnisliste();
+        if(ergebnisListe == null) {
+            CheckKinoxTask.CheckCompleteListener ccl = new CheckKinoxTask.CheckCompleteListener() {
+                @Override
+                public void onCheckComplete(List<CheckErgebnis> result) {
 
-                btnScanAgain.setEnabled(true);
+                    btnScanAgain.setEnabled(true);
 
-                ergebnisListe = result;
-                if(ergebnisListe.size()==0) {
+                    ergebnisListe = result;
+
+                    // Merken, damit bei Neuerstellen des Fragments nicht neu gescannt wird
+                    myApp.setErgebnisliste(ergebnisListe);
+
                     txtStatus.setTypeface(Typeface.DEFAULT);
-
-                    txtStatus.setText("Keine Ergebnisse gefunden.");
-                    // Progress-Bar verstecken
-                    //((ViewManager) pbProgress.getParent()).removeView(pbProgress);
                     pbProgress.setVisibility(View.GONE);
-                } else {
-                    // Progress-Bar verstecken
-                    //((ViewManager) pbProgress.getParent()).removeView(pbProgress);
-                    pbProgress.setVisibility(View.GONE);
-                    txtStatus.setTypeface(Typeface.DEFAULT);
-                    txtStatus.setText("Folgende Downloads stehen bereit:");
+                    if (ergebnisListe.size() == 0) {
+                        txtStatus.setText("Keine Ergebnisse gefunden.");
+                    } else {
+                        txtStatus.setText("Folgende Downloads stehen bereit:");
 
-                    adapter = new AlternateColorArrayAdapter<CheckErgebnis>(me, ergebnisListe);
-                    lvDownload.setAdapter(adapter);
+                        adapter = new AlternateColorArrayAdapter<CheckErgebnis>(me, ergebnisListe);
+                        lvDownload.setAdapter(adapter);
 
-                    lvDownload.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> listview, View view, int position, long id) {
-                            currentListIndex = position;
-                            CheckErgebnis selected = (CheckErgebnis) listview.getItemAtPosition(position);
-                            int currentIndex = -1;
-                            if(selected.foundElement instanceof Serie)
-                                currentIndex = myApp.getSerien().indexOf(selected.foundElement);
-                            else
-                                currentIndex = myApp.getFilme().indexOf(selected.foundElement);
-
-                            Intent intent = new Intent(me, UpdateKinoxElementActivity.class);
-                            Bundle extras = new Bundle();
-                            extras.putSerializable(EXTRA_MESSAGE_CHECKERGEBNIS, selected);
-                            extras.putInt(EXTRA_MESSAGE_CURRENTINDEX, currentIndex);
-                            intent.putExtras(extras);
-                            startActivityForResult(intent, REQUEST_DELETE_LINE);
-                        }
-                    });
-
-                    SharedPreferences settings = me.getSharedPreferences(PREFS_NAME, me.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putInt("alteAnzahl", result.size());
-                    editor.commit();
+                        SharedPreferences settings = me.getSharedPreferences(PREFS_NAME, me.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putInt("alteAnzahl", result.size());
+                        editor.commit();
+                    }
                 }
-            }
 
+                @Override
+                public void onProgress(Integer progress) {
+                    pbProgress.setProgress(progress);
+                }
+            };
+
+            CheckKinoxTask myTask = new CheckKinoxTask(ccl);
+            myTask.execute(myApp);
+        } else {
+            // Ergebnisliste schon vorhanden
+            // ListView füllen, Progressbar disablen, Button enablen
+            pbProgress.setVisibility(View.GONE);
+            txtStatus.setTypeface(Typeface.DEFAULT);
+            btnScanAgain.setEnabled(true);
+            if (ergebnisListe.size() == 0) {
+                txtStatus.setText("Keine Ergebnisse gefunden.");
+            } else {
+                txtStatus.setText("Folgende Downloads stehen bereit:");
+
+                adapter = new AlternateColorArrayAdapter<CheckErgebnis>(me, ergebnisListe);
+                lvDownload.setAdapter(adapter);
+            }
+        }
+        lvDownload.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onProgress(Integer progress) {
-                pbProgress.setProgress(progress);
-            }
-        };
+            public void onItemClick(AdapterView<?> listview, View view, int position, long id) {
+                currentListIndex = position;
+                CheckErgebnis selected = (CheckErgebnis) listview.getItemAtPosition(position);
+                int currentIndex = -1;
+                if (selected.foundElement instanceof Serie)
+                    currentIndex = myApp.getSerien().indexOf(selected.foundElement);
+                else
+                    currentIndex = myApp.getFilme().indexOf(selected.foundElement);
 
-        CheckKinoxTask myTask = new CheckKinoxTask(ccl);
-        myTask.execute(myApp);
+                Intent intent = new Intent(me, UpdateKinoxElementActivity.class);
+                Bundle extras = new Bundle();
+                extras.putSerializable(EXTRA_MESSAGE_CHECKERGEBNIS, selected);
+                extras.putInt(EXTRA_MESSAGE_CURRENTINDEX, currentIndex);
+                intent.putExtras(extras);
+                startActivityForResult(intent, REQUEST_DELETE_LINE);
+            }
+        });
 
     }
 
@@ -254,8 +267,11 @@ public class OverviewFragment extends Fragment {
         //Statustext löschen
         txtStatus.setText("");
 
+        // Gemerkte Ergebnisliste zurücksetzen
+        myApp.setErgebnisliste(null);
+
         // ListView leeren falls nötig
-        if(adapter!= null) {
+        if(adapter != null) {
             ergebnisListe.clear();
             adapter.notifyDataSetChanged();
         }

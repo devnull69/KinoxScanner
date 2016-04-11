@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.theiner.kinoxscanner.data.CheckErgebnis;
 import org.theiner.kinoxscanner.data.Film;
 import org.theiner.kinoxscanner.data.Serie;
 
@@ -19,7 +20,15 @@ import java.util.List;
 public class KinoxScannerApplication extends Application {
     private List<Film> filme = null;
     private List<Serie> serien = null;
+    private List<CheckErgebnis> ergebnisliste = null;
 
+    public List<CheckErgebnis> getErgebnisliste() {
+        return ergebnisliste;
+    }
+
+    public void setErgebnisliste(List<CheckErgebnis> ergebnisliste) {
+        this.ergebnisliste = ergebnisliste;
+    }
 
     public List<Film> getFilme() {
         return filme;
