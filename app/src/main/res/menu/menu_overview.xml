@@ -6,7 +6,8 @@
         android:id="@+id/action_options"
         android:orderInCategory="100"
         android:title="@string/action_options"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/icon_menu_settings"/>
     <item
         android:id="@+id/action_close"
         android:orderInCategory="200"
