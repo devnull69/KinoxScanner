@@ -109,6 +109,11 @@ public class KinoxHelper {
     }
 
     private static List<HosterMirror> getVideoLinksFromElements(NodeList liElements, String referer) {
+
+        Pattern datePattern = Pattern.compile("Vom\\:\\s(\\d{2}\\.\\d{2}\\.\\d{4})");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        Date heute = new Date();
+
         List<HosterMirror> result = new ArrayList<>();
 
         for(int i=0; i < liElements.getLength(); i++) {
@@ -132,6 +137,24 @@ public class KinoxHelper {
                 mirrorCount = Integer.parseInt(matcher.group(1));
             }
 
+            String textToParse = linode.getTextContent();
+
+            Matcher dateMatcher = datePattern.matcher(textToParse);
+            String theDate = "";
+            if (dateMatcher.find()) {
+                try {
+                    Date myDate = sdf.parse(dateMatcher.group(1));
+                    if (myDate.before(heute)) {
+                        // kinox = 10 Tage draufrechnen!
+                        myDate.setTime(myDate.getTime() + 10 * 24 * 60 * 60 * 1000);
+                    }
+
+                    theDate = sdf.format(myDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
             HosterMirror hosterMirror;
             switch(id) {
                 case 30:
@@ -139,6 +162,7 @@ public class KinoxHelper {
                     hosterMirror = new HosterMirror();
                     hosterMirror.setMirrorCount(mirrorCount);
                     hosterMirror.setStrategie(new StreamCloudStrategie(referer));
+                    hosterMirror.setHosterdate(theDate);
                     result.add(hosterMirror);
 
                     break;
@@ -147,6 +171,7 @@ public class KinoxHelper {
                     hosterMirror = new HosterMirror();
                     hosterMirror.setMirrorCount(mirrorCount);
                     hosterMirror.setStrategie(new FlashXStrategie(referer));
+                    hosterMirror.setHosterdate(theDate);
                     result.add(hosterMirror);
 
                     break;
@@ -155,6 +180,7 @@ public class KinoxHelper {
                     hosterMirror = new HosterMirror();
                     hosterMirror.setMirrorCount(mirrorCount);
                     hosterMirror.setStrategie(new VidBullStrategie());
+                    hosterMirror.setHosterdate(theDate);
                     result.add(hosterMirror);
 
                     break;
@@ -163,6 +189,7 @@ public class KinoxHelper {
                     hosterMirror = new HosterMirror();
                     hosterMirror.setMirrorCount(mirrorCount);
                     hosterMirror.setStrategie(new VidToMeStrategie(referer));
+                    hosterMirror.setHosterdate(theDate);
                     result.add(hosterMirror);
 
                     break;
@@ -171,6 +198,7 @@ public class KinoxHelper {
                     hosterMirror = new HosterMirror();
                     hosterMirror.setMirrorCount(mirrorCount);
                     hosterMirror.setStrategie(new TheVideoMeStrategie(referer));
+                    hosterMirror.setHosterdate(theDate);
                     result.add(hosterMirror);
 
                     break;
@@ -179,6 +207,7 @@ public class KinoxHelper {
                     hosterMirror = new HosterMirror();
                     hosterMirror.setMirrorCount(mirrorCount);
                     hosterMirror.setStrategie(new VodLockerStrategie());
+                    hosterMirror.setHosterdate(theDate);
                     result.add(hosterMirror);
 
                     break;
@@ -187,6 +216,7 @@ public class KinoxHelper {
                     hosterMirror = new HosterMirror();
                     hosterMirror.setMirrorCount(mirrorCount);
                     hosterMirror.setStrategie(new VidziStrategie());
+                    hosterMirror.setHosterdate(theDate);
                     result.add(hosterMirror);
 
                     break;

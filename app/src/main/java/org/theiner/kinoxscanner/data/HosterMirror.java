@@ -10,6 +10,15 @@ import java.io.Serializable;
 public class HosterMirror implements Serializable{
     private int mirrorCount;
     private HosterStrategie strategie;
+    private String hosterdate;
+
+    public String getHosterdate() {
+        return hosterdate;
+    }
+
+    public void setHosterdate(String hosterdate) {
+        this.hosterdate = hosterdate;
+    }
 
     private static final long serialVersionUID = 0L;
 

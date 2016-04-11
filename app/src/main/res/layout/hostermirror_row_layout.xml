@@ -16,9 +16,16 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:textSize="8sp"
-        android:text="url placeholder"
+        android:textSize="10sp"
+        android:text="mirrorcount placeholder"
         android:layout_marginLeft="20dp"
         android:id="@+id/txtMirrorCount"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:textSize="10sp"
+        android:text="date placeholder"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/txtHosterDate"/>
 </LinearLayout>

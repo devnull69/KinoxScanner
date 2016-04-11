@@ -37,6 +37,9 @@ public class HosterAdapter extends ArrayAdapter<HosterMirror> {
         TextView txtMirrorCount = (TextView) myView.findViewById(R.id.txtMirrorCount);
         txtMirrorCount.setText(currentHoster.getMirrorCount() + " Server");
 
+        TextView txtHosterDate = (TextView) myView.findViewById(R.id.txtHosterDate);
+        txtHosterDate.setText("Datum: " + currentHoster.getHosterdate());
+
         int colorPos = position % colors.length;
         myView.setBackgroundColor(colors[colorPos]);
 
