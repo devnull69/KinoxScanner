@@ -1,5 +1,9 @@
 package org.theiner.kinoxscanner.data;
 
+import android.graphics.Bitmap;
+
+import org.theiner.kinoxscanner.util.ImageHelper;
+
 import java.io.Serializable;
 
 /**
@@ -9,8 +13,22 @@ public class Film implements KinoxElement, Serializable{
     private String name;
     private String addr;
     private String lastDate = "";  // Leerstring ist erlaubt
+    private String imageSubDir;
+    private Bitmap image = null;
 
     private static final long serialVersionUID = 0L;
+
+    public String getImageSubDir() {
+        return imageSubDir;
+    }
+
+    public void setImageSubDir(String imageSubDir) {
+        this.imageSubDir = imageSubDir;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
 
     public String getName() {
         return name;
@@ -48,4 +66,12 @@ public class Film implements KinoxElement, Serializable{
 
     @Override
     public String toString() {return name;}
+
+    @Override
+    public Bitmap getImage() {
+        Bitmap result = image;
+        if(result == null)
+          result = ImageHelper.getImage(addr);
+        return result;
+    }
 }

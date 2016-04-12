@@ -1,5 +1,9 @@
 package org.theiner.kinoxscanner.data;
 
+import android.graphics.Bitmap;
+
+import org.theiner.kinoxscanner.util.ImageHelper;
+
 import java.io.Serializable;
 
 /**
@@ -11,8 +15,22 @@ public class Serie implements KinoxElement, Serializable{
     private int seriesID;
     private int season;
     private int episode;
+    private String imageSubDir;
+    private Bitmap image = null;
+
     private static final long serialVersionUID = 0L;
 
+    public String getImageSubDir() {
+        return imageSubDir;
+    }
+
+    public void setImageSubDir(String imageSubDir) {
+        this.imageSubDir = imageSubDir;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
 
     public String getName() {
         return name;
@@ -67,5 +85,14 @@ public class Serie implements KinoxElement, Serializable{
     @Override
     public String toString() {
         return name + " " + season + "x" + ((episode<10)?"0":"") + episode;
+    }
+
+    @Override
+    public Bitmap getImage() {
+        Bitmap result = image;
+        if(result == null)
+            result = ImageHelper.getImage(addr);
+        return result;
+
     }
 }
