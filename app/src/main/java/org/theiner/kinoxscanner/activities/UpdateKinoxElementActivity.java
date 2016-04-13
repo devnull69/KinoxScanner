@@ -26,6 +26,7 @@ import org.theiner.kinoxscanner.data.KinoxElement;
 import org.theiner.kinoxscanner.data.KinoxElementHoster;
 import org.theiner.kinoxscanner.data.Serie;
 import org.theiner.kinoxscanner.data.VideoLink;
+import org.theiner.kinoxscanner.util.ImageHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
     private KinoxScannerApplication myApp;
     private CheckErgebnis currentErgebnis;
     private int currentIndex;
+
+    private boolean elementRemoved = false;
 
     private BaseAdapter adapter = null;
     private ListView lvHosterMirrors = null;
@@ -138,6 +141,12 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
         // Serie komplett entfernen
         Serie currentSerie = (Serie) currentKinoxElement;
         myApp.removeSerieAt(currentIndex);
+        // Bild aus dem Cache löschen
+        ImageHelper.removeImage(currentSerie.getAddr());
+
+        // ListView auf ManageSerienFragment aktualisieren
+        elementRemoved = true;
+
         updateSerienInSharedPreferences();
     }
 
@@ -163,6 +172,7 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
 
         Intent resultIntent = new Intent();
         resultIntent.putExtra("deleteLine", true);
+        resultIntent.putExtra("elementRemoved", elementRemoved);
         setResult(OverviewFragment.RESULT_IS_OK, resultIntent);
 
         finish();
@@ -180,7 +190,14 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
         // Film komplett entfernen
         Film currentFilm = (Film) currentKinoxElement;
         myApp.removeFilmAt(currentIndex);
+        // Bild aus dem Cache löschen
+        ImageHelper.removeImage(currentFilm.getAddr());
+
+        // ListView auf ManageFilmeFragment aktualisieren
+        elementRemoved = true;
+
         updateFilmeInSharedPreferences();
+
     }
 
     private void updateFilmeInSharedPreferences() {
@@ -205,6 +222,7 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
 
         Intent resultIntent = new Intent();
         resultIntent.putExtra("deleteLine", true);
+        resultIntent.putExtra("elementRemoved", elementRemoved);
         setResult(OverviewFragment.RESULT_IS_OK, resultIntent);
 
         finish();

@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -241,6 +242,13 @@ public class OverviewFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_DELETE_LINE) {
             if(resultCode == RESULT_IS_OK) {
+                Boolean elementRemoved = data.getBooleanExtra("elementRemoved", false);
+                if(elementRemoved != null && elementRemoved) {
+                    // Die Fragmente dazu auffordern, ihre Listen zu aktualisieren
+                    Intent intent = new Intent("updatelist");
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                }
+
                 Boolean deleteLine = data.getBooleanExtra("deleteLine", false);
                 if(deleteLine != null && deleteLine) {
                     // change the List for the adapter and notify the adapter about it

@@ -1,9 +1,13 @@
 package org.theiner.kinoxscanner.activities;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +33,8 @@ public class ManageSerienFragment extends Fragment {
     private Button btnNewSeries;
     private Activity me;
     private List<Serie> mySerien;
+
+    private BroadcastReceiver mMessageReceiver = null;
 
     public final static String EXTRA_MESSAGE = "org.theiner.kinoxscanner.MESSAGESERIE";
     public static int REQUEST_EDIT_SERIE = 101;
@@ -76,6 +82,16 @@ public class ManageSerienFragment extends Fragment {
             }
         });
 
+        // Receive message to delete Series (from UpdateKinoxElementActivity via OverviewFragment)
+        mMessageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                adapter.notifyDataSetChanged();
+            }
+        };
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter("updatelist"));
+
         return layout;
     }
 
@@ -97,6 +113,12 @@ public class ManageSerienFragment extends Fragment {
                 }
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
     }
 
     public void onNewSeries(View view) {

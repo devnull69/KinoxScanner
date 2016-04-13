@@ -1,9 +1,13 @@
 package org.theiner.kinoxscanner.activities;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +33,8 @@ public class ManageFilmeFragment extends Fragment {
     private Activity me;
     private Button btnNewMovie;
     private List<Film> myFilme;
+
+    private BroadcastReceiver mMessageReceiver = null;
 
     public final static String EXTRA_MESSAGE = "org.theiner.kinoxscanner.MESSAGEFILME";
     public static int REQUEST_EDIT_FILM = 102;
@@ -75,6 +81,16 @@ public class ManageFilmeFragment extends Fragment {
             }
         });
 
+        // Receive message to delete Film (from UpdateKinoxElementActivity via OverviewFragment)
+        mMessageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                adapter.notifyDataSetChanged();
+            }
+        };
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter("updatelist"));
+
         return layout;
     }
 
@@ -82,13 +98,6 @@ public class ManageFilmeFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d("kinoxscanner", "ManageFilmeFragment onActivityCreated");
-    }
-
-    public void onNewFilm(View view) {
-        int currentIndex = -1;
-        Intent intent = new Intent(me, EditFilmActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, currentIndex);
-        startActivityForResult(intent, REQUEST_EDIT_FILM);
     }
 
     @Override
@@ -103,6 +112,19 @@ public class ManageFilmeFragment extends Fragment {
                 }
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
+    }
+
+    public void onNewFilm(View view) {
+        int currentIndex = -1;
+        Intent intent = new Intent(me, EditFilmActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, currentIndex);
+        startActivityForResult(intent, REQUEST_EDIT_FILM);
     }
 
 }
