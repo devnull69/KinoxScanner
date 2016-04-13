@@ -2,6 +2,7 @@ package org.theiner.kinoxscanner.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,17 +10,20 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.theiner.kinoxscanner.R;
+import org.theiner.kinoxscanner.async.GetImageTask;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.Film;
 import org.theiner.kinoxscanner.data.SearchRequest;
 import org.theiner.kinoxscanner.data.SearchResult;
 import org.theiner.kinoxscanner.data.Serie;
+import org.theiner.kinoxscanner.util.ImageHelper;
 
 public class EditFilmActivity extends AppCompatActivity {
 
@@ -27,7 +31,9 @@ public class EditFilmActivity extends AppCompatActivity {
     private EditText editName = null;
     private EditText editAddr = null;
     private EditText editLastDate = null;
+    private EditText editImageSubDir = null;
     private Button btnRemoveFilm = null;
+    private ImageView ivCoverArt = null;
 
     private int currentIndex = -1;
     private Film aktuellerFilm = null;
@@ -47,13 +53,21 @@ public class EditFilmActivity extends AppCompatActivity {
         editName = (EditText) findViewById(R.id.editName);
         editAddr = (EditText) findViewById(R.id.editAddr);
         editLastDate = (EditText)findViewById(R.id.editLastDate);
+        editImageSubDir = (EditText) findViewById(R.id.editImageSubDir);
         btnRemoveFilm = (Button) findViewById(R.id.btnRemoveFilm);
+        ivCoverArt = (ImageView) findViewById(R.id.ivCoverArt);
 
         if(currentIndex != -1) {
             aktuellerFilm = myApp.getFilme().get(currentIndex);
             editName.setText(aktuellerFilm.getName());
             editAddr.setText(aktuellerFilm.getAddr());
             editLastDate.setText(aktuellerFilm.getLastDate());
+            editImageSubDir.setText(aktuellerFilm.getImageSubDir());
+
+            Bitmap coverArt = aktuellerFilm.imgFromCache();
+            if(coverArt != null) {
+                ivCoverArt.setImageBitmap(coverArt);
+            }
 
             btnRemoveFilm.setVisibility(View.VISIBLE);
         } else {
@@ -98,12 +112,14 @@ public class EditFilmActivity extends AppCompatActivity {
             neuerFilm.setName(editName.getText().toString());
             neuerFilm.setAddr(editAddr.getText().toString());
             neuerFilm.setLastDate(editLastDate.getText().toString());
+            neuerFilm.setImageSubDir(editImageSubDir.getText().toString());
             myApp.addFilm(neuerFilm);
         } else {
             // aktuellen Film updaten
             aktuellerFilm.setName(editName.getText().toString());
             aktuellerFilm.setAddr(editAddr.getText().toString());
             aktuellerFilm.setLastDate(editLastDate.getText().toString());
+            aktuellerFilm.setImageSubDir(editImageSubDir.getText().toString());
         }
 
         // In Preferences ablegen
@@ -158,6 +174,9 @@ public class EditFilmActivity extends AppCompatActivity {
             editor.commit();
         }
 
+        // Image aus dem Cache löschen
+        ImageHelper.removeImage(aktuellerFilm.getAddr());
+
         // Zurück und Manage-Liste aktualisieren!
         Intent resultIntent = new Intent();
         resultIntent.putExtra("updateList", true);
@@ -185,6 +204,21 @@ public class EditFilmActivity extends AppCompatActivity {
                     isAddrLocked = false;
                 } else {
                     editAddr.setText(suchErgebnis.getAddr());
+                    editImageSubDir.setText(suchErgebnis.getImageSubDir());
+
+                    // Bild laden
+                    GetImageTask.CheckCompleteListener ccl = new GetImageTask.CheckCompleteListener() {
+                        @Override
+                        public void onCheckComplete(Bitmap result) {
+                            // Bild am Film speichern und auf Platte ablegen, dann im ImageView anzeigen
+                            ImageHelper.storeImageInCache(result, aktuellerFilm.getAddr());
+                            ivCoverArt.setImageBitmap(result);
+                        }
+                    };
+
+                    GetImageTask myTask = new GetImageTask(ccl);
+                    myTask.execute(suchErgebnis.getImageSubDir(), suchErgebnis.getAddr());
+
                     isAddrLocked = true;
                 }
             }

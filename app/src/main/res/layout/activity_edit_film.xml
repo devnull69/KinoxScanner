@@ -39,16 +39,43 @@
         android:layout_height="wrap_content"
         android:id="@+id/editAddr"/>
 
-    <TextView
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Zuletzt auf Kinox aktualisiert am:"
-        android:layout_marginTop="5dp"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="date"
-        android:id="@+id/editLastDate"/>
+        android:layout_marginTop="15dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zuletzt aktualisiert am:" />
+        <EditText
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:inputType="date"
+            android:id="@+id/editLastDate"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="180dp"
+            android:text="Bildordner:" />
+        <EditText
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:layout_marginLeft="180dp"
+            android:inputType="date"
+            android:id="@+id/editImageSubDir"/>
+
+        <ImageView
+            android:layout_width="175px"
+            android:layout_height="250px"
+            android:layout_marginLeft="200dp"
+            android:layout_marginTop="70dp"
+            android:scaleType="fitCenter"
+            android:id="@+id/ivCoverArt"/>
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"
