@@ -72,6 +72,9 @@ public class EditSerieActivity extends AppCompatActivity {
             Bitmap coverArt = aktuelleSerie.imgFromCache();
             if(coverArt != null) {
                 ivCoverArt.setImageBitmap(coverArt);
+            } else {
+                if(!aktuelleSerie.getAddr().equals("") && !aktuelleSerie.getImageSubDir().equals(""))
+                    ImageHelper.startGetImageTask(ivCoverArt, aktuelleSerie.getImageSubDir(), aktuelleSerie.getAddr());
             }
 
             btnRemoveSerie.setVisibility(View.VISIBLE);
@@ -217,22 +220,12 @@ public class EditSerieActivity extends AppCompatActivity {
                     editSeriesID.setText(String.valueOf(suchErgebnis.getSeriesID()));
                     editImageSubDir.setText(suchErgebnis.getImageSubDir());
 
-                    // Bild laden
-                    GetImageTask.CheckCompleteListener ccl = new GetImageTask.CheckCompleteListener() {
-                        @Override
-                        public void onCheckComplete(Bitmap result) {
-                            // Bild an der Serie speichern und auf Platte ablegen, dann im ImageView anzeigen
-                            ImageHelper.storeImageInCache(result, suchErgebnis.getAddr());
-                            ivCoverArt.setImageBitmap(result);
-                        }
-                    };
-
-                    GetImageTask myTask = new GetImageTask(ccl);
-                    myTask.execute(suchErgebnis.getImageSubDir(), suchErgebnis.getAddr());
+                    ImageHelper.startGetImageTask(ivCoverArt, suchErgebnis.getImageSubDir(), suchErgebnis.getAddr());
 
                     isAddrLocked = true;
                 }
             }
         }
     }
+
 }

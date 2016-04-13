@@ -11,7 +11,10 @@ import android.widget.TextView;
 
 import org.theiner.kinoxscanner.R;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
+import org.theiner.kinoxscanner.data.Film;
 import org.theiner.kinoxscanner.data.KinoxElement;
+import org.theiner.kinoxscanner.data.Serie;
+import org.theiner.kinoxscanner.util.ImageHelper;
 
 import java.util.List;
 
@@ -39,8 +42,19 @@ public class CheckErgebnisAdapter extends ArrayAdapter<CheckErgebnis> {
 
         ImageView ivCoverArt = (ImageView) myView.findViewById(R.id.ivCoverArt);
         Bitmap coverArt = currentResult.foundElement.imgFromCache();
-        if(coverArt != null)
+        if(coverArt != null) {
             ivCoverArt.setImageBitmap(coverArt);
+        } else {
+            if(currentResult.foundElement instanceof Serie) {
+                Serie currentSerie = (Serie) currentResult.foundElement;
+                if(!currentSerie.getImageSubDir().equals("") && !currentSerie.getAddr().equals(""))
+                    ImageHelper.startGetImageTask(ivCoverArt, currentSerie.getImageSubDir(), currentSerie.getAddr());
+            } else {
+                Film currentFilm = (Film) currentResult.foundElement;
+                if(!currentFilm.getImageSubDir().equals("") && !currentFilm.getAddr().equals(""))
+                    ImageHelper.startGetImageTask(ivCoverArt, currentFilm.getImageSubDir(), currentFilm.getAddr());
+            }
+        }
 
         int colorPos = position % colors.length;
         myView.setBackgroundColor(colors[colorPos]);

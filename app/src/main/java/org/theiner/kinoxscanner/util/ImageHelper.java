@@ -3,6 +3,9 @@ package org.theiner.kinoxscanner.util;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.widget.ImageView;
+
+import org.theiner.kinoxscanner.async.GetImageTask;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -78,4 +81,20 @@ public class ImageHelper {
                 .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         return new File(sdDir, "KinoxScannerCache");
     }
+
+    public static void startGetImageTask(final ImageView ivCoverArt, String imageSubDir, final String addr) {
+        // Bild laden
+        GetImageTask.CheckCompleteListener ccl = new GetImageTask.CheckCompleteListener() {
+            @Override
+            public void onCheckComplete(Bitmap result) {
+                // Bild an der Serie speichern und auf Platte ablegen, dann im ImageView anzeigen
+                ImageHelper.storeImageInCache(result, addr);
+                ivCoverArt.setImageBitmap(result);
+            }
+        };
+
+        GetImageTask myTask = new GetImageTask(ccl);
+        myTask.execute(imageSubDir, addr);
+    }
+
 }

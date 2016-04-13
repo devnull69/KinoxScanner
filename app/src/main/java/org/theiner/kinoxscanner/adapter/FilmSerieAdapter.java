@@ -10,8 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.theiner.kinoxscanner.R;
+import org.theiner.kinoxscanner.data.Film;
 import org.theiner.kinoxscanner.data.KinoxElement;
 import org.theiner.kinoxscanner.data.SearchResult;
+import org.theiner.kinoxscanner.data.Serie;
+import org.theiner.kinoxscanner.util.ImageHelper;
 
 import java.util.Comparator;
 import java.util.List;
@@ -40,8 +43,19 @@ public class FilmSerieAdapter<T> extends ArrayAdapter<T> {
 
         ImageView ivCoverArt = (ImageView) myView.findViewById(R.id.ivCoverArt);
         Bitmap coverArt = currentResult.imgFromCache();
-        if(coverArt != null)
+        if(coverArt != null) {
             ivCoverArt.setImageBitmap(coverArt);
+        } else {
+            if(currentResult instanceof Serie) {
+                Serie currentSerie = (Serie) currentResult;
+                if(!currentSerie.getImageSubDir().equals("") && !currentSerie.getAddr().equals(""))
+                    ImageHelper.startGetImageTask(ivCoverArt, currentSerie.getImageSubDir(), currentSerie.getAddr());
+            } else {
+                Film currentFilm = (Film) currentResult;
+                if(!currentFilm.getImageSubDir().equals("") && !currentFilm.getAddr().equals(""))
+                    ImageHelper.startGetImageTask(ivCoverArt, currentFilm.getImageSubDir(), currentFilm.getAddr());
+            }
+        }
 
 
         int colorPos = position % colors.length;

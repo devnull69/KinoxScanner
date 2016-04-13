@@ -67,6 +67,9 @@ public class EditFilmActivity extends AppCompatActivity {
             Bitmap coverArt = aktuellerFilm.imgFromCache();
             if(coverArt != null) {
                 ivCoverArt.setImageBitmap(coverArt);
+            } else {
+                if(!aktuellerFilm.getImageSubDir().equals("") && !aktuellerFilm.getAddr().equals(""))
+                    ImageHelper.startGetImageTask(ivCoverArt, aktuellerFilm.getImageSubDir(), aktuellerFilm.getAddr());
             }
 
             btnRemoveFilm.setVisibility(View.VISIBLE);
@@ -206,18 +209,7 @@ public class EditFilmActivity extends AppCompatActivity {
                     editAddr.setText(suchErgebnis.getAddr());
                     editImageSubDir.setText(suchErgebnis.getImageSubDir());
 
-                    // Bild laden
-                    GetImageTask.CheckCompleteListener ccl = new GetImageTask.CheckCompleteListener() {
-                        @Override
-                        public void onCheckComplete(Bitmap result) {
-                            // Bild am Film speichern und auf Platte ablegen, dann im ImageView anzeigen
-                            ImageHelper.storeImageInCache(result, suchErgebnis.getAddr());
-                            ivCoverArt.setImageBitmap(result);
-                        }
-                    };
-
-                    GetImageTask myTask = new GetImageTask(ccl);
-                    myTask.execute(suchErgebnis.getImageSubDir(), suchErgebnis.getAddr());
+                    ImageHelper.startGetImageTask(ivCoverArt, suchErgebnis.getImageSubDir(), suchErgebnis.getAddr());
 
                     isAddrLocked = true;
                 }
