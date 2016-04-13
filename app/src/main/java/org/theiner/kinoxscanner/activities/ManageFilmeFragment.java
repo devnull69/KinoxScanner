@@ -18,6 +18,9 @@ import org.theiner.kinoxscanner.adapter.FilmSerieAdapter;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.Film;
 
+import java.util.Collections;
+import java.util.List;
+
 public class ManageFilmeFragment extends Fragment {
 
     private KinoxScannerApplication myApp;
@@ -25,6 +28,7 @@ public class ManageFilmeFragment extends Fragment {
     private ListView lvFilme;
     private Activity me;
     private Button btnNewMovie;
+    private List<Film> myFilme;
 
     public final static String EXTRA_MESSAGE = "org.theiner.kinoxscanner.MESSAGEFILME";
     public static int REQUEST_EDIT_FILM = 102;
@@ -44,7 +48,10 @@ public class ManageFilmeFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_manage_filme, null);
         Log.d("kinoxscanner", "ManageFilmeFragment onCreateView");
 
-        adapter = new FilmSerieAdapter<Film>(me, myApp.getFilme());
+        myFilme = myApp.getFilme();
+        Collections.sort(myFilme);
+
+        adapter = new FilmSerieAdapter<Film>(me, myFilme);
         lvFilme = (ListView) layout.findViewById(R.id.lvFilme);
         lvFilme.setAdapter(adapter);
 
@@ -90,6 +97,7 @@ public class ManageFilmeFragment extends Fragment {
             if(resultCode == RESULT_UPDATE_LIST) {
                 Boolean updateList = data.getBooleanExtra("updateList", false);
                 if(updateList != null && updateList) {
+                    Collections.sort(myFilme);
                     // notify the adapter about the change
                     adapter.notifyDataSetChanged();
                 }

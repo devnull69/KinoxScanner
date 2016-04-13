@@ -13,6 +13,7 @@ import org.theiner.kinoxscanner.R;
 import org.theiner.kinoxscanner.data.KinoxElement;
 import org.theiner.kinoxscanner.data.SearchResult;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -48,4 +49,5 @@ public class FilmSerieAdapter<T> extends ArrayAdapter<T> {
 
         return myView;
     }
+
 }

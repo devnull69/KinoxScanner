@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * Created by TTheiner on 26.02.2016.
  */
-public class Serie implements KinoxElement, Serializable{
+public class Serie implements KinoxElement, Serializable, Comparable<Serie>{
     private String name;
     private String addr;
     private int seriesID;
@@ -86,5 +86,10 @@ public class Serie implements KinoxElement, Serializable{
     public Bitmap imgFromCache() {
         return ImageHelper.getImage(addr);
 
+    }
+
+    @Override
+    public int compareTo(Serie another) {
+        return this.toString().compareTo(another.toString());
     }
 }
