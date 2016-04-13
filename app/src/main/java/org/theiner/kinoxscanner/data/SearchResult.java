@@ -9,10 +9,19 @@ public class SearchResult implements Serializable {
     private String name;
     private String addr;
     private int seriesID;
+    private String imageSubDir;
     private int languageCode;
 
     private static final long serialVersionUID = 0L;
 
+
+    public String getImageSubDir() {
+        return imageSubDir;
+    }
+
+    public void setImageSubDir(String imageSubDir) {
+        this.imageSubDir = imageSubDir;
+    }
 
     public String getName() {
         return name;

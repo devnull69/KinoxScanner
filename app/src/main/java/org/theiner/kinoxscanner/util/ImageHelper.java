@@ -7,6 +7,7 @@ import android.os.Environment;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 
 /**
@@ -36,6 +37,27 @@ public class ImageHelper {
         // Called from task
         // http://www.kinox.to/statics/thumbs/<imageSubDir>/<addr>.jpg
         return HTTPHelper.getBitmapFromURL("http://www.kinox.to/statics/thumbs/" + imageSubDir + "/" + addr + ".jpg");
+    }
+
+    public static void storeImageInCache(Bitmap image, String addr) {
+        // save image bitmap to cache
+        File pictureFileDir = getDir();
+        pictureFileDir.mkdirs();
+
+        String imageFilename = pictureFileDir.getPath() + File.separator + addr + ".jpg";
+
+        File newFile = new File(imageFilename);
+
+        if(!newFile.exists()) {
+            try {
+                FileOutputStream out = new FileOutputStream(newFile);
+                image.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void removeImage(String addr) {

@@ -48,38 +48,72 @@
         android:layout_height="wrap_content"
         android:id="@+id/editAddr"/>
 
-    <TextView
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Serien-ID:"
-        android:layout_marginTop="5dp"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:id="@+id/editSeriesID"/>
+        android:layout_marginTop="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Serien-ID:"
+            android:layout_marginTop="5dp"/>
+        <EditText
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:inputType="number"
+            android:id="@+id/editSeriesID"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bildordner:"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="180dp"/>
+        <EditText
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:layout_marginLeft="180dp"
+            android:inputType="number"
+            android:id="@+id/editImageSubDir"/>
+    </RelativeLayout>
 
-    <TextView
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Staffel:"
-        android:layout_marginTop="5dp"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:id="@+id/editSeason"/>
+        android:layout_marginTop="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Staffel:"
+            android:layout_marginTop="5dp"/>
+        <EditText
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:inputType="number"
+            android:id="@+id/editSeason"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Episode:"
-        android:layout_marginTop="5dp"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:id="@+id/editEpisode"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Episode:"
+            android:layout_marginTop="75dp"/>
+        <EditText
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="92dp"
+            android:inputType="number"
+            android:id="@+id/editEpisode"/>
+
+        <ImageView
+            android:layout_width="175px"
+            android:layout_height="250px"
+            android:layout_marginLeft="200dp"
+            android:layout_marginTop="5dp"
+            android:scaleType="fitCenter"
+            android:id="@+id/ivCoverArt"/>
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"

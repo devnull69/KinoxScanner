@@ -28,16 +28,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.theiner.kinoxscanner.R;
 import org.theiner.kinoxscanner.adapter.AlternateColorArrayAdapter;
 import org.theiner.kinoxscanner.async.CheckKinoxTask;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
+import org.theiner.kinoxscanner.data.Film;
 import org.theiner.kinoxscanner.data.Serie;
 import org.theiner.kinoxscanner.services.AlarmStarterService;
 import org.theiner.kinoxscanner.util.AlarmHelper;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -150,6 +155,9 @@ public class OverviewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("kinoxscanner", "OverviewFragment onCreate");
+
+        // Aufrufen, falls die Daten korrupt sind!
+        //cleanupFilmeUndSerien();
 
         me = this.getActivity();
         myApp = (KinoxScannerApplication) me.getApplicationContext();
@@ -295,4 +303,169 @@ public class OverviewFragment extends Fragment {
 
     }
 
+    private void cleanupFilmeUndSerien() {
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+
+        List<Serie> serien = getSerien();
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonSerien = "[]";
+        try {
+            jsonSerien = mapper.writeValueAsString(serien);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        editor.putString("serien", jsonSerien);
+
+        List<Film> filme = getFilme();
+        mapper = new ObjectMapper();
+        String jsonFilme = "[]";
+        try {
+            jsonFilme = mapper.writeValueAsString(filme);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        editor.putString("filme", jsonFilme);
+
+        editor.commit();
+
+
+    }
+
+    private List<Serie> getSerien() {
+        List<Serie> result = new ArrayList<>();
+
+        Serie twd = new Serie();
+        twd.setName("The Walking Dead");
+        twd.setAddr("The_Walking_Dead-1");
+        twd.setSeriesID(10437);
+        twd.setSeason(7);
+        twd.setEpisode(1);
+        result.add(twd);
+
+        Serie shameless = new Serie();
+        shameless.setName("Shameless");
+        shameless.setAddr("Shameless-2");
+        shameless.setSeriesID(39278);
+        shameless.setSeason(6);
+        shameless.setEpisode(1);
+        result.add(shameless);
+
+        Serie sn_en = new Serie();
+        sn_en.setName("Supernatural (en)");
+        sn_en.setAddr("Supernatural_german_subbed");
+        sn_en.setSeriesID(27249);
+        sn_en.setSeason(11);
+        sn_en.setEpisode(19);
+        result.add(sn_en);
+
+        Serie sn_de = new Serie();
+        sn_de.setName("Supernatural (de)");
+        sn_de.setAddr("Supernatural");
+        sn_de.setSeriesID(2375);
+        sn_de.setSeason(11);
+        sn_de.setEpisode(1);
+        result.add(sn_de);
+
+        Serie vikings = new Serie();
+        vikings.setName("Vikings");
+        vikings.setAddr("Vikings-1");
+        vikings.setSeriesID(46277);
+        vikings.setSeason(4);
+        vikings.setEpisode(1);
+        result.add(vikings);
+
+        Serie devious = new Serie();
+        devious.setName("Devious Maids");
+        devious.setAddr("Devious_Maids-1");
+        devious.setSeriesID(47777);
+        devious.setSeason(4);
+        devious.setEpisode(1);
+        result.add(devious);
+
+        Serie feartwd = new Serie();
+        feartwd.setName("Fear The Walking Dead");
+        feartwd.setAddr("Fear_the_Walking_Dead-1");
+        feartwd.setSeriesID(55976);
+        feartwd.setSeason(2);
+        feartwd.setEpisode(2);
+        result.add(feartwd);
+
+        Serie tmithc = new Serie();
+        tmithc.setName("The Man in the High Castle");
+        tmithc.setAddr("The_Man_in_the_High_Castle");
+        tmithc.setSeriesID(64040);
+        tmithc.setSeason(2);
+        tmithc.setEpisode(1);
+        result.add(tmithc);
+
+        Serie bcs = new Serie();
+        bcs.setName("Better Call Saul");
+        bcs.setAddr("Better_Call_Saul");
+        bcs.setSeriesID(54593);
+        bcs.setSeason(2);
+        bcs.setEpisode(9);
+        result.add(bcs);
+
+        Serie ol = new Serie();
+        ol.setName("Outlander");
+        ol.setAddr("Outlander-3");
+        ol.setSeriesID(54425);
+        ol.setSeason(2);
+        ol.setEpisode(1);
+        result.add(ol);
+
+        Serie ahs = new Serie();
+        ahs.setName("American Horror Story");
+        ahs.setAddr("American_Horror_Story-Die_dunkle_Seite_in_dir-1");
+        ahs.setSeriesID(37361);
+        ahs.setSeason(6);
+        ahs.setEpisode(1);
+        result.add(ahs);
+
+        Serie tbbt = new Serie();
+        tbbt.setName("The Big Bang Theory");
+        tbbt.setAddr("The_Big_Bang_Theory_german_subbed");
+        tbbt.setSeriesID(27242);
+        tbbt.setSeason(9);
+        tbbt.setEpisode(20);
+        result.add(tbbt);
+
+        return result;
+    }
+
+    private List<Film> getFilme() {
+        List<Film> result = new ArrayList<>();
+
+        Film deadpool = new Film();
+        deadpool.setName("Deadpool");
+        deadpool.setAddr("Deadpool");
+        deadpool.setLastDate("06.04.2016");
+        result.add(deadpool);
+
+        Film zoomania = new Film();
+        zoomania.setName("Zoomania");
+        zoomania.setAddr("Zoomania");
+        zoomania.setLastDate("06.04.2016");
+        result.add(zoomania);
+
+        Film allegiant = new Film();
+        allegiant.setName("Die Bestimmung-Allegiant Part 1");
+        allegiant.setAddr("Die_Bestimmung-Allegiant_Part_1");
+        allegiant.setLastDate("06.04.2016");
+        result.add(allegiant);
+
+        Film cloverfield = new Film();
+        cloverfield.setName("10 Cloverfield Lane");
+        cloverfield.setAddr("10_Cloverfield_Lane");
+        cloverfield.setLastDate("10.04.2016");
+        result.add(cloverfield);
+
+        Film welle = new Film();
+        welle.setName("Die 5. Welle");
+        welle.setAddr("Die_5-Welle-1");
+        welle.setLastDate("10.04.2016");
+        result.add(welle);
+
+        return result;
+    }
 }

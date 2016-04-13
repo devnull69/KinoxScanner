@@ -16,7 +16,6 @@ public class Serie implements KinoxElement, Serializable{
     private int season;
     private int episode;
     private String imageSubDir;
-    private Bitmap image = null;
 
     private static final long serialVersionUID = 0L;
 
@@ -26,10 +25,6 @@ public class Serie implements KinoxElement, Serializable{
 
     public void setImageSubDir(String imageSubDir) {
         this.imageSubDir = imageSubDir;
-    }
-
-    public void setImage(Bitmap image) {
-        this.image = image;
     }
 
     public String getName() {
@@ -88,11 +83,8 @@ public class Serie implements KinoxElement, Serializable{
     }
 
     @Override
-    public Bitmap getImage() {
-        Bitmap result = image;
-        if(result == null)
-            result = ImageHelper.getImage(addr);
-        return result;
+    public Bitmap imgFromCache() {
+        return ImageHelper.getImage(addr);
 
     }
 }

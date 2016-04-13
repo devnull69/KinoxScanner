@@ -9,5 +9,5 @@ public interface KinoxElement {
     public String toQueryString();
     public String toHosterRequestQueryString(int hoster, int mirror);
 
-    public Bitmap getImage();
+    public Bitmap imgFromCache();
 }

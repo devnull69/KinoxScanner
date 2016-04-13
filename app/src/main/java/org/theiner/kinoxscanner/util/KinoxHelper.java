@@ -12,6 +12,7 @@ import org.theiner.kinoxscanner.async.CollectVideoLinksTask;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
 import org.theiner.kinoxscanner.data.Film;
+import org.theiner.kinoxscanner.data.ExtraInfo;
 import org.theiner.kinoxscanner.data.KinoxElementHoster;
 import org.theiner.kinoxscanner.data.SearchRequest;
 import org.theiner.kinoxscanner.data.SearchResult;
@@ -339,17 +340,15 @@ public class KinoxHelper {
                             // drittes TD enthält den Titel
                             String titel = currentTR.getElementsByTagName("td").item(2).getTextContent();
 
-                            // hole SeriesID für Serien
-                            int seriesID = -1;
-                            if (typ.equals("series")) {
-                                seriesID = getSeriesID(addr);
-                            }
+                            // hole SeriesID für Serien und ImageSubDir für beides
+                            ExtraInfo extraInfo = getExtraInfo(addr);
 
                             SearchResult ergebnis = new SearchResult();
                             ergebnis.setName(titel);
                             ergebnis.setLanguageCode(languageCode);
                             ergebnis.setAddr(addr);
-                            ergebnis.setSeriesID(seriesID);
+                            ergebnis.setSeriesID(extraInfo.getSeriesID());
+                            ergebnis.setImageSubDir(extraInfo.getImageSubDir());
                             result.add(ergebnis);
                         }
                     }
@@ -359,8 +358,9 @@ public class KinoxHelper {
         return result;
     }
 
-    private static int getSeriesID(String addr) {
-        int result = -1;
+    private static ExtraInfo getExtraInfo(String addr) {
+        int seriesID = -1;
+        String imageSubDir = "";
         Document doc = HTTPHelper.getDocumentFromUrl("http://www.kinox.to/Stream/" + addr + ".html", "", false);
 
         // SeriesID ist Teil des rel-Attributs der id "SeasonSelection"
@@ -372,11 +372,26 @@ public class KinoxHelper {
             Pattern pattern = Pattern.compile("SeriesID=(\\d+)$");
             Matcher matcher = pattern.matcher(rel);
             if (matcher.find()) {
-                result = Integer.parseInt(matcher.group(1));
+                seriesID = Integer.parseInt(matcher.group(1));
             }
         }
 
-        return result;
+        // ImageSubDir ist Teil des Image-Tags, dass auch die Addr der Serie/des Films enthält
+        NodeList images = doc.getElementsByTagName("img");
+
+        for(int i=0; i<images.getLength(); i++) {
+            Element currentImage = (Element) images.item(i);
+
+            String src = currentImage.getAttribute("src");
+
+            if(src.indexOf(addr) != -1) {
+                int startpos = src.indexOf("thumbs") + 7;
+                imageSubDir = src.substring(startpos, startpos+8);
+            }
+        }
+
+
+        return new ExtraInfo(seriesID, imageSubDir);
     }
 
     public static List<VideoLink> collectVideoLinks(CollectVideoLinksTask task, KinoxElementHoster currentHoster) throws InterruptedException{
