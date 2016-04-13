@@ -208,7 +208,7 @@ public class EditSerieActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == OverviewFragment.REQUEST_SEARCH) {
             if(resultCode == OverviewFragment.RESULT_UPDATE_ELEMENTS) {
-                SearchResult suchErgebnis = (SearchResult) data.getSerializableExtra("suchErgebnis");
+                final SearchResult suchErgebnis = (SearchResult) data.getSerializableExtra("suchErgebnis");
                 if(suchErgebnis == null) {
                     Toast.makeText(this, "Keine Serie gefunden.", Toast.LENGTH_SHORT).show();
                     isAddrLocked = false;
@@ -222,7 +222,7 @@ public class EditSerieActivity extends AppCompatActivity {
                         @Override
                         public void onCheckComplete(Bitmap result) {
                             // Bild an der Serie speichern und auf Platte ablegen, dann im ImageView anzeigen
-                            ImageHelper.storeImageInCache(result, aktuelleSerie.getAddr());
+                            ImageHelper.storeImageInCache(result, suchErgebnis.getAddr());
                             ivCoverArt.setImageBitmap(result);
                         }
                     };

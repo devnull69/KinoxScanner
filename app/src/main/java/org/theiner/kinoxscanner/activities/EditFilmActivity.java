@@ -198,7 +198,7 @@ public class EditFilmActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == OverviewFragment.REQUEST_SEARCH) {
             if(resultCode == OverviewFragment.RESULT_UPDATE_ELEMENTS) {
-                SearchResult suchErgebnis = (SearchResult) data.getSerializableExtra("suchErgebnis");
+                final SearchResult suchErgebnis = (SearchResult) data.getSerializableExtra("suchErgebnis");
                 if(suchErgebnis == null) {
                     Toast.makeText(this, "Kein Film gefunden.", Toast.LENGTH_SHORT).show();
                     isAddrLocked = false;
@@ -211,7 +211,7 @@ public class EditFilmActivity extends AppCompatActivity {
                         @Override
                         public void onCheckComplete(Bitmap result) {
                             // Bild am Film speichern und auf Platte ablegen, dann im ImageView anzeigen
-                            ImageHelper.storeImageInCache(result, aktuellerFilm.getAddr());
+                            ImageHelper.storeImageInCache(result, suchErgebnis.getAddr());
                             ivCoverArt.setImageBitmap(result);
                         }
                     };
