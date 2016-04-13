@@ -9,13 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
 import org.theiner.kinoxscanner.R;
-import org.theiner.kinoxscanner.adapter.AlternateColorArrayAdapter;
+import org.theiner.kinoxscanner.adapter.FilmSerieAdapter;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.Serie;
 
@@ -46,7 +45,7 @@ public class ManageSerienFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_manage_serien, null);
         Log.d("kinoxscanner", "ManageSerienFragment onCreateView");
 
-        adapter = new AlternateColorArrayAdapter<Serie>(me, myApp.getSerien());
+        adapter = new FilmSerieAdapter<Serie>(me, myApp.getSerien());
         lvSerien = (ListView) layout.findViewById(R.id.lvSerien);
         lvSerien.setAdapter(adapter);
 

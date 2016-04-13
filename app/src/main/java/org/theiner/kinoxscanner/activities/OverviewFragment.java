@@ -5,34 +5,28 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.theiner.kinoxscanner.R;
-import org.theiner.kinoxscanner.adapter.AlternateColorArrayAdapter;
+import org.theiner.kinoxscanner.adapter.CheckErgebnisAdapter;
 import org.theiner.kinoxscanner.async.CheckKinoxTask;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.CheckErgebnis;
@@ -96,7 +90,7 @@ public class OverviewFragment extends Fragment {
                     } else {
                         txtStatus.setText("Folgende Downloads stehen bereit:");
 
-                        adapter = new AlternateColorArrayAdapter<CheckErgebnis>(me, ergebnisListe);
+                        adapter = new CheckErgebnisAdapter(me, ergebnisListe);
                         lvDownload.setAdapter(adapter);
 
                         SharedPreferences settings = me.getSharedPreferences(PREFS_NAME, me.MODE_PRIVATE);
@@ -125,7 +119,7 @@ public class OverviewFragment extends Fragment {
             } else {
                 txtStatus.setText("Folgende Downloads stehen bereit:");
 
-                adapter = new AlternateColorArrayAdapter<CheckErgebnis>(me, ergebnisListe);
+                adapter = new CheckErgebnisAdapter(me, ergebnisListe);
                 lvDownload.setAdapter(adapter);
             }
         }
