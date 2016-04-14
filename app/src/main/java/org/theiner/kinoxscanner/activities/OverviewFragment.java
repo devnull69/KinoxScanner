@@ -231,7 +231,7 @@ public class OverviewFragment extends Fragment {
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
             lastCheckedStr = sdf.format(lastCheckedDate);
         }
-        txtLastChecked.setText(lastCheckedStr);
+        txtLastChecked.setText("Zuletzt geprüft: " + lastCheckedStr);
     }
 
     @Override
