@@ -32,7 +32,6 @@ public class EditFilmActivity extends AppCompatActivity {
     private EditText editAddr = null;
     private EditText editLastDate = null;
     private EditText editImageSubDir = null;
-    private Button btnRemoveFilm = null;
     private ImageView ivCoverArt = null;
 
     private int currentIndex = -1;
@@ -54,7 +53,6 @@ public class EditFilmActivity extends AppCompatActivity {
         editAddr = (EditText) findViewById(R.id.editAddr);
         editLastDate = (EditText)findViewById(R.id.editLastDate);
         editImageSubDir = (EditText) findViewById(R.id.editImageSubDir);
-        btnRemoveFilm = (Button) findViewById(R.id.btnRemoveFilm);
         ivCoverArt = (ImageView) findViewById(R.id.ivCoverArt);
 
         if(currentIndex != -1) {
@@ -72,11 +70,9 @@ public class EditFilmActivity extends AppCompatActivity {
                     ImageHelper.startGetImageTask(ivCoverArt, aktuellerFilm.getImageSubDir(), aktuellerFilm.getAddr());
             }
 
-            btnRemoveFilm.setVisibility(View.VISIBLE);
         } else {
             // Überschrift ändern auf "Neuen Film erfassen"
             setTitle("Neuen Film erfassen");
-            btnRemoveFilm.setVisibility(View.INVISIBLE);
         }
         editName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -144,41 +140,6 @@ public class EditFilmActivity extends AppCompatActivity {
 
         editor.commit();
 
-
-        // Zurück und Manage-Liste aktualisieren!
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("updateList", true);
-        setResult(ManageFilmeFragment.RESULT_UPDATE_LIST, resultIntent);
-        finish();
-    }
-
-    public void onRemoveFilm(View view) {
-        if(currentIndex != -1) {
-            // Aus Liste löschen
-            myApp.removeFilmAt(currentIndex);
-
-            // In Preferences ablegen
-            SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
-            SharedPreferences.Editor editor = settings.edit();
-
-            ObjectMapper mapper = new ObjectMapper();
-            String jsonFilme = "[]";
-            try {
-                jsonFilme = mapper.writeValueAsString(myApp.getFilme());
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-            editor.putString("filme", jsonFilme);
-
-
-            // Update alte Anzahl
-            editor.putInt("alteAnzahl", 0);
-
-            editor.commit();
-        }
-
-        // Image aus dem Cache löschen
-        ImageHelper.removeImage(aktuellerFilm.getAddr());
 
         // Zurück und Manage-Liste aktualisieren!
         Intent resultIntent = new Intent();

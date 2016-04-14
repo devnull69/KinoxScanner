@@ -1,10 +1,13 @@
 package org.theiner.kinoxscanner.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -20,10 +23,16 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.theiner.kinoxscanner.R;
 import org.theiner.kinoxscanner.adapter.FilmSerieAdapter;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
 import org.theiner.kinoxscanner.data.Film;
+import org.theiner.kinoxscanner.data.FilmSerieWrapper;
+import org.theiner.kinoxscanner.data.Serie;
+import org.theiner.kinoxscanner.util.ImageHelper;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +43,9 @@ public class ManageFilmeFragment extends Fragment {
     private BaseAdapter adapter = null;
     private ListView lvFilme;
     private Activity me;
-    private List<Film> myFilme;
+    private List<FilmSerieWrapper> myFilme;
+
+    private Menu myMenu = null;
 
     private BroadcastReceiver mMessageReceiver = null;
 
@@ -58,17 +69,14 @@ public class ManageFilmeFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_manage_filme, null);
         Log.d("kinoxscanner", "ManageFilmeFragment onCreateView");
 
-        myFilme = myApp.getFilme();
-        Collections.sort(myFilme);
-
-        adapter = new FilmSerieAdapter<Film>(me, myFilme);
         lvFilme = (ListView) layout.findViewById(R.id.lvFilme);
-        lvFilme.setAdapter(adapter);
+
+        updateAdapter();
 
         lvFilme.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> listview, View view, int position, long id) {
-                Film selected = (Film) listview.getItemAtPosition(position);
+                Film selected = (Film) ((FilmSerieWrapper) listview.getItemAtPosition(position)).getKinoxelement();
                 int currentIndex = myApp.getFilme().indexOf(selected);
                 Intent intent = new Intent(me, EditFilmActivity.class);
                 intent.putExtra(EXTRA_MESSAGE, currentIndex);
@@ -76,17 +84,48 @@ public class ManageFilmeFragment extends Fragment {
             }
         });
 
+        lvFilme.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                toggleItem(position);
+                return true;
+            }
+        });
+
         // Receive message to delete Film (from UpdateKinoxElementActivity via OverviewFragment)
         mMessageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                adapter.notifyDataSetChanged();
+                updateAdapter();
             }
         };
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
                 new IntentFilter("updatelist"));
 
         return layout;
+    }
+
+    private void toggleItem(int position) {
+        FilmSerieWrapper item = (FilmSerieWrapper) lvFilme.getItemAtPosition(position);
+        item.setSelected(!item.isSelected());
+        adapter.notifyDataSetChanged();
+
+        showOrHideMenuItems();
+    }
+
+    public void showOrHideMenuItems() {
+        boolean show = false;
+
+        for(int i=0; i<myFilme.size(); i++) {
+            if(myFilme.get(i).isSelected()) {
+                show = true;
+                break;
+            }
+        }
+
+        MenuItem mItem = myMenu.findItem(R.id.action_remove);
+        if(mItem != null)
+            mItem.setVisible(show);
     }
 
     @Override
@@ -101,9 +140,7 @@ public class ManageFilmeFragment extends Fragment {
             if(resultCode == RESULT_UPDATE_LIST) {
                 Boolean updateList = data.getBooleanExtra("updateList", false);
                 if(updateList != null && updateList) {
-                    Collections.sort(myFilme);
-                    // notify the adapter about the change
-                    adapter.notifyDataSetChanged();
+                    updateAdapter();
                 }
             }
         }
@@ -120,8 +157,9 @@ public class ManageFilmeFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_filmsandseries, menu);
 
+        myMenu = menu;
         // hide options
-        menu.findItem(R.id.action_options).setVisible(false);
+        myMenu.findItem(R.id.action_options).setVisible(false);
     }
 
     @Override
@@ -131,6 +169,9 @@ public class ManageFilmeFragment extends Fragment {
         switch(id) {
             case R.id.action_add:
                 onNewFilm(getView());
+                return true;
+            case R.id.action_remove:
+                showDeleteDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -144,4 +185,67 @@ public class ManageFilmeFragment extends Fragment {
         startActivityForResult(intent, REQUEST_EDIT_FILM);
     }
 
+    public void showDeleteDialog() {
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Film(e) löschen")
+                .setMessage("Sind Sie sicher, dass Sie den/die ausgewählte(n) Film(e) löschen wollen?")
+                .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        onRemoveFilm();
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+
+                .show();
+    }
+
+    public void onRemoveFilm() {
+        for(int i=0; i<myFilme.size(); i++) {
+            if(myFilme.get(i).isSelected()) {
+                // entfernen
+                Film aktuellerFilm = (Film)myFilme.get(i).getKinoxelement();
+                myApp.removeFilm(aktuellerFilm);
+                // Image aus dem Cache löschen
+                ImageHelper.removeImage(aktuellerFilm.getAddr());
+            }
+        }
+
+        // In Preferences ablegen
+        SharedPreferences settings = getActivity().getSharedPreferences(OverviewFragment.PREFS_NAME, getActivity().MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonFilme = "[]";
+        try {
+            jsonFilme = mapper.writeValueAsString(myApp.getFilme());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        editor.putString("filme", jsonFilme);
+
+
+        // Update alte Anzahl
+        editor.putInt("alteAnzahl", 0);
+
+        editor.commit();
+
+        // adapter anpassen
+        updateAdapter();
+    }
+
+    private void updateAdapter() {
+        myFilme = FilmSerieWrapper.wrapAllItems(myApp.getFilme());
+        Collections.sort(myFilme);
+
+        adapter = new FilmSerieAdapter(me, myFilme);
+        lvFilme.setAdapter(adapter);
+
+        if(myMenu != null)
+            showOrHideMenuItems();
+    }
 }

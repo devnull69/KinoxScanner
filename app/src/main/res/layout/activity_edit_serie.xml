@@ -131,15 +131,6 @@
             android:text="Abbrechen"
             android:onClick="onExit"/>
     </RelativeLayout>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Serie komplett entfernen"
-        android:layout_marginTop="10dp"
-        android:visibility="invisible"
-        android:id="@+id/btnRemoveSerie"
-        android:onClick="onRemoveSerie"/>
 </LinearLayout>
 </ScrollView>
 </LinearLayout>

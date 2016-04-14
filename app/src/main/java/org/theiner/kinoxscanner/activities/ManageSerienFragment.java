@@ -1,10 +1,13 @@
 package org.theiner.kinoxscanner.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -17,13 +20,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListView;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.theiner.kinoxscanner.R;
 import org.theiner.kinoxscanner.adapter.FilmSerieAdapter;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
+import org.theiner.kinoxscanner.data.FilmSerieWrapper;
 import org.theiner.kinoxscanner.data.Serie;
+import org.theiner.kinoxscanner.util.ImageHelper;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +41,9 @@ public class ManageSerienFragment extends Fragment {
     private BaseAdapter adapter = null;
     private ListView lvSerien;
     private Activity me;
-    private List<Serie> mySerien;
+    private List<FilmSerieWrapper> mySerien;
+
+    private Menu myMenu = null;
 
     private BroadcastReceiver mMessageReceiver = null;
 
@@ -58,17 +67,14 @@ public class ManageSerienFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_manage_serien, null);
         Log.d("kinoxscanner", "ManageSerienFragment onCreateView");
 
-        mySerien = myApp.getSerien();
-        Collections.sort(mySerien);
-
-        adapter = new FilmSerieAdapter<Serie>(me, mySerien);
         lvSerien = (ListView) layout.findViewById(R.id.lvSerien);
-        lvSerien.setAdapter(adapter);
+
+        updateAdapter();
 
         lvSerien.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> listview, View view, int position, long id) {
-                Serie selected = (Serie) listview.getItemAtPosition(position);
+                Serie selected = (Serie) ((FilmSerieWrapper) listview.getItemAtPosition(position)).getKinoxelement();
                 int currentIndex = myApp.getSerien().indexOf(selected);
                 Intent intent = new Intent(me, EditSerieActivity.class);
                 intent.putExtra(EXTRA_MESSAGE, currentIndex);
@@ -76,17 +82,48 @@ public class ManageSerienFragment extends Fragment {
             }
         });
 
+        lvSerien.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                toggleItem(position);
+                return true;
+            }
+        });
+
         // Receive message to delete Series (from UpdateKinoxElementActivity via OverviewFragment)
         mMessageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                adapter.notifyDataSetChanged();
+                updateAdapter();
             }
         };
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
                 new IntentFilter("updatelist"));
 
         return layout;
+    }
+
+    private void toggleItem(int position) {
+        FilmSerieWrapper item = (FilmSerieWrapper) lvSerien.getItemAtPosition(position);
+        item.setSelected(!item.isSelected());
+        adapter.notifyDataSetChanged();
+
+        showOrHideMenuItems();
+    }
+
+    public void showOrHideMenuItems() {
+        boolean show = false;
+
+        for(int i=0; i<mySerien.size(); i++) {
+            if(mySerien.get(i).isSelected()) {
+                show = true;
+                break;
+            }
+        }
+
+        MenuItem mItem = myMenu.findItem(R.id.action_remove);
+        if(mItem != null)
+            mItem.setVisible(show);
     }
 
     @Override
@@ -101,9 +138,7 @@ public class ManageSerienFragment extends Fragment {
             if(resultCode == RESULT_UPDATE_LIST) {
                 Boolean updateList = data.getBooleanExtra("updateList", false);
                 if(updateList != null && updateList) {
-                    Collections.sort(mySerien);
-                    // notify the adapter about the change
-                    adapter.notifyDataSetChanged();
+                    updateAdapter();
                 }
             }
         }
@@ -119,8 +154,9 @@ public class ManageSerienFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_filmsandseries, menu);
 
+        myMenu = menu;
         // hide options
-        menu.findItem(R.id.action_options).setVisible(false);
+        myMenu.findItem(R.id.action_options).setVisible(false);
     }
 
     @Override
@@ -130,6 +166,9 @@ public class ManageSerienFragment extends Fragment {
         switch(id) {
             case R.id.action_add:
                 onNewSeries(getView());
+                return true;
+            case R.id.action_remove:
+                showDeleteDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -143,5 +182,67 @@ public class ManageSerienFragment extends Fragment {
         startActivityForResult(intent, REQUEST_EDIT_SERIE);
     }
 
+    public void showDeleteDialog() {
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Serie(n) löschen")
+                .setMessage("Sind Sie sicher, dass Sie die ausgewählte(n) Serie(n) löschen wollen?")
+                .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        onRemoveSeries();
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
 
+                .show();
+    }
+
+    public void onRemoveSeries() {
+        for(int i=0; i<mySerien.size(); i++) {
+            if(mySerien.get(i).isSelected()) {
+                // entfernen
+                Serie aktuelleSerie = (Serie)mySerien.get(i).getKinoxelement();
+                myApp.removeSeries(aktuelleSerie);
+                // Image aus dem Cache löschen
+                ImageHelper.removeImage(aktuelleSerie.getAddr());
+            }
+        }
+
+        // In Preferences ablegen
+        SharedPreferences settings = getActivity().getSharedPreferences(OverviewFragment.PREFS_NAME, getActivity().MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonSerien = "[]";
+        try {
+            jsonSerien = mapper.writeValueAsString(myApp.getSerien());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        editor.putString("serien", jsonSerien);
+
+
+        // Update alte Anzahl
+        editor.putInt("alteAnzahl", 0);
+
+        editor.commit();
+
+        // adapter anpassen
+        updateAdapter();
+    }
+
+    private void updateAdapter() {
+        mySerien = FilmSerieWrapper.wrapAllItems(myApp.getSerien());
+        Collections.sort(mySerien);
+
+        adapter = new FilmSerieAdapter(me, mySerien);
+        lvSerien.setAdapter(adapter);
+
+        if(myMenu != null)
+            showOrHideMenuItems();
+    }
 }

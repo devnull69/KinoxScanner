@@ -33,7 +33,6 @@ public class EditSerieActivity extends AppCompatActivity {
     private EditText editImageSubDir = null;
     private EditText editSeason = null;
     private EditText editEpisode = null;
-    private Button btnRemoveSerie = null;
     private ImageView ivCoverArt = null;
 
     private int currentIndex = -1;
@@ -57,7 +56,6 @@ public class EditSerieActivity extends AppCompatActivity {
         editImageSubDir = (EditText) findViewById(R.id.editImageSubDir);
         editSeason = (EditText) findViewById(R.id.editSeason);
         editEpisode = (EditText) findViewById(R.id.editEpisode);
-        btnRemoveSerie = (Button) findViewById(R.id.btnRemoveSerie);
         ivCoverArt = (ImageView) findViewById(R.id.ivCoverArt);
 
         if(currentIndex != -1) {
@@ -77,11 +75,9 @@ public class EditSerieActivity extends AppCompatActivity {
                     ImageHelper.startGetImageTask(ivCoverArt, aktuelleSerie.getImageSubDir(), aktuelleSerie.getAddr());
             }
 
-            btnRemoveSerie.setVisibility(View.VISIBLE);
         } else {
             // Überschrift ändern auf "Neue Serie erfassen"
             setTitle("Neue Serie erfassen");
-            btnRemoveSerie.setVisibility(View.INVISIBLE);
         }
 
         editName.addTextChangedListener(new TextWatcher() {
@@ -154,41 +150,6 @@ public class EditSerieActivity extends AppCompatActivity {
 
         editor.commit();
 
-
-        // Zurück und Manage-Liste aktualisieren!
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("updateList", true);
-        setResult(ManageSerienFragment.RESULT_UPDATE_LIST, resultIntent);
-        finish();
-    }
-
-    public void onRemoveSerie(View view) {
-        if(currentIndex != -1) {
-            // Aus Liste löschen
-            myApp.removeSerieAt(currentIndex);
-
-            // In Preferences ablegen
-            SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
-            SharedPreferences.Editor editor = settings.edit();
-
-            ObjectMapper mapper = new ObjectMapper();
-            String jsonSerien = "[]";
-            try {
-                jsonSerien = mapper.writeValueAsString(myApp.getSerien());
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-            editor.putString("serien", jsonSerien);
-
-
-            // Update alte Anzahl
-            editor.putInt("alteAnzahl", 0);
-
-            editor.commit();
-        }
-
-        // Image aus dem Cache löschen
-        ImageHelper.removeImage(aktuelleSerie.getAddr());
 
         // Zurück und Manage-Liste aktualisieren!
         Intent resultIntent = new Intent();

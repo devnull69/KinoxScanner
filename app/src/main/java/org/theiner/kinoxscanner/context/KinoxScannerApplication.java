@@ -50,8 +50,16 @@ public class KinoxScannerApplication extends Application {
         serien.remove(index);
     }
 
+    public void removeSeries(Serie toRemove) {
+        serien.remove(serien.indexOf(toRemove));
+    }
+
     public void removeFilmAt(int index) {
         filme.remove(index);
+    }
+
+    public void removeFilm(Film toRemove) {
+        filme.remove(filme.indexOf(toRemove));
     }
 
     public void getObjectsFromSharedPreferences(SharedPreferences settings) {

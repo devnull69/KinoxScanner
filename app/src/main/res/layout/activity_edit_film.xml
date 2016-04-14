@@ -93,13 +93,4 @@
             android:text="Abbrechen"
             android:onClick="onExit"/>
     </RelativeLayout>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Film komplett entfernen"
-        android:layout_marginTop="10dp"
-        android:visibility="invisible"
-        android:id="@+id/btnRemoveFilm"
-        android:onClick="onRemoveFilm"/>
 </LinearLayout>

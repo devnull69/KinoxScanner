@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import org.theiner.kinoxscanner.R;
 import org.theiner.kinoxscanner.data.Film;
+import org.theiner.kinoxscanner.data.FilmSerieWrapper;
 import org.theiner.kinoxscanner.data.KinoxElement;
 import org.theiner.kinoxscanner.data.SearchResult;
 import org.theiner.kinoxscanner.data.Serie;
@@ -22,12 +23,12 @@ import java.util.List;
 /**
  * Created by TTheiner on 08.03.2016.
  */
-public class FilmSerieAdapter<T> extends ArrayAdapter<T> {
+public class FilmSerieAdapter extends ArrayAdapter<FilmSerieWrapper> {
 
     private int[] colors = new int[] { 0x50424242, 0x50212121 };
 
-    public FilmSerieAdapter(Context context, List<T> kinoxElements) {
-        super(context, R.layout.search_row_layout, kinoxElements);
+    public FilmSerieAdapter(Context context, List<FilmSerieWrapper> kinoxElementWrappers) {
+        super(context, R.layout.search_row_layout, kinoxElementWrappers);
     }
 
     @Override
@@ -36,22 +37,22 @@ public class FilmSerieAdapter<T> extends ArrayAdapter<T> {
 
         View myView = inflater.inflate(R.layout.filmserie_row_layout, parent, false);
 
-        KinoxElement currentResult = (KinoxElement) getItem(position);
+        FilmSerieWrapper currentResult = (FilmSerieWrapper) getItem(position);
 
         TextView txtName = (TextView) myView.findViewById(R.id.txtName);
-        txtName.setText(currentResult.toString());
+        txtName.setText(currentResult.getKinoxelement().toString());
 
         ImageView ivCoverArt = (ImageView) myView.findViewById(R.id.ivCoverArt);
-        Bitmap coverArt = currentResult.imgFromCache();
+        Bitmap coverArt = currentResult.getKinoxelement().imgFromCache();
         if(coverArt != null) {
             ivCoverArt.setImageBitmap(coverArt);
         } else {
-            if(currentResult instanceof Serie) {
-                Serie currentSerie = (Serie) currentResult;
+            if(currentResult.getKinoxelement() instanceof Serie) {
+                Serie currentSerie = (Serie) currentResult.getKinoxelement();
                 if(!currentSerie.getImageSubDir().equals("") && !currentSerie.getAddr().equals(""))
                     ImageHelper.startGetImageTask(ivCoverArt, currentSerie.getImageSubDir(), currentSerie.getAddr());
             } else {
-                Film currentFilm = (Film) currentResult;
+                Film currentFilm = (Film) currentResult.getKinoxelement();
                 if(!currentFilm.getImageSubDir().equals("") && !currentFilm.getAddr().equals(""))
                     ImageHelper.startGetImageTask(ivCoverArt, currentFilm.getImageSubDir(), currentFilm.getAddr());
             }
@@ -59,7 +60,10 @@ public class FilmSerieAdapter<T> extends ArrayAdapter<T> {
 
 
         int colorPos = position % colors.length;
-        myView.setBackgroundColor(colors[colorPos]);
+        if(currentResult.isSelected())
+            myView.setBackgroundColor(0x5098FF98);
+        else
+            myView.setBackgroundColor(colors[colorPos]);
 
         return myView;
     }
