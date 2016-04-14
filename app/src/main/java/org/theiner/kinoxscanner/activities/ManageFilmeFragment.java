@@ -119,6 +119,9 @@ public class ManageFilmeFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_filmsandseries, menu);
+
+        // hide options
+        menu.findItem(R.id.action_options).setVisible(false);
     }
 
     @Override
