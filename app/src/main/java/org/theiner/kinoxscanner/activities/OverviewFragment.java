@@ -217,16 +217,12 @@ public class OverviewFragment extends Fragment {
             txtStatus.setText("Es besteht derzeit keine Netzwerkverbindung!");
         }
 
-
+        PendingIntent pi = AlarmHelper.getPendingIntentFromAlarm(me, 141414);
+        if(pi==null) {
+            txtAlarmSet.setText("Alarm wird neu gesetzt!");
+        }
 
         me.startService(new Intent(me, AlarmStarterService.class));
-
-        PendingIntent pi = AlarmHelper.getPendingIntentFromAlarm(me, 141414);
-        if(pi!=null) {
-            txtAlarmSet.setText("Alarm ist gesetzt!");
-        } else {
-            txtAlarmSet.setText("Alarm ist NICHT gesetzt!");
-        }
 
         long lastChecked = settings.getLong("lastChecked", -1);
         String lastCheckedStr = "never";

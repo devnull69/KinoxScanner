@@ -10,6 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,7 +34,6 @@ public class ManageFilmeFragment extends Fragment {
     private BaseAdapter adapter = null;
     private ListView lvFilme;
     private Activity me;
-    private Button btnNewMovie;
     private List<Film> myFilme;
 
     private BroadcastReceiver mMessageReceiver = null;
@@ -47,6 +49,8 @@ public class ManageFilmeFragment extends Fragment {
 
         me = this.getActivity();
         myApp = (KinoxScannerApplication) me.getApplicationContext();
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -69,15 +73,6 @@ public class ManageFilmeFragment extends Fragment {
                 Intent intent = new Intent(me, EditFilmActivity.class);
                 intent.putExtra(EXTRA_MESSAGE, currentIndex);
                 startActivityForResult(intent, REQUEST_EDIT_FILM);
-            }
-        });
-
-        btnNewMovie = (Button) layout.findViewById(R.id.btnNewMovie);
-
-        btnNewMovie.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onNewFilm(v);
             }
         });
 
@@ -118,6 +113,25 @@ public class ManageFilmeFragment extends Fragment {
     public void onDestroy() {
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
         super.onDestroy();
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_filmsandseries, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch(id) {
+            case R.id.action_add:
+                onNewFilm(getView());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void onNewFilm(View view) {

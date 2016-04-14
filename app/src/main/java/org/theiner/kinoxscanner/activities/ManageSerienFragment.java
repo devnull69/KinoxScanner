@@ -10,6 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,7 +33,6 @@ public class ManageSerienFragment extends Fragment {
     private KinoxScannerApplication myApp;
     private BaseAdapter adapter = null;
     private ListView lvSerien;
-    private Button btnNewSeries;
     private Activity me;
     private List<Serie> mySerien;
 
@@ -48,6 +50,7 @@ public class ManageSerienFragment extends Fragment {
         me = this.getActivity();
         myApp = (KinoxScannerApplication) me.getApplicationContext();
 
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -61,15 +64,6 @@ public class ManageSerienFragment extends Fragment {
         adapter = new FilmSerieAdapter<Serie>(me, mySerien);
         lvSerien = (ListView) layout.findViewById(R.id.lvSerien);
         lvSerien.setAdapter(adapter);
-
-        btnNewSeries = (Button) layout.findViewById(R.id.btnNewSeries);
-
-        btnNewSeries.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onNewSeries(v);
-            }
-        });
 
         lvSerien.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -119,6 +113,24 @@ public class ManageSerienFragment extends Fragment {
     public void onDestroy() {
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
         super.onDestroy();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_filmsandseries, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch(id) {
+            case R.id.action_add:
+                onNewSeries(getView());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void onNewSeries(View view) {
