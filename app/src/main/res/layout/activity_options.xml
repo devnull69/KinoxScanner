@@ -12,6 +12,6 @@
     <Switch
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Stream und Download nur über W-Lan"
+        android:text="@string/lblWifiOnly"
         android:id="@+id/swWifiOnly"/>
 </RelativeLayout>

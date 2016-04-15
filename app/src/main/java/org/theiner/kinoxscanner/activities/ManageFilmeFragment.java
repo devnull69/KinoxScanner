@@ -188,15 +188,15 @@ public class ManageFilmeFragment extends Fragment {
 
     public void showDeleteDialog() {
         new AlertDialog.Builder(getActivity())
-                .setTitle("Film(e) löschen")
-                .setMessage("Sind Sie sicher, dass Sie den/die ausgewählte(n) Film(e) löschen wollen?")
-                .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.HeaderDeleteFilmDialog)
+                .setMessage(R.string.QuestionDeleteFilmDialog)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         onRemoveFilm();
                         dialog.cancel();
                     }
                 })
-                .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }

@@ -77,7 +77,7 @@ public class EditSerieActivity extends AppCompatActivity {
 
         } else {
             // Überschrift ändern auf "Neue Serie erfassen"
-            setTitle("Neue Serie erfassen");
+            setTitle(getString(R.string.CreateNewSeries));
         }
 
         editName.addTextChangedListener(new TextWatcher() {
@@ -174,7 +174,7 @@ public class EditSerieActivity extends AppCompatActivity {
             if(resultCode == OverviewFragment.RESULT_UPDATE_ELEMENTS) {
                 final SearchResult suchErgebnis = (SearchResult) data.getSerializableExtra("suchErgebnis");
                 if(suchErgebnis == null) {
-                    Toast.makeText(this, "Keine Serie gefunden.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.NoSeriesFound, Toast.LENGTH_SHORT).show();
                     isAddrLocked = false;
                 } else {
                     editAddr.setText(suchErgebnis.getAddr());

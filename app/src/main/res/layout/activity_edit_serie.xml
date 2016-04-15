@@ -22,7 +22,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name:"/>
+        android:text="@string/lblName"/>
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -41,7 +41,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Adresse:"
+        android:text="@string/lblAdresse"
         android:layout_marginTop="5dp"/>
     <EditText
         android:layout_width="match_parent"
@@ -55,7 +55,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Serien-ID:"
+            android:text="@string/lblSerienID"
             android:layout_marginTop="5dp"/>
         <EditText
             android:layout_width="170dp"
@@ -66,7 +66,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bildordner:"
+            android:text="@string/lblImageSubDir"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="180dp"/>
         <EditText
@@ -85,7 +85,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Staffel:"
+            android:text="@string/lblSeason"
             android:layout_marginTop="5dp"/>
         <EditText
             android:layout_width="170dp"
@@ -97,7 +97,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Episode:"
+            android:text="@string/lblEpisode"
             android:layout_marginTop="75dp"/>
         <EditText
             android:layout_width="170dp"
@@ -122,13 +122,13 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="OK"
+            android:text="@string/ok"
             android:onClick="onSave"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="150dp"
-            android:text="Abbrechen"
+            android:text="@string/cancel"
             android:onClick="onExit"/>
     </RelativeLayout>
 </LinearLayout>

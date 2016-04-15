@@ -72,7 +72,7 @@ public class EditFilmActivity extends AppCompatActivity {
 
         } else {
             // Überschrift ändern auf "Neuen Film erfassen"
-            setTitle("Neuen Film erfassen");
+            setTitle(getString(R.string.CreateNewFilm));
         }
         editName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -164,7 +164,7 @@ public class EditFilmActivity extends AppCompatActivity {
             if(resultCode == OverviewFragment.RESULT_UPDATE_ELEMENTS) {
                 final SearchResult suchErgebnis = (SearchResult) data.getSerializableExtra("suchErgebnis");
                 if(suchErgebnis == null) {
-                    Toast.makeText(this, "Kein Film gefunden.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.NoFilmFound, Toast.LENGTH_SHORT).show();
                     isAddrLocked = false;
                 } else {
                     editAddr.setText(suchErgebnis.getAddr());

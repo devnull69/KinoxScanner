@@ -40,19 +40,19 @@
             android:label="@string/update_serie" />
         <activity
             android:name=".activities.EditSerieActivity"
-            android:label="Serie bearbeiten"
+            android:label="@string/lblEditSerie"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.EditFilmActivity"
-            android:label="Film bearbeiten"
+            android:label="@string/lblEditFilm"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.SearchResultActivity"
-            android:label="Suchergebnisse" />
+            android:label="@string/lblSearchResults" />
         <activity
             android:name=".activities.ShowHosterVideosActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="Video-Server auswählen" />
+            android:label="@string/lblChooseVideoServer" />
         <activity
             android:name=".activities.ViewPagerActivity"
             android:configChanges="orientation"
@@ -67,7 +67,7 @@
         </activity>
         <activity
             android:name=".activities.OptionsActivity"
-            android:label="Optionen"
+            android:label="@string/action_options"
             android:parentActivityName=".activities.ViewPagerActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

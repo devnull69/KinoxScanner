@@ -42,7 +42,7 @@ public class OptionsActivity extends AppCompatActivity {
                 editor.commit();
 
                 if(!isChecked) {
-                    Toast.makeText(me, "Beim Download und Streamen von Videos fallen große Datenmengen an, die über Ihren Mobilfunkprovider Kosten für Sie verursachen können!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(me, R.string.QuotaWarning, Toast.LENGTH_LONG).show();
                 }
             }
         });

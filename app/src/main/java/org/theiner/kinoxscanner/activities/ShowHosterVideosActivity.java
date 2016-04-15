@@ -71,7 +71,7 @@ public class ShowHosterVideosActivity extends AppCompatActivity {
         int delayInSec = currentHoster.getHosterMirror().getStrategie().delayInSec;
 
         if(delayInSec > 0) {
-            txtDelayInSec.setText(delayInSec + " Sekunden Wartezeit pro Server");
+            txtDelayInSec.setText(delayInSec + getString(R.string.SecServerWaitTime));
         } else {
             txtDelayInSec.setVisibility(View.GONE);
         }
@@ -95,7 +95,7 @@ public class ShowHosterVideosActivity extends AppCompatActivity {
                     intent.setDataAndType(Uri.parse(selected.getVideoURL()), "video/mp4");
                     startActivity(intent);
                 } else {
-                    Toast.makeText(me, "Sie sind nicht mit W-Lan verbunden!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(me, R.string.NoWifiConnection, Toast.LENGTH_SHORT).show();
                 }
             }
         });

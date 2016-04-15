@@ -70,14 +70,14 @@ public class VideoLinkAdapter extends ArrayAdapter<VideoLink> {
                     mgr.enqueue(new DownloadManager.Request(uri)
                             .setAllowedNetworkTypes(flags)
                             .setAllowedOverRoaming(false)
-                            .setTitle("Kinoxscanner Download")
+                            .setTitle(getContext().getString(R.string.HeaderNotifyDownload))
                             .setDescription(currentLink.getFilename())
                             .setMimeType("video/mp4")
                             .setDestinationInExternalPublicDir(Environment.DIRECTORY_MOVIES, filename));
 
-                    Toast.makeText(me, "Download gestartet: " + filename, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(me, R.string.DownloadStarted + filename, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(me, "Sie sind nicht mit W-Lan verbunden!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(me, R.string.NoWifiConnection, Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -185,15 +185,15 @@ public class ManageSerienFragment extends Fragment {
 
     public void showDeleteDialog() {
         new AlertDialog.Builder(getActivity())
-                .setTitle("Serie(n) löschen")
-                .setMessage("Sind Sie sicher, dass Sie die ausgewählte(n) Serie(n) löschen wollen?")
-                .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.HeaderDeleteSeriesDialog)
+                .setMessage(R.string.QuestionDeleteSeriesDialog)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         onRemoveSeries();
                         dialog.cancel();
                     }
                 })
-                .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }

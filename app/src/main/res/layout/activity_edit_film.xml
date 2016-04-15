@@ -84,13 +84,13 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="OK"
+            android:text="@string/ok"
             android:onClick="onSave"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="150dp"
-            android:text="Abbrechen"
+            android:text="@string/cancel"
             android:onClick="onExit"/>
     </RelativeLayout>
 </LinearLayout>

@@ -91,9 +91,9 @@ public class OverviewFragment extends Fragment {
                     txtStatus.setTypeface(Typeface.DEFAULT);
                     pbProgress.setVisibility(View.GONE);
                     if (ergebnisListe.size() == 0) {
-                        txtStatus.setText("Keine Ergebnisse gefunden.");
+                        txtStatus.setText(R.string.NoResultsFound);
                     } else {
-                        txtStatus.setText("Folgende Downloads stehen bereit:");
+                        txtStatus.setText(R.string.DownloadsReady);
 
                         adapter = new CheckErgebnisAdapter(me, ergebnisListe);
                         lvDownload.setAdapter(adapter);
@@ -120,9 +120,9 @@ public class OverviewFragment extends Fragment {
             txtStatus.setTypeface(Typeface.DEFAULT);
             btnScanAgain.setEnabled(true);
             if (ergebnisListe.size() == 0) {
-                txtStatus.setText("Keine Ergebnisse gefunden.");
+                txtStatus.setText(R.string.NoResultsFound);
             } else {
-                txtStatus.setText("Folgende Downloads stehen bereit:");
+                txtStatus.setText(R.string.DownloadsReady);
 
                 adapter = new CheckErgebnisAdapter(me, ergebnisListe);
                 lvDownload.setAdapter(adapter);
@@ -154,7 +154,7 @@ public class OverviewFragment extends Fragment {
             public void onReceive(Context context, Intent intent) {
                 adapter.notifyDataSetChanged();
                 if (ergebnisListe.size() == 0)
-                    txtStatus.setText("Keine Ergebnisse gefunden.");
+                    txtStatus.setText(R.string.NoResultsFound);
             }
         };
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
@@ -230,24 +230,24 @@ public class OverviewFragment extends Fragment {
 
             pbProgress.setVisibility(View.GONE);
             txtStatus.setTypeface(Typeface.DEFAULT_BOLD);
-            txtStatus.setText("Es besteht derzeit keine Netzwerkverbindung!");
+            txtStatus.setText(R.string.NoNetworkConnection);
         }
 
         PendingIntent pi = AlarmHelper.getPendingIntentFromAlarm(me, 141414);
         if(pi==null) {
-            txtAlarmSet.setText("Alarm wird neu gesetzt!");
+            txtAlarmSet.setText(R.string.AlarmWillBeSet);
         }
 
         me.startService(new Intent(me, AlarmStarterService.class));
 
         long lastChecked = settings.getLong("lastChecked", -1);
-        String lastCheckedStr = "never";
+        String lastCheckedStr = me.getString(R.string.never);
         if(lastChecked != -1) {
             Date lastCheckedDate = new Date(lastChecked);
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
             lastCheckedStr = sdf.format(lastCheckedDate);
         }
-        txtLastChecked.setText("Zuletzt geprüft: " + lastCheckedStr);
+        txtLastChecked.setText(me.getString(R.string.LastChecked) + lastCheckedStr);
     }
 
     @Override
@@ -270,7 +270,7 @@ public class OverviewFragment extends Fragment {
                     // Evtl. Überschrift ändern
                     if(ergebnisListe.size() == 0) {
                         txtStatus.setTypeface(Typeface.DEFAULT);
-                        txtStatus.setText("Keine Ergebnisse gefunden.");
+                        txtStatus.setText(R.string.NoResultsFound);
                     }
                 }
             }
@@ -312,7 +312,7 @@ public class OverviewFragment extends Fragment {
             //((ViewManager) pbProgress.getParent()).removeView(pbProgress);
             pbProgress.setVisibility(View.GONE);
             txtStatus.setTypeface(Typeface.DEFAULT_BOLD);
-            txtStatus.setText("Es besteht derzeit keine Netzwerkverbindung!");
+            txtStatus.setText(R.string.NoNetworkConnection);
         }
 
     }

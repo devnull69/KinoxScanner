@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:text="Serien verwalten"
+        android:text="@string/lblManageSerien"
         android:textSize="20sp"/>
     <ListView
         android:layout_width="match_parent"

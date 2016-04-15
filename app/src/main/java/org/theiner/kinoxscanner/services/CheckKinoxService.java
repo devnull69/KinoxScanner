@@ -67,7 +67,7 @@ public class CheckKinoxService extends Service {
                 public void onCheckComplete(List<CheckErgebnis> result) {
 
                     if (result.size() > alteAnzahl) {
-                        sendNotification(result.size() + " Datei(en) stehen jetzt bereit.", multiplier);
+                        sendNotification(result.size() + getString(R.string.FilesReady), multiplier);
                     }
                     setNewCountInSettings(result.size());
                     // end the service
@@ -114,12 +114,12 @@ public class CheckKinoxService extends Service {
                     .setAutoCancel(true)
                     .setContentIntent(PendingIntent.getActivity(this, ALARM_ID+1, mainIntent,
                             PendingIntent.FLAG_UPDATE_CURRENT))
-                    .setContentTitle("Downloads verfügbar!")
+                    .setContentTitle(getString(R.string.DownloadsAvailable))
                     .setSmallIcon(R.mipmap.small_icon)
                     .setLargeIcon(myLargeIcon)
                     .setContentText(notifyText)
                     .setDefaults(Notification.DEFAULT_ALL)
-                    .setTicker("Es sind Downloads verfügbar!")
+                    .setTicker(getString(R.string.DownloadsAvailableLong))
                     .setWhen(System.currentTimeMillis())
                     .getNotification();
 

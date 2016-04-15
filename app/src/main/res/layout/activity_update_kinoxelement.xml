@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name:"
+        android:text="@string/lblName"
         android:id="@+id/lblName"/>
 
     <TextView
@@ -26,7 +26,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nächste Episode"
+        android:text="@string/lblNextEpisode"
         android:layout_marginTop="30dp"
         android:id="@+id/btnSerie1"
         android:onClick="onNextEpisode"/>
@@ -34,7 +34,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nächste Staffel"
+        android:text="@string/lblNextSeason"
         android:layout_marginTop="30dp"
         android:layout_marginLeft="180dp"
         android:id="@+id/btnSerie2"
@@ -43,7 +43,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Serie komplett entfernen"
+        android:text="@string/lblRemoveSeries"
         android:layout_marginTop="90dp"
         android:id="@+id/btnSerie3"
         android:onClick="onRemoveSeries"/>
@@ -52,7 +52,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Datum aktualisieren"
+        android:text="@string/lblSetCurrentDate"
         android:layout_marginTop="30dp"
         android:id="@+id/btnFilm1"
         android:onClick="onUpdateDate"/>
@@ -60,7 +60,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Film komplett entfernen"
+        android:text="@string/lblRemoveFilm"
         android:layout_marginTop="90dp"
         android:id="@+id/btnFilm2"
         android:onClick="onRemoveFilm"/>
@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="90dp"
         android:layout_marginLeft="223dp"
-        android:text="Abbrechen"
+        android:text="@string/cancel"
         android:onClick="onExit"/>
 
     <ListView

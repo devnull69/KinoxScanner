@@ -88,7 +88,7 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
             manager.removeView(serie2);
             manager.removeView(serie3);
 
-            setTitle("Film aktualisieren");
+            setTitle(getString(R.string.UpdateFilm));
         }
 
         // Hoster-Mirrors in Listview anzeigen

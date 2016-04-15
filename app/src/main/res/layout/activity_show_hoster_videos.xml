@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name:"
+        android:text="@string/lblName"
         android:id="@+id/lblName"/>
 
     <TextView
@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:text="Zurück"
+        android:text="@string/lblBack"
         android:onClick="onExit"/>
 
     <ProgressBar
