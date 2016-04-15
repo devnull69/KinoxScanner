@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.theiner.kinoxscanner.R;
 import org.theiner.kinoxscanner.adapter.FilmSerieAdapter;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
+import org.theiner.kinoxscanner.data.CheckErgebnis;
 import org.theiner.kinoxscanner.data.Film;
 import org.theiner.kinoxscanner.data.FilmSerieWrapper;
 import org.theiner.kinoxscanner.data.Serie;
@@ -205,6 +206,9 @@ public class ManageFilmeFragment extends Fragment {
     }
 
     public void onRemoveFilm() {
+        // Ergebnisliste aus Overview
+        List<CheckErgebnis> ergebnisse = myApp.getErgebnisliste();
+
         for(int i=0; i<myFilme.size(); i++) {
             if(myFilme.get(i).isSelected()) {
                 // entfernen
@@ -212,6 +216,11 @@ public class ManageFilmeFragment extends Fragment {
                 myApp.removeFilm(aktuellerFilm);
                 // Image aus dem Cache löschen
                 ImageHelper.removeImage(aktuellerFilm.getAddr());
+
+                for(int e=0; e<ergebnisse.size(); e++) {
+                    if(ergebnisse.get(e).foundElement.equals(aktuellerFilm))
+                        ergebnisse.remove(e);
+                }
             }
         }
 
@@ -236,6 +245,10 @@ public class ManageFilmeFragment extends Fragment {
 
         // adapter anpassen
         updateAdapter();
+
+        // Overview-Fragment dazu auffordern, seine Liste zu aktualisieren
+        Intent intent = new Intent("updateergebnisliste");
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
     }
 
     private void updateAdapter() {

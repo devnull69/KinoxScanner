@@ -2,8 +2,10 @@ package org.theiner.kinoxscanner.activities;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
@@ -63,6 +65,8 @@ public class OverviewFragment extends Fragment {
     private TextView txtAlarmSet = null;
     private TextView txtLastChecked = null;
     private SharedPreferences settings = null;
+
+    private BroadcastReceiver mMessageReceiver;
 
     private Activity me = null;
 
@@ -143,6 +147,18 @@ public class OverviewFragment extends Fragment {
                 startActivityForResult(intent, REQUEST_DELETE_LINE);
             }
         });
+
+        // Receive message to delete Series (from UpdateKinoxElementActivity via OverviewFragment)
+        mMessageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                adapter.notifyDataSetChanged();
+                if (ergebnisListe.size() == 0)
+                    txtStatus.setText("Keine Ergebnisse gefunden.");
+            }
+        };
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter("updateergebnisliste"));
 
     }
 
