@@ -161,6 +161,9 @@ public class ManageFilmeFragment extends Fragment {
         myMenu = menu;
         // hide options
         myMenu.findItem(R.id.action_options).setVisible(false);
+
+        // show delete icon if selected elements exist
+        showOrHideMenuItems();
     }
 
     @Override
