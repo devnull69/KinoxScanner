@@ -217,10 +217,11 @@ public class ManageSerienFragment extends Fragment {
                 // Image aus dem Cache löschen
                 ImageHelper.removeImage(aktuelleSerie.getAddr());
 
-                for(int e=0; e<ergebnisse.size(); e++) {
-                    if(ergebnisse.get(e).foundElement.equals(aktuelleSerie))
-                        ergebnisse.remove(e);
-                }
+                if(ergebnisse != null)
+                    for(int e=0; e<ergebnisse.size(); e++) {
+                        if(ergebnisse.get(e).foundElement.equals(aktuelleSerie))
+                            ergebnisse.remove(e);
+                    }
             }
         }
 

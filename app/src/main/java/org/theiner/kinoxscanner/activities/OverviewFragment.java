@@ -152,8 +152,9 @@ public class OverviewFragment extends Fragment {
         mMessageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                adapter.notifyDataSetChanged();
-                if (ergebnisListe.size() == 0)
+                if(adapter != null)
+                    adapter.notifyDataSetChanged();
+                if (ergebnisListe != null && ergebnisListe.size() == 0)
                     txtStatus.setText(R.string.NoResultsFound);
             }
         };

@@ -220,10 +220,11 @@ public class ManageFilmeFragment extends Fragment {
                 // Image aus dem Cache löschen
                 ImageHelper.removeImage(aktuellerFilm.getAddr());
 
-                for(int e=0; e<ergebnisse.size(); e++) {
-                    if(ergebnisse.get(e).foundElement.equals(aktuellerFilm))
-                        ergebnisse.remove(e);
-                }
+                if(ergebnisse != null)
+                    for(int e=0; e<ergebnisse.size(); e++) {
+                        if(ergebnisse.get(e).foundElement.equals(aktuellerFilm))
+                            ergebnisse.remove(e);
+                    }
             }
         }
 
