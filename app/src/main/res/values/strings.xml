@@ -60,4 +60,9 @@
     <string name="FilesReady">" Datei(en) stehen jetzt bereit."</string>
     <string name="DownloadsAvailable">Downloads verfügbar!</string>
     <string name="DownloadsAvailableLong">Es sind Downloads verfügbar!</string>
+    <string name="overview">Übersicht</string>
+    <string name="mySeries">Meine Serien</string>
+    <string name="myFilms">Meine Filme</string>
+    <string name="drawer_open">Navigation öffnen</string>
+    <string name="drawer_close">Navigation schließen</string>
 </resources>
