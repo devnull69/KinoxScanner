@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,10 +62,10 @@ public class OverviewFragment extends Fragment {
     private BaseAdapter adapter = null;
     private TextView txtStatus = null;
     private ProgressBar pbProgress = null;
-    private Button btnScanAgain = null;
     private TextView txtAlarmSet = null;
     private TextView txtLastChecked = null;
     private SharedPreferences settings = null;
+    private SwipeRefreshLayout swipeContainer = null;
 
     private BroadcastReceiver mMessageReceiver;
 
@@ -80,8 +81,6 @@ public class OverviewFragment extends Fragment {
             CheckKinoxTask.CheckCompleteListener ccl = new CheckKinoxTask.CheckCompleteListener() {
                 @Override
                 public void onCheckComplete(List<CheckErgebnis> result) {
-
-                    btnScanAgain.setEnabled(true);
 
                     ergebnisListe = result;
 
@@ -103,6 +102,9 @@ public class OverviewFragment extends Fragment {
                         editor.putInt("alteAnzahl", result.size());
                         editor.commit();
                     }
+
+                    swipeContainer.setRefreshing(false);
+
                 }
 
                 @Override
@@ -118,7 +120,6 @@ public class OverviewFragment extends Fragment {
             // ListView füllen, Progressbar disablen, Button enablen
             pbProgress.setVisibility(View.GONE);
             txtStatus.setTypeface(Typeface.DEFAULT);
-            btnScanAgain.setEnabled(true);
             if (ergebnisListe.size() == 0) {
                 txtStatus.setText(R.string.NoResultsFound);
             } else {
@@ -193,21 +194,25 @@ public class OverviewFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.fragment_overview, null);
+        final View layout = inflater.inflate(R.layout.fragment_overview, null);
 
         txtStatus = (TextView) layout.findViewById(R.id.txtStatus);
         lvDownload = (ListView) layout.findViewById(R.id.lvDownloads);
         pbProgress = (ProgressBar) layout.findViewById(R.id.pbProgress);
-        btnScanAgain = (Button) layout.findViewById(R.id.btnScanAgain);
         txtAlarmSet = (TextView) layout.findViewById(R.id.txtAlarmSet);
         txtLastChecked= (TextView) layout.findViewById(R.id.txtLastChecked);
 
-        btnScanAgain.setOnClickListener(new View.OnClickListener() {
+        swipeContainer = (SwipeRefreshLayout) layout.findViewById(R.id.swipeContainer);// Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick(View v) {
-                onScanAgain(v);
+            public void onRefresh() {
+                onScanAgain(layout);
             }
         });
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         Log.d("kinoxscanner", "OverviewFragment onCreateView");
         return layout;
@@ -226,8 +231,6 @@ public class OverviewFragment extends Fragment {
             zeigeWerte();
         else {
             //((ViewManager) pbProgress.getParent()).removeView(pbProgress);
-
-            btnScanAgain.setEnabled(true);
 
             pbProgress.setVisibility(View.GONE);
             txtStatus.setTypeface(Typeface.DEFAULT_BOLD);
@@ -285,9 +288,6 @@ public class OverviewFragment extends Fragment {
         pbProgress.setVisibility(View.VISIBLE);
         pbProgress.setProgress(0);
 
-        //Button "Erneut scannen" disabled
-        btnScanAgain.setEnabled(false);
-
         //Statustext löschen
         txtStatus.setText("");
 
@@ -307,8 +307,6 @@ public class OverviewFragment extends Fragment {
         if (networkInfo != null && networkInfo.isConnected())
             zeigeWerte();
         else {
-
-            btnScanAgain.setEnabled(true);
 
             //((ViewManager) pbProgress.getParent()).removeView(pbProgress);
             pbProgress.setVisibility(View.GONE);

@@ -35,13 +35,12 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    // for joda
     // xalan for SAX2DOM
     // Jersey Jackson
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.android.support:design:23.2.1'
-    compile 'joda-time:joda-time:2.8.2'
     compile 'xalan:xalan:2.7.2'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.7.2'
+    compile 'org.ccil.cowan.tagsoup:tagsoup:1.2.1'
     compile 'com.android.support:support-v4:23.2.1'
 }
