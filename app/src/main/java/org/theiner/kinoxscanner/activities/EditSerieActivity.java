@@ -111,51 +111,65 @@ public class EditSerieActivity extends AppCompatActivity {
     }
 
     public void onSave(View view) {
-        if(currentIndex == -1) {
-            // Neue Serie anlegen
-            Serie neueSerie = new Serie();
-            neueSerie.setName(editName.getText().toString());
-            neueSerie.setAddr(editAddr.getText().toString());
-            neueSerie.setSeriesID(Integer.parseInt(editSeriesID.getText().toString()));
-            neueSerie.setImageSubDir(editImageSubDir.getText().toString());
-            neueSerie.setSeason(Integer.parseInt(editSeason.getText().toString()));
-            neueSerie.setEpisode(Integer.parseInt(editEpisode.getText().toString()));
-            myApp.addSerie(neueSerie);
+
+        // Vollständigkeitsprüfung
+        String strName = editName.getText().toString();
+        String strAddr = editAddr.getText().toString();
+        String strSeriesID = editSeriesID.getText().toString();
+        String strImageSubDir = editImageSubDir.getText().toString();
+        String strSeason = editSeason.getText().toString();
+        String strEpisode = editEpisode.getText().toString();
+
+        if(!"".equals(strName) && !"".equals(strAddr) && !"".equals(strSeriesID) && !"".equals(strImageSubDir) && !"".equals(strSeason) && !"".equals(strEpisode)) {
+
+            if (currentIndex == -1) {
+                // Neue Serie anlegen
+                Serie neueSerie = new Serie();
+                neueSerie.setName(strName);
+                neueSerie.setAddr(strAddr);
+                neueSerie.setSeriesID(Integer.parseInt(strSeriesID));
+                neueSerie.setImageSubDir(strImageSubDir);
+                neueSerie.setSeason(Integer.parseInt(strSeason));
+                neueSerie.setEpisode(Integer.parseInt(strEpisode));
+                myApp.addSerie(neueSerie);
+            } else {
+                // aktuelle Serie updaten
+                aktuelleSerie.setName(strName);
+                aktuelleSerie.setAddr(strAddr);
+                aktuelleSerie.setSeriesID(Integer.parseInt(strSeriesID));
+                aktuelleSerie.setImageSubDir(strImageSubDir);
+                aktuelleSerie.setSeason(Integer.parseInt(strSeason));
+                aktuelleSerie.setEpisode(Integer.parseInt(strEpisode));
+            }
+
+            // In Preferences ablegen
+            SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor = settings.edit();
+
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonSerien = "[]";
+            try {
+                jsonSerien = mapper.writeValueAsString(myApp.getSerien());
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            editor.putString("serien", jsonSerien);
+
+
+            // Update alte Anzahl
+            editor.putInt("alteAnzahl", 0);
+
+            editor.commit();
+
+
+            // Zurück und Manage-Liste aktualisieren!
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("updateList", true);
+            setResult(ManageSerienFragment.RESULT_UPDATE_LIST, resultIntent);
+            finish();
         } else {
-            // aktuelle Serie updaten
-            aktuelleSerie.setName(editName.getText().toString());
-            aktuelleSerie.setAddr(editAddr.getText().toString());
-            aktuelleSerie.setSeriesID(Integer.parseInt(editSeriesID.getText().toString()));
-            aktuelleSerie.setImageSubDir(editImageSubDir.getText().toString());
-            aktuelleSerie.setSeason(Integer.parseInt(editSeason.getText().toString()));
-            aktuelleSerie.setEpisode(Integer.parseInt(editEpisode.getText().toString()));
+            Toast.makeText(this, R.string.series_incomplete, Toast.LENGTH_LONG).show();
         }
-
-        // In Preferences ablegen
-        SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonSerien = "[]";
-        try {
-            jsonSerien = mapper.writeValueAsString(myApp.getSerien());
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        editor.putString("serien", jsonSerien);
-
-
-        // Update alte Anzahl
-        editor.putInt("alteAnzahl", 0);
-
-        editor.commit();
-
-
-        // Zurück und Manage-Liste aktualisieren!
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("updateList", true);
-        setResult(ManageSerienFragment.RESULT_UPDATE_LIST, resultIntent);
-        finish();
     }
 
     public void onSearch(View view) {

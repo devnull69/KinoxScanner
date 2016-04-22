@@ -65,4 +65,6 @@
     <string name="myFilms">Meine Filme</string>
     <string name="drawer_open">Navigation öffnen</string>
     <string name="drawer_close">Navigation schließen</string>
+    <string name="series_incomplete">Bitte alle Felder angeben. Mit der Suchfunktion können Adresse, SerienID und Bildordner ermittelt werden.</string>
+    <string name="film_incomplete">Bitte alle relevanten Felder angeben. Das Datum kann leer bleiben. Mit der Suchfunktion können Adresse und Bildordner ermittelt werden.</string>
 </resources>

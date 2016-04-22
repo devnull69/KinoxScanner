@@ -105,47 +105,58 @@ public class EditFilmActivity extends AppCompatActivity {
     }
 
     public void onSave(View view) {
-        if(currentIndex == -1) {
-            // Neuen Film anlegen
-            Film neuerFilm = new Film();
-            neuerFilm.setName(editName.getText().toString());
-            neuerFilm.setAddr(editAddr.getText().toString());
-            neuerFilm.setLastDate(editLastDate.getText().toString());
-            neuerFilm.setImageSubDir(editImageSubDir.getText().toString());
-            myApp.addFilm(neuerFilm);
+
+        // Vollständigkeitsprüfung
+        String strName = editName.getText().toString();
+        String strAddr = editAddr.getText().toString();
+        String strImageSubDir = editImageSubDir.getText().toString();
+
+        if(!"".equals(strName) && !"".equals(strAddr) && !"".equals(strImageSubDir)) {
+
+            if (currentIndex == -1) {
+                // Neuen Film anlegen
+                Film neuerFilm = new Film();
+                neuerFilm.setName(editName.getText().toString());
+                neuerFilm.setAddr(editAddr.getText().toString());
+                neuerFilm.setLastDate(editLastDate.getText().toString());
+                neuerFilm.setImageSubDir(editImageSubDir.getText().toString());
+                myApp.addFilm(neuerFilm);
+            } else {
+                // aktuellen Film updaten
+                aktuellerFilm.setName(editName.getText().toString());
+                aktuellerFilm.setAddr(editAddr.getText().toString());
+                aktuellerFilm.setLastDate(editLastDate.getText().toString());
+                aktuellerFilm.setImageSubDir(editImageSubDir.getText().toString());
+            }
+
+            // In Preferences ablegen
+            SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor = settings.edit();
+
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonFilme = "[]";
+            try {
+                jsonFilme = mapper.writeValueAsString(myApp.getFilme());
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            editor.putString("filme", jsonFilme);
+
+
+            // Update alte Anzahl
+            editor.putInt("alteAnzahl", 0);
+
+            editor.commit();
+
+
+            // Zurück und Manage-Liste aktualisieren!
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("updateList", true);
+            setResult(ManageFilmeFragment.RESULT_UPDATE_LIST, resultIntent);
+            finish();
         } else {
-            // aktuellen Film updaten
-            aktuellerFilm.setName(editName.getText().toString());
-            aktuellerFilm.setAddr(editAddr.getText().toString());
-            aktuellerFilm.setLastDate(editLastDate.getText().toString());
-            aktuellerFilm.setImageSubDir(editImageSubDir.getText().toString());
+            Toast.makeText(this, R.string.film_incomplete, Toast.LENGTH_LONG).show();
         }
-
-        // In Preferences ablegen
-        SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonFilme = "[]";
-        try {
-            jsonFilme = mapper.writeValueAsString(myApp.getFilme());
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        editor.putString("filme", jsonFilme);
-
-
-        // Update alte Anzahl
-        editor.putInt("alteAnzahl", 0);
-
-        editor.commit();
-
-
-        // Zurück und Manage-Liste aktualisieren!
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("updateList", true);
-        setResult(ManageFilmeFragment.RESULT_UPDATE_LIST, resultIntent);
-        finish();
     }
 
     public void onSearch(View view) {
