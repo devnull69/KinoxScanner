@@ -75,7 +75,7 @@ public class VideoLinkAdapter extends ArrayAdapter<VideoLink> {
                             .setMimeType("video/mp4")
                             .setDestinationInExternalPublicDir(Environment.DIRECTORY_MOVIES, filename));
 
-                    Toast.makeText(me, R.string.DownloadStarted + filename, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(me, me.getString(R.string.DownloadStarted) + filename, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(me, R.string.NoWifiConnection, Toast.LENGTH_SHORT).show();
                 }
