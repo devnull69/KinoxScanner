@@ -67,12 +67,7 @@
         </activity>
         <activity
             android:name=".activities.OptionsActivity"
-            android:label="@string/action_options"
-            android:parentActivityName=".activities.ViewPagerActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.theiner.kinoxscanner.activities.ViewPagerActivity" />
-        </activity>
+            android:label="@string/action_options"/>
     </application>
 
 </manifest>
