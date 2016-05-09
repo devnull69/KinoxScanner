@@ -17,10 +17,22 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-        <EditText
-            android:layout_width="280dp"
+        <FrameLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/editName"/>
+            android:paddingTop="5dp">
+            <EditText
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/editName"/>
+            <Button
+                android:layout_width="40px"
+                android:layout_height="40px"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="right|center_vertical"
+                android:background="@mipmap/small_icon"
+                android:onClick="onRemoveText"/>
+        </FrameLayout>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

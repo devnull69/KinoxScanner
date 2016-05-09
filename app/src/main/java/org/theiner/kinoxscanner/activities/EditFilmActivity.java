@@ -189,4 +189,7 @@ public class EditFilmActivity extends AppCompatActivity {
         }
     }
 
+    public void onRemoveText(View view) {
+        editName.setText("");
+    }
 }
