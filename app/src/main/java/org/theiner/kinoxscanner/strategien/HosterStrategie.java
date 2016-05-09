@@ -9,6 +9,7 @@ public abstract class HosterStrategie implements Serializable {
     public String hosterName;
     public int hosterNummer;
     public int delayInSec;
+    public String mimeType;
 
     private static final long serialVersionUID = 0L;
 

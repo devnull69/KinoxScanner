@@ -18,6 +18,7 @@ public class VidziStrategie extends HosterStrategie {
         this.hosterName = "Vidzi";
         this.hosterNummer = 68;
         this.delayInSec = 0;
+        this.mimeType = "video/mp4";
     }
 
     @Override

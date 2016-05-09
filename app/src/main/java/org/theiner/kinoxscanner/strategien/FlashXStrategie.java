@@ -23,6 +23,7 @@ public class FlashXStrategie extends HosterStrategie {
         this.hosterNummer = 33;
         this.delayInSec = 16;
         this.referer = referer;
+        this.mimeType = "video/mp4";
     }
 
     @Override

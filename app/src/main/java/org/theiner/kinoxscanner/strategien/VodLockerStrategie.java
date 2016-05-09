@@ -15,6 +15,7 @@ public class VodLockerStrategie extends HosterStrategie {
         this.hosterName = "VodLocker";
         this.hosterNummer = 65;
         this.delayInSec = 0;
+        this.mimeType = "video/mp4";
     }
 
     @Override

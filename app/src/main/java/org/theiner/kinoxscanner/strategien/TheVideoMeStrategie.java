@@ -24,6 +24,7 @@ public class TheVideoMeStrategie extends HosterStrategie {
         this.hosterNummer = 58;
         this.delayInSec = 0;
         this.referer = referer;
+        this.mimeType = "video/mp4";
     }
 
     @Override

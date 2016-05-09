@@ -9,6 +9,15 @@ public class VideoLink implements Serializable{
     private String hosterName;
     private String videoURL;
     private String filename;
+    private String mimeType;
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
 
     public String getFilename() {
         return filename;
@@ -39,5 +48,9 @@ public class VideoLink implements Serializable{
     @Override
     public String toString() {
         return videoURL;
+    }
+
+    public String getExtensionFromMimeType() {
+        return "." + mimeType.substring(mimeType.length()-3);
     }
 }

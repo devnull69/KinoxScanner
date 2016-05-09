@@ -55,7 +55,7 @@ public class VideoLinkAdapter extends ArrayAdapter<VideoLink> {
             @Override
             public void onClick(View v) {
                 if(!isWifiOnly || KinoxHelper.isConnectedViaWifi(me)) {
-                    String filename = currentLink.getFilename() + " " + (new Date()).getTime() + ".mp4";
+                    String filename = currentLink.getFilename() + " " + (new Date()).getTime() + currentLink.getExtensionFromMimeType();
 
                     Uri uri = Uri.parse(currentLink.getVideoURL());
 
@@ -72,7 +72,7 @@ public class VideoLinkAdapter extends ArrayAdapter<VideoLink> {
                             .setAllowedOverRoaming(false)
                             .setTitle(getContext().getString(R.string.HeaderNotifyDownload))
                             .setDescription(currentLink.getFilename())
-                            .setMimeType("video/mp4")
+                            .setMimeType(currentLink.getMimeType())
                             .setDestinationInExternalPublicDir(Environment.DIRECTORY_MOVIES, filename));
 
                     Toast.makeText(me, me.getString(R.string.DownloadStarted) + filename, Toast.LENGTH_SHORT).show();

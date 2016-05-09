@@ -417,6 +417,7 @@ public class KinoxHelper {
                         neuerLink.setHosterName(currentHoster.getHosterMirror().getStrategie().hosterName);
                         neuerLink.setVideoURL(videoStreamURL);
                         neuerLink.setFilename(currentSerie.toString());
+                        neuerLink.setMimeType(currentHoster.getHosterMirror().getStrategie().mimeType);
                         result.add(neuerLink);
                     }
                 } else {
@@ -431,6 +432,7 @@ public class KinoxHelper {
                         neuerLink.setHosterName(currentHoster.getHosterMirror().getStrategie().hosterName);
                         neuerLink.setVideoURL(videoStreamURL);
                         neuerLink.setFilename(currentFilm.toString());
+                        neuerLink.setMimeType(currentHoster.getHosterMirror().getStrategie().mimeType);
                         result.add(neuerLink);
                     }
                 }

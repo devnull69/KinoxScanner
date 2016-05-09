@@ -92,7 +92,7 @@ public class ShowHosterVideosActivity extends AppCompatActivity {
                 if(!isWifiOnly || KinoxHelper.isConnectedViaWifi(me)) {
                     VideoLink selected = (VideoLink) listview.getItemAtPosition(position);
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.parse(selected.getVideoURL()), "video/mp4");
+                    intent.setDataAndType(Uri.parse(selected.getVideoURL()), selected.getMimeType());
                     startActivity(intent);
                 } else {
                     Toast.makeText(me, R.string.NoWifiConnection, Toast.LENGTH_SHORT).show();

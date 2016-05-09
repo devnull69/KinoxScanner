@@ -15,6 +15,7 @@ public class VidBullStrategie extends HosterStrategie {
         this.hosterName = "VidBull";
         this.hosterNummer = 50;
         this.delayInSec = 0;
+        this.mimeType = "video/mp4";
     }
 
     @Override

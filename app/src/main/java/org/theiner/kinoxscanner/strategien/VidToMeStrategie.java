@@ -24,6 +24,7 @@ public class VidToMeStrategie extends HosterStrategie {
         this.hosterNummer = 51;
         this.delayInSec = 7;
         this.referer = referer;
+        this.mimeType = "video/mp4";
     }
 
     @Override

@@ -21,6 +21,7 @@ public class StreamCloudStrategie extends HosterStrategie {
         this.hosterNummer = 30;
         this.delayInSec = 11;
         this.referer = referer;
+        this.mimeType = "video/mp4";
     }
 
     @Override
