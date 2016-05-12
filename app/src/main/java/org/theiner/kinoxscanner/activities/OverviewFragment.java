@@ -44,6 +44,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 public class OverviewFragment extends Fragment {
 
     public static final String PREFS_NAME = "KinoxScannerFile";
@@ -101,6 +103,9 @@ public class OverviewFragment extends Fragment {
                         SharedPreferences.Editor editor = settings.edit();
                         editor.putInt("alteAnzahl", result.size());
                         editor.commit();
+
+                        // Show Badge
+                        ShortcutBadger.applyCount(me, result.size());
                     }
 
                     swipeContainer.setRefreshing(false);
@@ -127,6 +132,9 @@ public class OverviewFragment extends Fragment {
 
                 adapter = new CheckErgebnisAdapter(me, ergebnisListe);
                 lvDownload.setAdapter(adapter);
+
+                // Show Badge
+                ShortcutBadger.applyCount(this.getContext(), ergebnisListe.size());
             }
         }
         lvDownload.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -276,6 +284,14 @@ public class OverviewFragment extends Fragment {
                         txtStatus.setTypeface(Typeface.DEFAULT);
                         txtStatus.setText(R.string.NoResultsFound);
                     }
+
+                    // Badge aktualisieren
+                    ShortcutBadger.applyCount(this.getContext(), ergebnisListe.size());
+
+                    // Alte Anzahl aktualisieren
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putInt("alteAnzahl", ergebnisListe.size());
+                    editor.commit();
                 }
             }
         }

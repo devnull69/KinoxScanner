@@ -30,6 +30,8 @@ import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.List;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 /**
  * Created by TTheiner on 26.02.2016.
  */
@@ -51,7 +53,7 @@ public class CheckKinoxService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        KinoxScannerApplication myApp = new KinoxScannerApplication();
+        final KinoxScannerApplication myApp = new KinoxScannerApplication();
 
         final SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
         myApp.getObjectsFromSharedPreferences(settings);
@@ -70,6 +72,10 @@ public class CheckKinoxService extends Service {
                         sendNotification(result.size() + getString(R.string.FilesReady), multiplier);
                     }
                     setNewCountInSettings(result.size());
+
+                    // Update badge
+                    ShortcutBadger.applyCount(myApp, result.size());
+
                     // end the service
                     stopSelf();
                 }

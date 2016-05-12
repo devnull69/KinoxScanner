@@ -24,6 +24,8 @@ import org.theiner.kinoxscanner.data.SearchResult;
 import org.theiner.kinoxscanner.data.Serie;
 import org.theiner.kinoxscanner.util.ImageHelper;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 public class EditSerieActivity extends AppCompatActivity {
 
     private KinoxScannerApplication myApp;
@@ -160,6 +162,9 @@ public class EditSerieActivity extends AppCompatActivity {
             editor.putInt("alteAnzahl", 0);
 
             editor.commit();
+
+            // Hide Badge
+            ShortcutBadger.removeCount(this);
 
 
             // Zurück und Manage-Liste aktualisieren!

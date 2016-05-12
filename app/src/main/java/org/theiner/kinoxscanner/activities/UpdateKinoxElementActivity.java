@@ -164,10 +164,6 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
         }
         editor.putString("serien", jsonSerien);
 
-
-        // Update alte Anzahl
-        editor.putInt("alteAnzahl", 0);
-
         editor.commit();
 
         Intent resultIntent = new Intent();
@@ -213,10 +209,6 @@ public class UpdateKinoxElementActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         editor.putString("filme", jsonFilme);
-
-
-        // Update alte Anzahl
-        editor.putInt("alteAnzahl", 0);
 
         editor.commit();
 

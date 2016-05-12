@@ -38,6 +38,8 @@ import org.theiner.kinoxscanner.util.ImageHelper;
 import java.util.Collections;
 import java.util.List;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 public class ManageFilmeFragment extends Fragment {
 
     private KinoxScannerApplication myApp;
@@ -243,7 +245,15 @@ public class ManageFilmeFragment extends Fragment {
 
 
         // Update alte Anzahl
-        editor.putInt("alteAnzahl", 0);
+        if(ergebnisse != null) {
+            editor.putInt("alteAnzahl", ergebnisse.size());
+
+            ShortcutBadger.applyCount(this.getContext(), ergebnisse.size());
+        } else {
+            editor.putInt("alteAnzahl", 0);
+
+            ShortcutBadger.removeCount(this.getContext());
+        }
 
         editor.commit();
 
