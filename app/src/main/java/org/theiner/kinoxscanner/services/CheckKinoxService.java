@@ -58,6 +58,8 @@ public class CheckKinoxService extends Service {
         final SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
         myApp.getObjectsFromSharedPreferences(settings);
 
+        final Context me = this;
+
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -74,7 +76,7 @@ public class CheckKinoxService extends Service {
                     setNewCountInSettings(result.size());
 
                     // Update badge
-                    ShortcutBadger.applyCount(myApp, result.size());
+                    ShortcutBadger.applyCount(me, result.size());
 
                     // end the service
                     stopSelf();
