@@ -115,19 +115,24 @@ public class EditFilmActivity extends AppCompatActivity {
 
         if(!"".equals(strName) && !"".equals(strAddr) && !"".equals(strImageSubDir)) {
 
+            // Datum anpassen falls Punkte fehlen
+            String eingabe = editLastDate.getText().toString();
+            if(!eingabe.contains(".") && !eingabe.equals(""))
+                eingabe = eingabe.substring(0,2) + "." + eingabe.substring(2,4) + "." + eingabe.substring(4,8);
+
             if (currentIndex == -1) {
                 // Neuen Film anlegen
                 Film neuerFilm = new Film();
                 neuerFilm.setName(editName.getText().toString());
                 neuerFilm.setAddr(editAddr.getText().toString());
-                neuerFilm.setLastDate(editLastDate.getText().toString());
+                neuerFilm.setLastDate(eingabe);
                 neuerFilm.setImageSubDir(editImageSubDir.getText().toString());
                 myApp.addFilm(neuerFilm);
             } else {
                 // aktuellen Film updaten
                 aktuellerFilm.setName(editName.getText().toString());
                 aktuellerFilm.setAddr(editAddr.getText().toString());
-                aktuellerFilm.setLastDate(editLastDate.getText().toString());
+                aktuellerFilm.setLastDate(eingabe);
                 aktuellerFilm.setImageSubDir(editImageSubDir.getText().toString());
             }
 

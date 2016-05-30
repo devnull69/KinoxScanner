@@ -119,8 +119,8 @@
             android:id="@+id/editEpisode"/>
 
         <ImageView
-            android:layout_width="175px"
-            android:layout_height="250px"
+            android:layout_width="92dp"
+            android:layout_height="132dp"
             android:layout_marginLeft="200dp"
             android:layout_marginTop="5dp"
             android:scaleType="fitCenter"
