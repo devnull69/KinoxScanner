@@ -1,5 +1,7 @@
 package org.theiner.kinoxscanner.activities;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -9,8 +11,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,6 +29,8 @@ import org.theiner.kinoxscanner.data.SearchResult;
 import org.theiner.kinoxscanner.data.Serie;
 import org.theiner.kinoxscanner.util.ImageHelper;
 
+import java.util.Calendar;
+
 import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class EditFilmActivity extends AppCompatActivity {
@@ -32,14 +38,21 @@ public class EditFilmActivity extends AppCompatActivity {
     private KinoxScannerApplication myApp;
     private EditText editName = null;
     private EditText editAddr = null;
-    private EditText editLastDate = null;
+    private TextView editLastDate = null;
     private EditText editImageSubDir = null;
     private ImageView ivCoverArt = null;
+
+    private int year;
+    private int month;
+    private int day;
+    private DatePicker datepicker;
 
     private int currentIndex = -1;
     private Film aktuellerFilm = null;
 
     private boolean isAddrLocked = false;
+
+    private final int DATEPICKER_ID = 4711;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +66,7 @@ public class EditFilmActivity extends AppCompatActivity {
 
         editName = (EditText) findViewById(R.id.editName);
         editAddr = (EditText) findViewById(R.id.editAddr);
-        editLastDate = (EditText)findViewById(R.id.editLastDate);
+        editLastDate = (TextView)findViewById(R.id.editLastDate);
         editImageSubDir = (EditText) findViewById(R.id.editImageSubDir);
         ivCoverArt = (ImageView) findViewById(R.id.ivCoverArt);
 
@@ -61,7 +74,20 @@ public class EditFilmActivity extends AppCompatActivity {
             aktuellerFilm = myApp.getFilme().get(currentIndex);
             editName.setText(aktuellerFilm.getName());
             editAddr.setText(aktuellerFilm.getAddr());
-            editLastDate.setText(aktuellerFilm.getLastDate());
+
+            String lastDate = aktuellerFilm.getLastDate();
+            if(!"".equals(lastDate)) {
+                day = Integer.parseInt(lastDate.substring(0,2));
+                month = Integer.parseInt(lastDate.substring(3,5)) - 1;
+                year = Integer.parseInt(lastDate.substring(6,10));
+            } else {
+                Calendar calendar = Calendar.getInstance();
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+                day = calendar.get(Calendar.DAY_OF_MONTH);
+            }
+
+            editLastDate.setText(lastDate);
             editImageSubDir.setText(aktuellerFilm.getImageSubDir());
 
             Bitmap coverArt = aktuellerFilm.imgFromCache();
@@ -202,4 +228,27 @@ public class EditFilmActivity extends AppCompatActivity {
     public void onRemoveText(View view) {
         editName.setText("");
     }
-}
+
+    public void setDate(View view) {
+        showDialog(DATEPICKER_ID);
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        if (id == DATEPICKER_ID) {
+            return new DatePickerDialog(this, myDateListener, year, month, day);
+        }
+        return null;
+    }
+
+    private DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker arg0, int arg1, int arg2, int arg3) {
+            showDate(arg1, arg2+1, arg3);
+        }
+    };
+
+    private void showDate(int year, int month, int day) {
+        editLastDate.setText(new StringBuilder().append(day<10?"0"+day:day).append(".")
+                .append(month<10?"0"+month:month).append(".").append(year));
+    }}

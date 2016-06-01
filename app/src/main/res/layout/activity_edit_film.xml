@@ -59,12 +59,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Zuletzt aktualisiert am:" />
-        <EditText
+        <TextView
             android:layout_width="170dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="17dp"
-            android:inputType="date"
-            android:id="@+id/editLastDate"/>
+            android:layout_height="30dp"
+            android:layout_marginTop="26dp"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/editLastDate"
+            android:textSize="18sp"
+            android:textColor="#FFFFFFFF"
+            android:onClick="setDate"/>
 
         <TextView
             android:layout_width="wrap_content"
