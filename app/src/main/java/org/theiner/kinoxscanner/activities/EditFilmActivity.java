@@ -251,4 +251,9 @@ public class EditFilmActivity extends AppCompatActivity {
     private void showDate(int year, int month, int day) {
         editLastDate.setText(new StringBuilder().append(day<10?"0"+day:day).append(".")
                 .append(month<10?"0"+month:month).append(".").append(year));
-    }}
+    }
+
+    public void onRemoveDate(View view) {
+        editLastDate.setText("");
+    }
+}
