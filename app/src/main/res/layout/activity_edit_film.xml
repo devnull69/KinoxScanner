@@ -26,8 +26,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/editName"/>
             <Button
-                android:layout_width="40px"
-                android:layout_height="40px"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginRight="10dp"
                 android:layout_gravity="right|center_vertical"
                 android:background="@mipmap/small_icon"
