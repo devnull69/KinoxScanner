@@ -70,6 +70,11 @@ public class EditFilmActivity extends AppCompatActivity {
         editImageSubDir = (EditText) findViewById(R.id.editImageSubDir);
         ivCoverArt = (ImageView) findViewById(R.id.ivCoverArt);
 
+        Calendar calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+
         if(currentIndex != -1) {
             aktuellerFilm = myApp.getFilme().get(currentIndex);
             editName.setText(aktuellerFilm.getName());
@@ -80,11 +85,6 @@ public class EditFilmActivity extends AppCompatActivity {
                 day = Integer.parseInt(lastDate.substring(0,2));
                 month = Integer.parseInt(lastDate.substring(3,5)) - 1;
                 year = Integer.parseInt(lastDate.substring(6,10));
-            } else {
-                Calendar calendar = Calendar.getInstance();
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
             }
 
             editLastDate.setText(lastDate);
