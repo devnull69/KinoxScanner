@@ -1,9 +1,11 @@
 package org.theiner.kinoxscanner.util;
 
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import org.joda.time.DateTime;
 import org.theiner.kinoxscanner.services.CheckKinoxService;
@@ -28,7 +30,16 @@ public class AlarmHelper {
 
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        am.set(AlarmManager.RTC_WAKEUP, inMinutes.getMillis(), pi);
+
+        if(Build.VERSION.SDK_INT >= 23)
+            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, inMinutes.getMillis(), pi);
+        else {
+            if(Build.VERSION.SDK_INT >= 19) {
+                am.setExact(AlarmManager.RTC_WAKEUP, inMinutes.getMillis(), pi);
+            } else {
+                am.set(AlarmManager.RTC_WAKEUP, inMinutes.getMillis(), pi);
+            }
+        }
 
     }
 }
