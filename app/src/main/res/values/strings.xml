@@ -22,6 +22,7 @@
     <string name="lblWifiOnly">Stream und Download nur über W-Lan</string>
     <string name="lblSearchIsRunning">Die Suche läuft ....</string>
     <string name="lblBack">Zurück</string>
+    <string name="lblBatteryOpt">App als Ausnahme in Akku-Optimierung</string>
     <string name="lblNextEpisode">Nächste Episode</string>
     <string name="lblNextSeason">Nächste Staffel</string>
     <string name="lblRemoveSeries">Serie komplett entfernen</string>

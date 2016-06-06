@@ -18,6 +18,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
+        android:text="@string/lblBatteryOpt"
+        android:id="@+id/btnBatteryOpt"
+        android:onClick="onBatteryOpt"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
         android:text="@string/lblBack"
         android:onClick="onBack"/>
 </RelativeLayout>
