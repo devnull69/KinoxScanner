@@ -55,7 +55,7 @@ public class FlashXStrategie extends HosterStrategie {
             Thread.sleep(delayInSec * 1000);
 
             String response = HTTPHelper.getHtmlFromPOST(destURL, postString, false);
-            int packedStartPos = response.indexOf("return p") + 11;
+            int packedStartPos = response.indexOf("return p}") + 11;
             if (packedStartPos > 10) {
                 int packedEndPos = packedStartPos;
                 int prevPos = packedEndPos - 1;
