@@ -31,6 +31,7 @@ public class CheckErgebnisAdapter extends ArrayAdapter<CheckErgebnis> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         LayoutInflater inflater = LayoutInflater.from(getContext());
 
         View myView = inflater.inflate(R.layout.checkergebnis_row_layout, parent, false);

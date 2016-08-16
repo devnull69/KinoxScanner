@@ -66,11 +66,13 @@ public class TheVideoMeStrategie extends HosterStrategie {
             try {
                 String response = HTTPHelper.getHtmlFromPOST(hosterURL, postString, false);
                 int sourcesPos = response.indexOf("sources:");
-                int fileStartPos = response.indexOf("file:", sourcesPos) + 7;
-                int fileEndPos = fileStartPos;
-                while (response.charAt(fileEndPos) != '\'')
-                    fileEndPos++;
-                result = response.substring(fileStartPos, fileEndPos);
+                if(sourcesPos != -1) {
+                    int fileStartPos = response.indexOf("file:", sourcesPos) + 7;
+                    int fileEndPos = fileStartPos;
+                    while (response.charAt(fileEndPos) != '\'')
+                        fileEndPos++;
+                    result = response.substring(fileStartPos, fileEndPos);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
