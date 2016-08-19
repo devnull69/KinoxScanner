@@ -2,14 +2,10 @@ package org.theiner.kinoxscanner.strategien;
 
 import android.net.Uri;
 
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.theiner.kinoxscanner.util.HTTPHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by TTheiner on 16.03.2016.
@@ -34,20 +30,17 @@ public class FlashXStrategie extends HosterStrategie {
 
         String postString = "";
 
-        Element theForm = (Element) flashXDoc.getElementsByTagName("form").item(0);
+        Element theForm = flashXDoc.getElementsByTag("form").get(0);
 
-        NamedNodeMap formAttributes = theForm.getAttributes();
-        String destURL = formAttributes.getNamedItem("action").getNodeValue();
+        String destURL = theForm.attr("abs:action");
 
-        NodeList theInputs = theForm.getElementsByTagName("input");
+        Elements theInputs = theForm.getElementsByTag("input");
 
-        for(int input=0; input<theInputs.getLength(); input++) {
-            Element currentInput = (Element) theInputs.item(input);
+        for(Element currentInput : theInputs) {
 
-            NamedNodeMap theAttributes = currentInput.getAttributes();
-            String theName = theAttributes.getNamedItem("name").getNodeValue();
-            String theValue = Uri.encode(theAttributes.getNamedItem("value").getNodeValue());
-            postString += (input>0?"&":"") + theName + "=" + theValue;
+            String theName = currentInput.attr("name");
+            String theValue = Uri.encode(currentInput.attr("value"));
+            postString += (theInputs.indexOf(currentInput)>0?"&":"") + theName + "=" + theValue;
         }
 
         if(!"".equals(postString)) {

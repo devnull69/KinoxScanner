@@ -2,12 +2,10 @@ package org.theiner.kinoxscanner.strategien;
 
 import android.net.Uri;
 
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.theiner.kinoxscanner.util.HTTPHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,21 +32,18 @@ public class VidToMeStrategie extends HosterStrategie {
 
         String postString = "";
 
-        NodeList theForms = vidToMeDoc.getElementsByTagName("form");
-        if(theForms.getLength() > 1) {
-            Element theForm = (Element) theForms.item(1);
+        Elements theForms = vidToMeDoc.getElementsByTag("form");
+        if(theForms.size() > 1) {
+            Element theForm = theForms.get(1);
 
-            NodeList theInputs = theForm.getElementsByTagName("input");
+            Elements theInputs = theForm.getElementsByTag("input");
 
             int counter = 0;
-            for (int input = 0; input < theInputs.getLength(); input++) {
-                Element currentInput = (Element) theInputs.item(input);
+            for (Element currentInput : theInputs) {
 
-                NamedNodeMap theAttributes = currentInput.getAttributes();
-                Node namedItem = theAttributes.getNamedItem("name");
-                if (namedItem != null) {
-                    String theName = namedItem.getNodeValue();
-                    String theValue = Uri.encode(theAttributes.getNamedItem("value").getNodeValue());
+                String theName = currentInput.attr("name");
+                if (theName != null && !"".equals(theName)) {
+                    String theValue = Uri.encode(currentInput.attr("value"));
 
                     postString += (counter > 0 ? "&" : "") + theName + "=" + theValue;
                     counter++;

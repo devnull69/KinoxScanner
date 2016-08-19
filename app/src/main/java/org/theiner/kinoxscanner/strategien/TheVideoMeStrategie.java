@@ -2,15 +2,11 @@ package org.theiner.kinoxscanner.strategien;
 
 import android.net.Uri;
 
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.theiner.kinoxscanner.util.HTTPHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
 
-import java.net.URI;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by TTheiner on 16.03.2016.
@@ -50,14 +46,12 @@ public class TheVideoMeStrategie extends HosterStrategie {
             postString += "&" + theName + "=" + theValue;
 
             Element theForm = theVideoMeDoc.getElementById("veriform");
-            NodeList theInputs = theForm.getElementsByTagName("input");
+            Elements theInputs = theForm.getElementsByTag("input");
 
-            for (int input = 0; input < theInputs.getLength(); input++) {
-                Element currentInput = (Element) theInputs.item(input);
+            for (Element currentInput : theInputs) {
 
-                NamedNodeMap theAttributes = currentInput.getAttributes();
-                theName = theAttributes.getNamedItem("name").getNodeValue();
-                theValue = Uri.encode(theAttributes.getNamedItem("value").getNodeValue());
+                theName = currentInput.attr("name");
+                theValue = Uri.encode(currentInput.attr("value"));
                 postString += "&" + theName + "=" + theValue;
             }
 

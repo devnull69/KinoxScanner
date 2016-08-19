@@ -3,10 +3,8 @@ package org.theiner.kinoxscanner.util;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import org.apache.xalan.xsltc.trax.SAX2DOM;
-import org.ccil.cowan.tagsoup.Parser;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -28,60 +26,21 @@ public class HTTPHelper {
     private static final String userAgentMobile = "Mozilla/5.0 (Linux; Android 5.0.1; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19";
 
     public static Document getDocumentFromUrl(String strUrl, String referer, boolean isMobile) {
-        Parser p = new Parser();
-        SAX2DOM sax2dom = null;
-        Document doc  = null;
-
+        Document doc = null;
+        String ua = userAgent;
+        if(isMobile)
+            ua = userAgentMobile;
         try {
+            doc = Jsoup.connect(strUrl).userAgent(ua).referrer(referer).timeout(15000).get();
+        } catch(IOException e) {
 
-            URL url = new URL(strUrl);
-            URLConnection con = url.openConnection();
-
-            // force server to mimic specific Browser
-            con.setRequestProperty("User-Agent", userAgent);
-            if(isMobile)
-                con.setRequestProperty("User-Agent", userAgentMobile);
-
-            con.setRequestProperty("Referer", referer);
-
-            con.setReadTimeout(15000);
-            con.connect();
-
-            p.setFeature(Parser.namespacesFeature, false);
-            p.setFeature(Parser.namespacePrefixesFeature, false);
-            sax2dom = new SAX2DOM();
-            p.setContentHandler(sax2dom);
-            p.parse(new InputSource(new InputStreamReader(con.getInputStream())));
-
-            doc = (Document) sax2dom.getDOM();
-        } catch (Exception e) {
-            // TODO handle exception
         }
-
-
         return doc;
     }
 
+
     public static Document getDocumentFromHTML(String html) {
-        Parser p = new Parser();
-        SAX2DOM sax2dom = null;
-        Document doc  = null;
-
-        try {
-
-            p.setFeature(Parser.namespacesFeature, false);
-            p.setFeature(Parser.namespacePrefixesFeature, false);
-            sax2dom = new SAX2DOM();
-            p.setContentHandler(sax2dom);
-            p.parse(new InputSource(new InputStreamReader(new ByteArrayInputStream(html.getBytes(Charset.defaultCharset())))));
-
-            doc = (Document) sax2dom.getDOM();
-        } catch (Exception e) {
-            // TODO handle exception
-        }
-
-
-        return doc;
+        return Jsoup.parse(html);
     }
 
     public static String getHtmlFromUrl(String strUrl, String referer, boolean isMobile) {
@@ -165,7 +124,7 @@ public class HTTPHelper {
             URL theURL = new URL(hosterURL);
             HttpURLConnection con = (HttpURLConnection) theURL.openConnection();
 
-            //add reuqest header
+            //add request header
             con.setRequestMethod("POST");
             if(isMobile)
                 con.setRequestProperty("User-Agent", userAgentMobile);

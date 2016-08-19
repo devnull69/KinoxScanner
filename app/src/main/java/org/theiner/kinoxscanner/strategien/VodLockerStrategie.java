@@ -1,10 +1,9 @@
 package org.theiner.kinoxscanner.strategien;
 
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.theiner.kinoxscanner.util.HTTPHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
 
 /**
  * Created by TTheiner on 16.03.2016.
@@ -23,12 +22,11 @@ public class VodLockerStrategie extends HosterStrategie {
         // get MP4 file link directly (with mobile browser setup)
         Document vodLockerDocument = HTTPHelper.getDocumentFromUrl(hosterURL, "", true);
 
-        NodeList sources = vodLockerDocument.getElementsByTagName("source");
-        if(sources.getLength()>0) {
-            Element source = (Element) sources.item(0);
+        Elements sources = vodLockerDocument.getElementsByTag("source");
+        if(sources.size()>0) {
+            Element source = sources.get(0);
 
-            NamedNodeMap attrMap = source.getAttributes();
-            response = attrMap.getNamedItem("src").getNodeValue();
+            response = sources.attr("abs:src");
 
         }
 

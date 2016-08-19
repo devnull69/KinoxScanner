@@ -7,6 +7,9 @@ import android.net.NetworkInfo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.theiner.kinoxscanner.async.CheckKinoxTask;
 import org.theiner.kinoxscanner.async.CollectVideoLinksTask;
 import org.theiner.kinoxscanner.context.KinoxScannerApplication;
@@ -27,10 +30,6 @@ import org.theiner.kinoxscanner.strategien.VidBullStrategie;
 import org.theiner.kinoxscanner.strategien.VidToMeStrategie;
 import org.theiner.kinoxscanner.strategien.VidziStrategie;
 import org.theiner.kinoxscanner.strategien.VodLockerStrategie;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -57,7 +56,7 @@ public class KinoxHelper {
             if(doc!=null) {
                 Element element = doc.getElementById("HosterList");
 
-                NodeList liElements = element.getElementsByTagName("li");
+                Elements liElements = element.getElementsByTag("li");
 
                 String currentDateStr = getMaxDateFromElements(liElements);
                 List<HosterMirror> hosterMirrors = getVideoLinksFromElements(liElements, "http://www.kinox.to/Stream/" + film.getAddr() + ".html");
@@ -96,7 +95,7 @@ public class KinoxHelper {
             Element element = serienDoc.getElementById("HosterList");
 
             if (element != null) {
-                NodeList liElements = element.getElementsByTagName("li");
+                Elements liElements = element.getElementsByTag("li");
 
                 List<HosterMirror> hosterMirrors = getVideoLinksFromElements(liElements, "http://www.kinox.to/Stream/" + serie.getAddr() + ".html");
 
@@ -113,7 +112,7 @@ public class KinoxHelper {
         return result;
     }
 
-    private static List<HosterMirror> getVideoLinksFromElements(NodeList liElements, String referer) {
+    private static List<HosterMirror> getVideoLinksFromElements(Elements liElements, String referer) {
 
         Pattern datePattern = Pattern.compile("Vom\\:\\s(\\d{2}\\.\\d{2}\\.\\d{4})");
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -121,12 +120,10 @@ public class KinoxHelper {
 
         List<HosterMirror> result = new ArrayList<>();
 
-        for(int i=0; i < liElements.getLength(); i++) {
-            Element linode = (Element) liElements.item(i);
+        for(Element linode : liElements) {
 
             // Hosternummer bestimmen
-            NamedNodeMap attrMap = linode.getAttributes();
-            String idStr = attrMap.getNamedItem("id").getNodeValue();
+            String idStr = linode.attr("id");
             Pattern pattern = Pattern.compile("(\\d+)");
             Matcher matcher = pattern.matcher(idStr);
             int id = 0;
@@ -134,7 +131,7 @@ public class KinoxHelper {
                 id = Integer.parseInt(matcher.group(1));
 
             // Anzahl Mirrors bestimmen
-            String divContent = linode.getElementsByTagName("div").item(1).getTextContent();
+            String divContent = linode.getElementsByTag("div").get(1).text();
             pattern = Pattern.compile("\\/(\\d+)");
             matcher = pattern.matcher(divContent);
             int mirrorCount = 0;
@@ -142,7 +139,7 @@ public class KinoxHelper {
                 mirrorCount = Integer.parseInt(matcher.group(1));
             }
 
-            String textToParse = linode.getTextContent();
+            String textToParse = linode.text();
 
             Matcher dateMatcher = datePattern.matcher(textToParse);
             String theDate = "";
@@ -231,15 +228,14 @@ public class KinoxHelper {
         return result;
     }
 
-    private static String getMaxDateFromElements(NodeList liElements) {
+    private static String getMaxDateFromElements(Elements liElements) {
         Pattern pattern = Pattern.compile("Vom\\:\\s(\\d{2}\\.\\d{2}\\.\\d{4})");
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         Date currentDate = new Date(100, 0, 1);
         Date heute = new Date();
 
-        for (int i = 0; i < liElements.getLength(); i++) {
-            Element linode = (Element) liElements.item(i);
-            String textToParse = linode.getTextContent();
+        for (Element linode : liElements) {
+            String textToParse = linode.text();
 
             Matcher matcher = pattern.matcher(textToParse);
             while (matcher.find()) {
@@ -301,25 +297,24 @@ public class KinoxHelper {
         List<SearchResult> result = new ArrayList<SearchResult>();
 
         if(doc!=null) {
-            Element tbody = (Element) doc.getElementById("RsltTableStatic").getElementsByTagName("tbody").item(0);
-            NodeList trResults = tbody.getElementsByTagName("tr");
+            Element tbody = doc.getElementById("RsltTableStatic").getElementsByTag("tbody").get(0);
+            Elements trResults = tbody.getElementsByTag("tr");
 
             // Gibt es ein Suchergebnis?
-            if(trResults.getLength()>0) {
-                int tdAnzahl = ((Element) trResults.item(0)).getElementsByTagName("td").getLength();
+            if(trResults.size()>0) {
+                int tdAnzahl = trResults.get(0).getElementsByTag("td").size();
                 if (tdAnzahl == 7) {
-                    for (int i = 0; i < trResults.getLength(); i++) {
-                        Element currentTR = (Element) trResults.item(i);
+                    for (Element currentTR : trResults) {
 
                         // zweites TD enthält den Ergebnis-Typ als Attribut eines Images
-                        NamedNodeMap attrMap = ((Element) currentTR.getElementsByTagName("td").item(1)).getElementsByTagName("img").item(0).getAttributes();
-                        String typ = attrMap.getNamedItem("title").getNodeValue();
+                        Element img2 = currentTR.getElementsByTag("td").get(1).getElementsByTag("img").get(0);
+                        String typ = img2.attr("title");
 
                         // passt Ergebnis zum Suchtyp?
                         if ((suche.getIsSerie() && typ.equals("series")) || (!suche.getIsSerie() && typ.equals("movie")) || (!suche.getIsSerie() && typ.equals("cinema"))) {
                             // erstes TD enthält die Sprache als image-Namen
-                            attrMap = ((Element) currentTR.getElementsByTagName("td").item(0)).getElementsByTagName("img").item(0).getAttributes();
-                            String languageFilename = attrMap.getNamedItem("src").getNodeValue();
+                            Element img1 = currentTR.getElementsByTag("td").get(0).getElementsByTag("img").get(0);
+                            String languageFilename = img1.attr("src");
                             int languageCode = -1;
                             Pattern pattern = Pattern.compile("\\/(\\d+)\\.png");
                             Matcher matcher = pattern.matcher(languageFilename);
@@ -328,8 +323,8 @@ public class KinoxHelper {
                             }
 
                             // drittes TD enthält die Addr als Teil des Dateinamens eines Anchors
-                            attrMap = ((Element) currentTR.getElementsByTagName("td").item(2)).getElementsByTagName("a").item(0).getAttributes();
-                            String href = attrMap.getNamedItem("href").getNodeValue();
+                            Element anchor = currentTR.getElementsByTag("td").get(2).getElementsByTag("a").get(0);
+                            String href = anchor.attr("abs:href");
                             pattern = Pattern.compile("\\/Stream\\/(.*)\\.html");
                             matcher = pattern.matcher(href);
                             String addr = "";
@@ -338,7 +333,7 @@ public class KinoxHelper {
                             }
 
                             // drittes TD enthält den Titel
-                            String titel = currentTR.getElementsByTagName("td").item(2).getTextContent();
+                            String titel = currentTR.getElementsByTag("td").get(2).text();
 
                             // hole SeriesID für Serien und ImageSubDir für beides
                             ExtraInfo extraInfo = getExtraInfo(addr);
@@ -366,8 +361,7 @@ public class KinoxHelper {
         // SeriesID ist Teil des rel-Attributs der id "SeasonSelection"
         Element select = doc.getElementById("SeasonSelection");
         if(select != null) {
-            NamedNodeMap attrMap = select.getAttributes();
-            String rel = attrMap.getNamedItem("rel").getNodeValue();
+            String rel = select.attr("rel");
 
             Pattern pattern = Pattern.compile("SeriesID=(\\d+)$");
             Matcher matcher = pattern.matcher(rel);
@@ -377,12 +371,11 @@ public class KinoxHelper {
         }
 
         // ImageSubDir ist Teil des Image-Tags, dass auch die Addr der Serie/des Films enthält
-        NodeList images = doc.getElementsByTagName("img");
+        Elements images = doc.getElementsByTag("img");
 
-        for(int i=0; i<images.getLength(); i++) {
-            Element currentImage = (Element) images.item(i);
+        for(Element currentImage : images) {
 
-            String src = currentImage.getAttribute("src");
+            String src = currentImage.attr("src");
 
             if(src.indexOf(addr) != -1) {
                 int startpos = src.indexOf("thumbs") + 7;
