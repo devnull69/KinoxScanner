@@ -32,8 +32,8 @@ public class VidziStrategie extends HosterStrategie {
         if(matcher.find()) {
             String[] matches = matcher.group(1).split("\\|");
 
-            // Get scheme (find v. and go back to previous double quote and forward to next double quote)
-            int startpos = vidziHTML.indexOf("v.");
+            // Get scheme (find /v. and go back to previous double quote and forward to next double quote)
+            int startpos = vidziHTML.indexOf("/v.");
             while(vidziHTML.charAt(startpos) != '"')
                 startpos--;
             startpos++;
