@@ -170,11 +170,11 @@ public class KinoxHelper {
                     break;
                 case 33:
                     // FlashX
-//                    hosterMirror = new HosterMirror();
-//                    hosterMirror.setMirrorCount(mirrorCount);
-//                    hosterMirror.setStrategie(new FlashXStrategie(referer));
-//                    hosterMirror.setHosterdate(theDate);
-//                    result.add(hosterMirror);
+                    hosterMirror = new HosterMirror();
+                    hosterMirror.setMirrorCount(mirrorCount);
+                    hosterMirror.setStrategie(new FlashXStrategie(referer));
+                    hosterMirror.setHosterdate(theDate);
+                    result.add(hosterMirror);
 
                     break;
                 case 50:
