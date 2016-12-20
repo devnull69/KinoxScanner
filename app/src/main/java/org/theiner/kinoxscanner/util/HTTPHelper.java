@@ -22,7 +22,7 @@ import java.nio.charset.Charset;
  */
 public class HTTPHelper {
 
-    private static final String userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36";
+    private static final String userAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36";
     private static final String userAgentMobile = "Mozilla/5.0 (Linux; Android 5.0.1; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19";
 
     public static Document getDocumentFromUrl(String strUrl, String referer, boolean isMobile) {

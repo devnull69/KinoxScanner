@@ -11,9 +11,18 @@ public class SearchResult implements Serializable {
     private int seriesID;
     private String imageSubDir;
     private int languageCode;
+    private String imdbRating;
 
     private static final long serialVersionUID = 0L;
 
+
+    public String getImdbRating() {
+        return imdbRating;
+    }
+
+    public void setImdbRating(String imdbRating) {
+        this.imdbRating = imdbRating;
+    }
 
     public String getImageSubDir() {
         return imageSubDir;

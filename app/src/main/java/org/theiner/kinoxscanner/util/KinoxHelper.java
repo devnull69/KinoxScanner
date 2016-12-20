@@ -170,11 +170,11 @@ public class KinoxHelper {
                     break;
                 case 33:
                     // FlashX
-                    hosterMirror = new HosterMirror();
-                    hosterMirror.setMirrorCount(mirrorCount);
-                    hosterMirror.setStrategie(new FlashXStrategie(referer));
-                    hosterMirror.setHosterdate(theDate);
-                    result.add(hosterMirror);
+//                    hosterMirror = new HosterMirror();
+//                    hosterMirror.setMirrorCount(mirrorCount);
+//                    hosterMirror.setStrategie(new FlashXStrategie(referer));
+//                    hosterMirror.setHosterdate(theDate);
+//                    result.add(hosterMirror);
 
                     break;
                 case 50:
@@ -273,17 +273,28 @@ public class KinoxHelper {
 
             }
 
-            if (kinoxHosterResponse != null) {
-                // parse Link from HTML
-                String stream = kinoxHosterResponse.getStream();
-                Pattern pattern = Pattern.compile("href=\"(.*)\"\\starget=\"_blank\">");
-                Matcher matcher = pattern.matcher(stream);
-                if (matcher.find()) {
-                    response = matcher.group(1);
-                }
+            try {
+                if (kinoxHosterResponse != null) {
+                    // parse Link from HTML
+                    String stream = kinoxHosterResponse.getStream();
+                    Pattern pattern = Pattern.compile("href=\"(.*)\"\\starget=\"_blank\">");
+                    Matcher matcher = pattern.matcher(stream);
+                    if (matcher.find()) {
+                        response = matcher.group(1);
+                    } else {
+                        // iframe
+                        Pattern pattern2 = Pattern.compile("src=\"(.*)\"\\swidth=");
+                        Matcher matcher2 = pattern2.matcher(stream);
+                        if (matcher2.find()) {
+                            response = matcher2.group(1);
+                        }
+                    }
 
-                // Falls response nicht mit http anfängt, dann filtern
-                response = response.substring(response.indexOf("http"));
+                    // Falls response nicht mit http anfängt, dann filtern
+                    response = response.substring(response.indexOf("http"));
+                }
+            } catch(Exception e) {
+                e.printStackTrace();
             }
         }
         return response;
@@ -344,6 +355,7 @@ public class KinoxHelper {
                             ergebnis.setAddr(addr);
                             ergebnis.setSeriesID(extraInfo.getSeriesID());
                             ergebnis.setImageSubDir(extraInfo.getImageSubDir());
+                            ergebnis.setImdbRating(extraInfo.getImdbRating());
                             result.add(ergebnis);
                         }
                     }
@@ -383,8 +395,17 @@ public class KinoxHelper {
             }
         }
 
+        // IMDBRating steht in einer Klasse
+        Element imdbElement = doc.getElementsByClass("IMDBRatingLabel").first();
+        String imdbText = imdbElement.text();
+        Pattern pattern2 = Pattern.compile("^(.*)\\s\\/");
+        Matcher matcher2 = pattern2.matcher(imdbText);
+        String imdbRating = "";
+        if(matcher2.find()) {
+            imdbRating = matcher2.group(1);
+        }
 
-        return new ExtraInfo(seriesID, imageSubDir);
+        return new ExtraInfo(seriesID, imageSubDir, imdbRating);
     }
 
     public static List<VideoLink> collectVideoLinks(CollectVideoLinksTask task, KinoxElementHoster currentHoster) throws InterruptedException{

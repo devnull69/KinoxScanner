@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,6 +37,7 @@ public class EditSerieActivity extends AppCompatActivity {
     private EditText editSeason = null;
     private EditText editEpisode = null;
     private ImageView ivCoverArt = null;
+    private TextView editImdbRating = null;
 
     private int currentIndex = -1;
     private Serie aktuelleSerie = null;
@@ -59,6 +61,7 @@ public class EditSerieActivity extends AppCompatActivity {
         editSeason = (EditText) findViewById(R.id.editSeason);
         editEpisode = (EditText) findViewById(R.id.editEpisode);
         ivCoverArt = (ImageView) findViewById(R.id.ivCoverArt);
+        editImdbRating = (TextView) findViewById(R.id.editImdbRating);
 
         if(currentIndex != -1) {
             aktuelleSerie = myApp.getSerien().get(currentIndex);
@@ -68,6 +71,7 @@ public class EditSerieActivity extends AppCompatActivity {
             editImageSubDir.setText(aktuelleSerie.getImageSubDir());
             editSeason.setText(String.valueOf(aktuelleSerie.getSeason()));
             editEpisode.setText(String.valueOf(aktuelleSerie.getEpisode()));
+            editImdbRating.setText(aktuelleSerie.getImdbRating());
 
             Bitmap coverArt = aktuelleSerie.imgFromCache();
             if(coverArt != null) {
@@ -121,6 +125,7 @@ public class EditSerieActivity extends AppCompatActivity {
         String strImageSubDir = editImageSubDir.getText().toString();
         String strSeason = editSeason.getText().toString();
         String strEpisode = editEpisode.getText().toString();
+        String strImdbRating = editImdbRating.getText().toString();
 
         if(!"".equals(strName) && !"".equals(strAddr) && !"".equals(strSeriesID) && !"".equals(strImageSubDir) && !"".equals(strSeason) && !"".equals(strEpisode)) {
 
@@ -133,6 +138,7 @@ public class EditSerieActivity extends AppCompatActivity {
                 neueSerie.setImageSubDir(strImageSubDir);
                 neueSerie.setSeason(Integer.parseInt(strSeason));
                 neueSerie.setEpisode(Integer.parseInt(strEpisode));
+                neueSerie.setImdbRating(strImdbRating);
                 myApp.addSerie(neueSerie);
             } else {
                 // aktuelle Serie updaten
@@ -142,6 +148,7 @@ public class EditSerieActivity extends AppCompatActivity {
                 aktuelleSerie.setImageSubDir(strImageSubDir);
                 aktuelleSerie.setSeason(Integer.parseInt(strSeason));
                 aktuelleSerie.setEpisode(Integer.parseInt(strEpisode));
+                aktuelleSerie.setImdbRating(strImdbRating);
             }
 
             // In Preferences ablegen
@@ -199,6 +206,7 @@ public class EditSerieActivity extends AppCompatActivity {
                     editAddr.setText(suchErgebnis.getAddr());
                     editSeriesID.setText(String.valueOf(suchErgebnis.getSeriesID()));
                     editImageSubDir.setText(suchErgebnis.getImageSubDir());
+                    editImdbRating.setText(suchErgebnis.getImdbRating());
 
                     ImageHelper.startGetImageTask(ivCoverArt, suchErgebnis.getImageSubDir(), suchErgebnis.getAddr());
 

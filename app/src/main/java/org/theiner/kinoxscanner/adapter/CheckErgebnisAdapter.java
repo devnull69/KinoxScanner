@@ -26,7 +26,7 @@ public class CheckErgebnisAdapter extends ArrayAdapter<CheckErgebnis> {
     private int[] colors = new int[] { 0x50424242, 0x50212121 };
 
     public CheckErgebnisAdapter(Context context, List<CheckErgebnis> checkErgebnisse) {
-        super(context, R.layout.search_row_layout, checkErgebnisse);
+        super(context, R.layout.checkergebnis_row_layout, checkErgebnisse);
     }
 
     @Override
@@ -40,6 +40,9 @@ public class CheckErgebnisAdapter extends ArrayAdapter<CheckErgebnis> {
 
         TextView txtName = (TextView) myView.findViewById(R.id.txtName);
         txtName.setText(currentResult.toString());
+
+        TextView txtImdbRating = (TextView) myView.findViewById(R.id.txtImdbRating);
+        txtImdbRating.setText(currentResult.foundElement.getImdbRating());
 
         ImageView ivCoverArt = (ImageView) myView.findViewById(R.id.ivCoverArt);
         Bitmap coverArt = currentResult.foundElement.imgFromCache();

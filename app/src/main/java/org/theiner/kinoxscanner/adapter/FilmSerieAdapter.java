@@ -38,9 +38,13 @@ public class FilmSerieAdapter extends ArrayAdapter<FilmSerieWrapper> {
         View myView = inflater.inflate(R.layout.filmserie_row_layout, parent, false);
 
         FilmSerieWrapper currentResult = (FilmSerieWrapper) getItem(position);
+        KinoxElement currentElement = currentResult.getKinoxelement();
 
         TextView txtName = (TextView) myView.findViewById(R.id.txtName);
-        txtName.setText(currentResult.getKinoxelement().toString());
+        txtName.setText(currentElement.toString());
+
+        TextView txtImdbRating = (TextView) myView.findViewById(R.id.txtImdbRating);
+        txtImdbRating.setText(currentResult.getKinoxelement().getImdbRating());
 
         ImageView ivCoverArt = (ImageView) myView.findViewById(R.id.ivCoverArt);
         Bitmap coverArt = currentResult.getKinoxelement().imgFromCache();

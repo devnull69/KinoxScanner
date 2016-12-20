@@ -14,8 +14,18 @@ public class Film implements KinoxElement, Serializable, Comparable<Film>{
     private String addr;
     private String lastDate = "";  // Leerstring ist erlaubt
     private String imageSubDir;
+    private String imdbRating = "";
 
     private static final long serialVersionUID = 0L;
+
+    @Override
+    public String getImdbRating() {
+        return imdbRating;
+    }
+
+    public void setImdbRating(String imdbRating) {
+        this.imdbRating = imdbRating;
+    }
 
     public String getImageSubDir() {
         return imageSubDir;

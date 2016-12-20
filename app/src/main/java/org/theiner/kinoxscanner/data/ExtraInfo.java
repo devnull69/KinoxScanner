@@ -6,10 +6,12 @@ package org.theiner.kinoxscanner.data;
 public class ExtraInfo {
     private int seriesID;
     private String imageSubDir;
+    private String imdbRating;
 
-    public ExtraInfo(int seriesID, String imageSubDir) {
+    public ExtraInfo(int seriesID, String imageSubDir, String imdbRating) {
         this.seriesID = seriesID;
         this.imageSubDir = imageSubDir;
+        this.imdbRating = imdbRating;
     }
 
     public int getSeriesID() {
@@ -18,5 +20,9 @@ public class ExtraInfo {
 
     public String getImageSubDir() {
         return imageSubDir;
+    }
+
+    public String getImdbRating() {
+        return imdbRating;
     }
 }

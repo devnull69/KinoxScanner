@@ -41,6 +41,7 @@ public class EditFilmActivity extends AppCompatActivity {
     private TextView editLastDate = null;
     private EditText editImageSubDir = null;
     private ImageView ivCoverArt = null;
+    private TextView editImdbRating = null;
 
     private int year;
     private int month;
@@ -69,6 +70,7 @@ public class EditFilmActivity extends AppCompatActivity {
         editLastDate = (TextView)findViewById(R.id.editLastDate);
         editImageSubDir = (EditText) findViewById(R.id.editImageSubDir);
         ivCoverArt = (ImageView) findViewById(R.id.ivCoverArt);
+        editImdbRating = (TextView) findViewById(R.id.editImdbRating);
 
         Calendar calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
@@ -89,6 +91,7 @@ public class EditFilmActivity extends AppCompatActivity {
 
             editLastDate.setText(lastDate);
             editImageSubDir.setText(aktuellerFilm.getImageSubDir());
+            editImdbRating.setText(aktuellerFilm.getImdbRating());
 
             Bitmap coverArt = aktuellerFilm.imgFromCache();
             if(coverArt != null) {
@@ -138,6 +141,7 @@ public class EditFilmActivity extends AppCompatActivity {
         String strName = editName.getText().toString();
         String strAddr = editAddr.getText().toString();
         String strImageSubDir = editImageSubDir.getText().toString();
+        String strImdbRating = editImdbRating.getText().toString();
 
         if(!"".equals(strName) && !"".equals(strAddr) && !"".equals(strImageSubDir)) {
 
@@ -149,17 +153,19 @@ public class EditFilmActivity extends AppCompatActivity {
             if (currentIndex == -1) {
                 // Neuen Film anlegen
                 Film neuerFilm = new Film();
-                neuerFilm.setName(editName.getText().toString());
-                neuerFilm.setAddr(editAddr.getText().toString());
+                neuerFilm.setName(strName);
+                neuerFilm.setAddr(strAddr);
                 neuerFilm.setLastDate(eingabe);
-                neuerFilm.setImageSubDir(editImageSubDir.getText().toString());
+                neuerFilm.setImageSubDir(strImageSubDir);
+                neuerFilm.setImdbRating(strImdbRating);
                 myApp.addFilm(neuerFilm);
             } else {
                 // aktuellen Film updaten
-                aktuellerFilm.setName(editName.getText().toString());
-                aktuellerFilm.setAddr(editAddr.getText().toString());
+                aktuellerFilm.setName(strName);
+                aktuellerFilm.setAddr(strAddr);
                 aktuellerFilm.setLastDate(eingabe);
-                aktuellerFilm.setImageSubDir(editImageSubDir.getText().toString());
+                aktuellerFilm.setImageSubDir(strImageSubDir);
+                aktuellerFilm.setImdbRating(strImdbRating);
             }
 
             // In Preferences ablegen
@@ -216,6 +222,7 @@ public class EditFilmActivity extends AppCompatActivity {
                 } else {
                     editAddr.setText(suchErgebnis.getAddr());
                     editImageSubDir.setText(suchErgebnis.getImageSubDir());
+                    editImdbRating.setText(suchErgebnis.getImdbRating());
 
                     ImageHelper.startGetImageTask(ivCoverArt, suchErgebnis.getImageSubDir(), suchErgebnis.getAddr());
 

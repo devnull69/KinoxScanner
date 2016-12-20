@@ -125,6 +125,20 @@
             android:layout_marginTop="5dp"
             android:scaleType="fitCenter"
             android:id="@+id/ivCoverArt"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="IMDB Rating:"
+            android:layout_marginTop="140dp"/>
+        <TextView
+            android:layout_width="170dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="166dp"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/editImdbRating"
+            android:textSize="18sp"
+            android:textColor="#FFFFFFFF"/>
+
     </RelativeLayout>
 
     <RelativeLayout

@@ -10,4 +10,6 @@ public interface KinoxElement {
     public String toHosterRequestQueryString(int hoster, int mirror);
 
     public Bitmap imgFromCache();
+
+    public String getImdbRating();
 }

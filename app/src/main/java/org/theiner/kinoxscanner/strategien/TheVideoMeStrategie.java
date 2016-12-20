@@ -7,6 +7,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.theiner.kinoxscanner.util.HTTPHelper;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
  * Created by TTheiner on 16.03.2016.
@@ -25,6 +28,15 @@ public class TheVideoMeStrategie extends HosterStrategie {
     @Override
     public String getVideoURL(String hosterURL) throws InterruptedException{
         String result = "";
+
+        // was it coming from an embedded iframe?
+        if(hosterURL.contains("embed")) {
+            // extract video id an recreate URL
+            Pattern pattern = Pattern.compile("\\-(.*)\\-");
+            Matcher matcher = pattern.matcher(hosterURL);
+            if(matcher.find())
+                hosterURL = "http://thevideo.me/" + matcher.group(1);
+        }
 
         String theVideoMeHtml = HTTPHelper.getHtmlFromUrl(hosterURL, referer, false);
         Document theVideoMeDoc = HTTPHelper.getDocumentFromHTML(theVideoMeHtml);
@@ -61,9 +73,9 @@ public class TheVideoMeStrategie extends HosterStrategie {
                 String response = HTTPHelper.getHtmlFromPOST(hosterURL, postString, false);
                 int sourcesPos = response.indexOf("sources:");
                 if(sourcesPos != -1) {
-                    int fileStartPos = response.indexOf("file:", sourcesPos) + 7;
+                    int fileStartPos = response.indexOf("\"file\":", sourcesPos) + 8;
                     int fileEndPos = fileStartPos;
-                    while (response.charAt(fileEndPos) != '\'')
+                    while (response.charAt(fileEndPos) != '\"')
                         fileEndPos++;
                     result = response.substring(fileStartPos, fileEndPos);
                 }

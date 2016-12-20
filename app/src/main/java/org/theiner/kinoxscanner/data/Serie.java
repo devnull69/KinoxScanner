@@ -16,8 +16,18 @@ public class Serie implements KinoxElement, Serializable, Comparable<Serie>{
     private int season;
     private int episode;
     private String imageSubDir;
+    private String imdbRating = "";
 
     private static final long serialVersionUID = 0L;
+
+    @Override
+    public String getImdbRating() {
+        return imdbRating;
+    }
+
+    public void setImdbRating(String imdbRating) {
+        this.imdbRating = imdbRating;
+    }
 
     public String getImageSubDir() {
         return imageSubDir;
