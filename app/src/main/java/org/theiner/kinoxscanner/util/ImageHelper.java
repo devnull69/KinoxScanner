@@ -38,8 +38,8 @@ public class ImageHelper {
 
     public static Bitmap retrieveImage(String imageSubDir, String addr) {
         // Called from task
-        // http://www.kinox.to/statics/thumbs/<imageSubDir>/<addr>.jpg
-        return HTTPHelper.getBitmapFromURL("http://www.kinox.to/statics/thumbs/" + imageSubDir + "/" + addr + ".jpg");
+        // http://www.kinox.XX/statics/thumbs/<imageSubDir>/<addr>.jpg
+        return HTTPHelper.getBitmapFromURL(KinoxHelper.kinoxURL + "statics/thumbs/" + imageSubDir + "/" + addr + ".jpg");
     }
 
     public static void storeImageInCache(Bitmap image, String addr) {

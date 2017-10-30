@@ -45,6 +45,8 @@ import java.util.regex.Pattern;
  */
 public class KinoxHelper {
 
+    public static String kinoxURL = "http://www.kinox.tv/";
+
     public static List<CheckErgebnis> check(CheckKinoxTask task, KinoxScannerApplication myApp) {
 
         List<CheckErgebnis> result = new ArrayList<CheckErgebnis>();
@@ -53,14 +55,14 @@ public class KinoxHelper {
         int counter = 0;
 
         for(Film film : myApp.getFilme()) {
-            Document doc = HTTPHelper.getDocumentFromUrl("http://www.kinox.to/Stream/" + film.toQueryString(), "", false);
+            Document doc = HTTPHelper.getDocumentFromUrl(kinoxURL + "Stream/" + film.toQueryString(), "", false);
             if(doc!=null) {
                 Element element = doc.getElementById("HosterList");
 
                 Elements liElements = element.getElementsByTag("li");
 
                 String currentDateStr = getMaxDateFromElements(liElements);
-                List<HosterMirror> hosterMirrors = getVideoLinksFromElements(liElements, "http://www.kinox.to/Stream/" + film.getAddr() + ".html");
+                List<HosterMirror> hosterMirrors = getVideoLinksFromElements(liElements, KinoxHelper.kinoxURL + "Stream/" + film.getAddr() + ".html");
 
                 // Vergleichen mit vorherigem Datum
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -90,7 +92,7 @@ public class KinoxHelper {
         for(Serie serie : myApp.getSerien()) {
             String queryString = serie.toQueryString();
 
-            String HTML = HTTPHelper.getHtmlFromUrl("http://www.kinox.to/aGET/MirrorByEpisode/" + queryString, "", false);
+            String HTML = HTTPHelper.getHtmlFromUrl(KinoxHelper.kinoxURL + "aGET/MirrorByEpisode/" + queryString, "", false);
             Document serienDoc = HTTPHelper.getDocumentFromHTML("<html><body>" + HTML + "</body></html>");
 
             Element element = serienDoc.getElementById("HosterList");
@@ -98,7 +100,7 @@ public class KinoxHelper {
             if (element != null) {
                 Elements liElements = element.getElementsByTag("li");
 
-                List<HosterMirror> hosterMirrors = getVideoLinksFromElements(liElements, "http://www.kinox.to/Stream/" + serie.getAddr() + ".html");
+                List<HosterMirror> hosterMirrors = getVideoLinksFromElements(liElements, KinoxHelper.kinoxURL + "Stream/" + serie.getAddr() + ".html");
 
                 CheckErgebnis ergebnis = new CheckErgebnis();
                 ergebnis.name = serie.toString();
@@ -313,7 +315,7 @@ public class KinoxHelper {
     public static List<SearchResult> search(SearchRequest suche) {
         String suchString = suche.getSuchString().replaceAll(" ", "+");
 
-        Document doc = HTTPHelper.getDocumentFromUrl("http://www.kinox.to/Search.html?q=" + suchString, "", false);
+        Document doc = HTTPHelper.getDocumentFromUrl(KinoxHelper.kinoxURL + "Search.html?q=" + suchString, "", false);
 
         List<SearchResult> result = new ArrayList<SearchResult>();
 
@@ -378,7 +380,7 @@ public class KinoxHelper {
     private static ExtraInfo getExtraInfo(String addr) {
         int seriesID = -1;
         String imageSubDir = "";
-        Document doc = HTTPHelper.getDocumentFromUrl("http://www.kinox.to/Stream/" + addr + ".html", "", false);
+        Document doc = HTTPHelper.getDocumentFromUrl(KinoxHelper.kinoxURL + "Stream/" + addr + ".html", "", false);
 
         // SeriesID ist Teil des rel-Attributs der id "SeasonSelection"
         Element select = doc.getElementById("SeasonSelection");
@@ -431,7 +433,7 @@ public class KinoxHelper {
                 String url = "";
                 if (currentHoster.getFoundElement() instanceof Serie) {
                     Serie currentSerie = (Serie) currentHoster.getFoundElement();
-                    url = "http://www.kinox.to/aGET/Mirror/" + currentSerie.getAddr() + "&Hoster=" + currentHoster.getHosterMirror().getStrategie().hosterNummer + "&Mirror=" + mirror + "&Season=" + currentSerie.getSeason() + "&Episode=" + currentSerie.getEpisode();
+                    url = KinoxHelper.kinoxURL + "aGET/Mirror/" + currentSerie.getAddr() + "&Hoster=" + currentHoster.getHosterMirror().getStrategie().hosterNummer + "&Mirror=" + mirror + "&Season=" + currentSerie.getSeason() + "&Episode=" + currentSerie.getEpisode();
                     String hosterURL = getHosterURL(url);
 
                     String videoStreamURL = currentHoster.getHosterMirror().getStrategie().getVideoURL(hosterURL);
@@ -445,7 +447,7 @@ public class KinoxHelper {
                     }
                 } else {
                     Film currentFilm = (Film) currentHoster.getFoundElement();
-                    url = "http://www.kinox.to/aGET/Mirror/" + currentFilm.getAddr() + "&Hoster=" + currentHoster.getHosterMirror().getStrategie().hosterNummer + "&Mirror=" + mirror;
+                    url = KinoxHelper.kinoxURL + "aGET/Mirror/" + currentFilm.getAddr() + "&Hoster=" + currentHoster.getHosterMirror().getStrategie().hosterNummer + "&Mirror=" + mirror;
                     String hosterURL = getHosterURL(url);
 
                     String videoStreamURL = currentHoster.getHosterMirror().getStrategie().getVideoURL(hosterURL);
