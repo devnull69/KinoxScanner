@@ -91,7 +91,9 @@ public class OverviewFragment extends Fragment {
 
                     txtStatus.setTypeface(Typeface.DEFAULT);
                     pbProgress.setVisibility(View.GONE);
-                    if (ergebnisListe.size() == 0) {
+                    if(ergebnisListe == null) {
+                        txtStatus.setText(R.string.ConnectError);
+                    } else if (ergebnisListe.size() == 0) {
                         txtStatus.setText(R.string.NoResultsFound);
                     } else {
                         txtStatus.setText(R.string.DownloadsReady);
@@ -259,7 +261,7 @@ public class OverviewFragment extends Fragment {
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
             lastCheckedStr = sdf.format(lastCheckedDate);
         }
-        txtLastChecked.setText(me.getString(R.string.LastChecked) + lastCheckedStr);
+        txtLastChecked.setText(me.getString(R.string.LastChecked) + lastCheckedStr + " (" + settings.getString("kinoxurl", "http://www.kinox.to/") + ")");
     }
 
     @Override

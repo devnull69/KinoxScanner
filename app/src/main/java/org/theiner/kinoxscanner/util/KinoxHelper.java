@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  */
 public class KinoxHelper {
 
-    public static String kinoxURL = "http://www.kinox.tv/";
+    public static String kinoxURL = "http://www.kinox.to/";
 
     public static List<CheckErgebnis> check(CheckKinoxTask task, KinoxScannerApplication myApp) {
 

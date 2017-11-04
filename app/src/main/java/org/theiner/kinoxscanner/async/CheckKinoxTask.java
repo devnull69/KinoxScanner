@@ -31,7 +31,12 @@ public class CheckKinoxTask extends AsyncTask<KinoxScannerApplication, Integer, 
 
     @Override
     protected List<CheckErgebnis> doInBackground(KinoxScannerApplication... myApps) {
-        List<CheckErgebnis> ergebnisse = KinoxHelper.check(this, myApps[0]);
+        List<CheckErgebnis> ergebnisse = null;
+        try {
+            ergebnisse = KinoxHelper.check(this, myApps[0]);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         return ergebnisse;
     }
 

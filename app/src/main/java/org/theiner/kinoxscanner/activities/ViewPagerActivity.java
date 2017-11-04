@@ -1,6 +1,7 @@
 package org.theiner.kinoxscanner.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -18,6 +19,7 @@ import android.widget.ListView;
 
 import org.theiner.kinoxscanner.R;
 import org.theiner.kinoxscanner.adapter.MyPagerAdapter;
+import org.theiner.kinoxscanner.util.KinoxHelper;
 
 import java.util.List;
 import java.util.Vector;
@@ -53,6 +55,10 @@ public class ViewPagerActivity extends AppCompatActivity{
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+        // Get the URL from preferences
+        SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
+        KinoxHelper.kinoxURL = settings.getString("kinoxurl", "http://www.kinox.to/");
 
         //initialsie the pager
         this.initialisePaging();

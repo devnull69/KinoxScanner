@@ -47,10 +47,11 @@
     <string name="QuestionDeleteSeriesDialog">Sind Sie sicher, dass Sie die ausgewählte(n) Serie(n) löschen wollen?</string>
     <string name="QuotaWarning">Beim Download und Streamen von Videos fallen große Datenmengen an, die über Ihren Mobilfunkprovider Kosten für Sie verursachen können!</string>
     <string name="NoResultsFound">Keine Ergebnisse gefunden.</string>
+    <string name="ConnectError">Verbindung konnte nicht hergestellt werden.</string>
     <string name="DownloadsReady">Folgende Downloads stehen bereit:</string>
     <string name="NoNetworkConnection">Es besteht derzeit keine Netzwerkverbindung!</string>
-    <string name="AlarmWillBeSet">Alarm wird neu gesetzt!</string>
-    <string name="never">never</string>
+    <string name="AlarmWillBeSet">Alarm wird jetzt neu gesetzt!</string>
+    <string name="never">niemals</string>
     <string name="LastChecked">"Zuletzt geprüft: "</string>
     <string name="SecServerWaitTime">" Sekunden Wartezeit pro Server"</string>
     <string name="NoWifiConnection">Sie sind nicht mit W-Lan verbunden!</string>

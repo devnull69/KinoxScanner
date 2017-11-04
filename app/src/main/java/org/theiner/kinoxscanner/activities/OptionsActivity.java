@@ -13,18 +13,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import org.theiner.kinoxscanner.R;
+import org.theiner.kinoxscanner.util.KinoxHelper;
 
 public class OptionsActivity extends AppCompatActivity {
 
     public static final String PREFS_NAME = "KinoxScannerFile";
 
+    public SharedPreferences settings;
     private Switch swWifiOnly;
 
     private Button btnBatteryOpt;
+    private RadioGroup radioGrp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +38,15 @@ public class OptionsActivity extends AppCompatActivity {
 
         swWifiOnly = (Switch) findViewById(R.id.swWifiOnly);
         btnBatteryOpt = (Button) findViewById(R.id.btnBatteryOpt);
+        radioGrp = (RadioGroup) findViewById(R.id.radiogrp);
 
-        final SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         final Activity me = this;
 
         boolean isWifiOnly = settings.getBoolean("wifionly", true);
+        String kinoxUrl = settings.getString("kinoxurl", "http://www.kinox.to/");
+
+        radioGrp.check(getIdFromString(kinoxUrl));
 
         swWifiOnly.setChecked(isWifiOnly);
 
@@ -85,5 +93,86 @@ public class OptionsActivity extends AppCompatActivity {
 
             btnBatteryOpt.setVisibility(View.GONE);
         }
+    }
+
+    private int getIdFromString(String url) {
+        int result;
+        String part = url.substring(15, 19);
+        switch(part) {
+            case "s.to":
+                result = R.id.radio_kinosto;
+                break;
+            case "x.tv":
+                result = R.id.radio_tv;
+                break;
+            case "x.ag":
+                result = R.id.radio_ag;
+                break;
+            case "x.me":
+                result = R.id.radio_me;
+                break;
+            case "x.am":
+                result = R.id.radio_am;
+                break;
+            case "x.nu":
+                result = R.id.radio_nu;
+                break;
+            case "x.pe":
+                result = R.id.radio_pe;
+                break;
+            case "x.sg":
+                result = R.id.radio_sg;
+                break;
+            default:
+                result = R.id.radio_to;
+        }
+        return result;
+    }
+
+    private String getStringFromId(int id) {
+        String result = "";
+        switch(id) {
+            case R.id.radio_to:
+                result = "x.to";
+                break;
+            case R.id.radio_kinosto:
+                result = "s.to";
+                break;
+            case R.id.radio_tv:
+                result = "x.tv";
+                break;
+            case R.id.radio_ag:
+                result = "x.ag";
+                break;
+            case R.id.radio_me:
+                result = "x.me";
+                break;
+            case R.id.radio_am:
+                result = "x.am";
+                break;
+            case R.id.radio_nu:
+                result = "x.nu";
+                break;
+            case R.id.radio_pe:
+                result = "x.pe";
+                break;
+            case R.id.radio_sg:
+                result = "x.sg";
+                break;
+            default:
+                result = "x.to";
+        }
+        return "http://www.kino" + result + "/";
+    }
+
+    public void onRadioButtonClicked(View view) {
+        int selectedId = radioGrp.getCheckedRadioButtonId();
+
+        String kinoxurl = getStringFromId(selectedId);
+        KinoxHelper.kinoxURL = kinoxurl;
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("kinoxurl", kinoxurl);
+        editor.commit();
     }
 }
