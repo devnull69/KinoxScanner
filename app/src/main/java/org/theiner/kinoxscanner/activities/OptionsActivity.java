@@ -44,7 +44,7 @@ public class OptionsActivity extends AppCompatActivity {
         final Activity me = this;
 
         boolean isWifiOnly = settings.getBoolean("wifionly", true);
-        String kinoxUrl = settings.getString("kinoxurl", "http://www.kinox.to/");
+        String kinoxUrl = settings.getString("kinoxurl", "https://www.kinos.to/");
 
         radioGrp.check(getIdFromString(kinoxUrl));
 
@@ -97,7 +97,7 @@ public class OptionsActivity extends AppCompatActivity {
 
     private int getIdFromString(String url) {
         int result;
-        String part = url.substring(15, 19);
+        String part = url.substring(16, 20);
         switch(part) {
             case "s.to":
                 result = R.id.radio_kinosto;
@@ -162,7 +162,7 @@ public class OptionsActivity extends AppCompatActivity {
             default:
                 result = "x.to";
         }
-        return "http://www.kino" + result + "/";
+        return "https://www.kino" + result + "/";
     }
 
     public void onRadioButtonClicked(View view) {

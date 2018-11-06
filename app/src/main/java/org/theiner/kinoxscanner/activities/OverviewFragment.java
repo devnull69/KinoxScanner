@@ -261,7 +261,7 @@ public class OverviewFragment extends Fragment {
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
             lastCheckedStr = sdf.format(lastCheckedDate);
         }
-        txtLastChecked.setText(me.getString(R.string.LastChecked) + lastCheckedStr + " (" + settings.getString("kinoxurl", "http://www.kinox.to/") + ")");
+        txtLastChecked.setText(me.getString(R.string.LastChecked) + lastCheckedStr + " (" + settings.getString("kinoxurl", "https://www.kinos.to/") + ")");
     }
 
     @Override

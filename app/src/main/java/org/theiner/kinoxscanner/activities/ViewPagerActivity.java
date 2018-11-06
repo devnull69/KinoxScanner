@@ -58,7 +58,7 @@ public class ViewPagerActivity extends AppCompatActivity{
 
         // Get the URL from preferences
         SharedPreferences settings = getSharedPreferences(OverviewFragment.PREFS_NAME, MODE_PRIVATE);
-        KinoxHelper.kinoxURL = settings.getString("kinoxurl", "http://www.kinox.to/");
+        KinoxHelper.kinoxURL = settings.getString("kinoxurl", "https://www.kinos.to/");
 
         //initialsie the pager
         this.initialisePaging();
